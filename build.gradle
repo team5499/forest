@@ -11,6 +11,7 @@ dependencies {
     compile 'org.jetbrains.kotlin:kotlin-stdlib'
     // compile 'org.jetbrains.kotlin:kotlin-reflection'
     compile 'com.sparkjava:spark-kotlin:1.0.0-alpha'
+    compile 'com.sparkjava:spark-template-pebble:2.7.1'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.1'
@@ -19,7 +20,9 @@ dependencies {
 test {
     dependsOn 'cleanTest'
 
-    useJUnitPlatform()
+    useJUnitPlatform {
+        excludeTags 'integration'
+    }
 
     testLogging {
         events 'PASSED', 'FAILED', 'SKIPPED'
@@ -35,6 +38,31 @@ test {
                     "${result.skippedTestCount} skipped"
         }
     }
+}
+
+task integrationTest(type: Test) {
+    useJUnitPlatform {
+        includeTags 'integration'
+    }
+
+    testLogging {
+        events 'PASSED', 'FAILED', 'SKIPPED'
+        showStandardStreams true
+    }
+
+    afterSuite { desc, result ->
+        if (!desc.parent) {
+            println "\nTest result: ${result.resultType}"
+            println "Test summary: ${result.testCount} tests, " +
+                    "${result.successfulTestCount} succeeded, " +
+                    "${result.failedTestCount} failed, " +
+                    "${result.skippedTestCount} skipped"
+        }
+    }
+
+    outputs.upToDateWhen { false }
+
+    shouldRunAfter test
 }
 
 task tox {
