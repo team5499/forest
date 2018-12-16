@@ -11,7 +11,7 @@ dependencies {
     compile 'org.jetbrains.kotlin:kotlin-stdlib'
     // compile 'org.jetbrains.kotlin:kotlin-reflection'
     compile 'com.sparkjava:spark-kotlin:1.0.0-alpha'
-    compile 'com.sparkjava:spark-template-pebble:2.7.1'
+    compile 'com.sparkjava:spark-template-jinjava:2.7.1'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.1'

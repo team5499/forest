@@ -4,29 +4,38 @@ import spark.Spark
 import spark.Request
 import spark.Response
 import spark.ModelAndView
-import spark.template.pebble.PebbleTemplateEngine
+import spark.template.jinjava.JinjavaEngine
+
+import java.io.File
 
 object Dashboard {
-    fun start() {
+
+    private var config: String = ""
+
+    fun start(confPath: String) {
         @Suppress("MagicNumber")
-        start(5800)
+        println("deek")
+        //start(confPath, 5800)
     }
 
-    fun start(port: Int) {
+    fun start(confPath: String, port: Int) {
+        config = File(confPath).bufferedReader().readText()
+
         Spark.port(port)
 
-        Spark.get("/hello", {
+        Spark.staticFiles.location("/static")
+
+        Spark.get("/page/:name", {
             request: Request, response: Response ->
             val attributes = HashMap<String, Any>()
-            attributes.put("message", "Hello World!")
+            request.params(":name")
 
-            // The hello.pebble file is located in directory:
-            // src/test/resources/spark/template/pebble
-            println("here")
-            ModelAndView(attributes, this::class.java.getResource("/spark/template/pebble/hello.pebble").path)
-        }, PebbleTemplateEngine())
+            // File(this::class.java.getResource("/page.html").path).bufferedReader().readText()
+            JinjavaEngine().render(
+                ModelAndView(attributes, this::class.java.getResource("/page.html").path)
+            )
+        })
 
-        @Suppress("MagicNumber")
-        Thread.sleep(10000000) // figure out a better way to do this
+        Spark.webSocket("/socket", SocketHandler::class)
     }
 }

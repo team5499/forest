@@ -11,6 +11,11 @@ class ApplicationTest {
     @Test
     fun runServer() {
         println("starting server...")
-        Dashboard.start()
+        println("go to http://localhost:5800/")
+        Dashboard.start(this::class.java.getResource("conf.json").path)
+        while (true) { // find a better way to wait?
+            @Suppress("MagicNumber")
+            Thread.sleep(1000)
+        }
     }
 }
