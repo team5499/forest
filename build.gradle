@@ -1,6 +1,9 @@
 plugins {
-    id 'maven'
     id 'org.jetbrains.kotlin.jvm' version '1.3.0'
+    id 'java-library'
+    id 'maven-publish'
+    id 'jacoco'
+    id 'maven'
 }
 
 repositories {
@@ -16,6 +19,25 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.1'
+}
+
+group = 'org.team5499'
+version = '1.0' /* Change this when deploying a new version */
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier = 'sources'
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    classifier = 'javadoc'
+}
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
 }
 
 test {
@@ -66,6 +88,17 @@ task integrationTest(type: Test) {
     shouldRunAfter test
 }
 
+jacoco {
+    toolVersion = '0.8.2'
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled false
+    }
+}
+
 task tox {
     doLast {
         exec {
@@ -75,6 +108,71 @@ task tox {
 }
 
 test.finalizedBy 'tox'
-
 // Alias tox as 'install_hooks'
 task install_hooks(dependsOn: 'tox')
+
+publishing {
+    publications {
+        library(MavenPublication) {
+            artifactId = 'forest'
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom {
+                name = 'Forest'
+                description = 'A modern frc dashboard that uses websockets'
+                url = 'https://github.com/team5499/forest'
+            }
+        }
+    }
+    repositories {
+        maven{
+        }
+    }
+}
+
+class PublishToMavenRepositoryWithCreds extends PublishToMavenRepository {
+    @Option(option="username", description="username of the user")
+    public String username
+
+    void setUsername(String username) {
+        this.username = username
+    }
+
+    String getUsername() {
+        return this.username
+    }
+
+    @Option(option="password", description="password of the user")
+    public String password
+
+    void setPassword(String password) {
+        this.password = password
+    }
+
+    String getPassword() {
+        return this.password
+    }
+
+    @Option(option="url", description="url to deploy to")
+    public String url
+
+    void setUrl(String url) {
+        this.url = url
+    }
+
+    String getUrl() {
+        return this.url
+    }
+
+}
+
+task publishToTeamRepo(type: PublishToMavenRepositoryWithCreds) {
+    doFirst {
+        publishing.repositories.maven.credentials.username = username
+        publishing.repositories.maven.credentials.password = password
+        publishing.repositories.maven.url = url
+    }
+    publication = publishing.publications.library
+    repository = publishing.repositories.maven
+}
