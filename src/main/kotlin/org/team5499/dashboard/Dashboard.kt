@@ -8,11 +8,9 @@ import spark.template.jinjava.JinjavaEngine
 
 // import org.json.json
 
-import java.io.File
-
 object Dashboard {
 
-    private var config: String = ""
+    private var config: Config? = null
     private var pageSource: String = this::class.java.getResource("/page.html").path
 
     fun start(confPath: String) {
@@ -21,7 +19,7 @@ object Dashboard {
     }
 
     fun start(confPath: String, port: Int) {
-        config = File(confPath).bufferedReader().readText()
+        config = Config(confPath)
         println(config)
 
         Spark.port(port)
@@ -32,11 +30,10 @@ object Dashboard {
 
         Spark.get("/page/:name", {
             request: Request, response: Response ->
-            val attributes: HashMap<String, Any> = getPageAttributes(request.params(":name"))
+            val attributes: HashMap<String, Any> = config!!.getPageAttributes(request.params(":name"))
             JinjavaEngine().render(
                 ModelAndView(attributes, pageSource)
             )
         })
-        println("here")
     }
 }
