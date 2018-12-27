@@ -13,6 +13,7 @@ import java.io.File
 object Dashboard {
 
     private var config: String = ""
+    private var pageSource: String = this::class.java.getResource("/page.html").path
 
     fun start(confPath: String) {
         @Suppress("MagicNumber")
@@ -31,13 +32,9 @@ object Dashboard {
 
         Spark.get("/page/:name", {
             request: Request, response: Response ->
-            val attributes = HashMap<String, Any>()
-            request.params(":name")
-            // attributes.put("teamNumber", )
-
-            // File(this::class.java.getResource("/page.html").path).bufferedReader().readText()
+            val attributes: HashMap<String, Any> = getPageAttributes(request.params(":name"))
             JinjavaEngine().render(
-                ModelAndView(attributes, this::class.java.getResource("/page.html").path)
+                ModelAndView(attributes, pageSource)
             )
         })
         println("here")

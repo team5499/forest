@@ -1,0 +1,4 @@
+jinjava usage:
+- nav bar links
+- static links
+- page title
