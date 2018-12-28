@@ -6,11 +6,14 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect
 import java.util.Queue
 import java.util.concurrent.ConcurrentLinkedQueue
 
+/**
+ * Handles websocket events
+ */
 @WebSocket
 class SocketHandler {
 
     companion object {
-        var sessions: Queue<Session> = ConcurrentLinkedQueue<Session>()
+        private var sessions: Queue<Session> = ConcurrentLinkedQueue<Session>()
     }
 
     @OnWebSocketConnect

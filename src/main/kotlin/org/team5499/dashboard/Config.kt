@@ -22,6 +22,17 @@ class Config(path: String) {
         }
     }
 
+    /**
+     * Returns the attributes for constructing the specified page
+     *
+     * Jinjava attributes:
+     * - nav bar links
+     * - static links
+     * - page title
+     *
+     * @param pageId the id of the requested page
+     * @return the jinjava attributes for the page
+     */
     fun getPageAttributes(pageId: String): HashMap<String, Any> {
         return HashMap<String, Any>()
     }
