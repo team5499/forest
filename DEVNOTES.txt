@@ -2,3 +2,7 @@ jinjava usage:
 - nav bar links
 - static links
 - page title
+
+config format:
+- page
+- widget

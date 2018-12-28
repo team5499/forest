@@ -2,7 +2,7 @@ package tests
 
 import org.junit.jupiter.api.Test
 
-class OtherTest {
+class ConfigTest {
 
     @Test
     fun otherTest() {

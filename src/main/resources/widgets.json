@@ -1,0 +1,14 @@
+{
+  "widgets": [
+    {
+      "height": null,
+      "javascriptClass": "RawVarEditor",
+      "kwargs": {},
+      "type": "rawVarEditor",
+      "variables": {
+        "target": "TEST"
+      },
+      "width": "12rem"
+    }
+  ]
+}
