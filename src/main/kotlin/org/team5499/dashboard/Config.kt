@@ -23,9 +23,7 @@ class Config() {
             private set
     }
 
-    var configString: String = Config.EMPTY_CONFIG_STRING
-        private set
-    var configObject: JSONObject = JSONObject(configString)
+    var configObject: JSONObject = JSONObject(Config.EMPTY_CONFIG_STRING)
         private set
 
     /**
@@ -39,21 +37,15 @@ class Config() {
      * @constructor creates a config from the speficied JSON file
      */
     constructor(file: File) : this() {
+        var configString: String
         try {
-            this.configString = file.bufferedReader().readText()
+            configString = file.bufferedReader().readText()
         } catch (ioe: IOException) {
             println("Config file could not be read!")
             println("Creating empty configuration")
-            this.configString = Config.EMPTY_CONFIG_STRING
+            configString = Config.EMPTY_CONFIG_STRING
         }
-        try {
-            this.configObject = JSONObject(this.configString)
-        } catch (je: JSONException) {
-            println("Config file is improperly formatted!")
-            println("Creating empty configuration")
-            this.configString = Config.EMPTY_CONFIG_STRING
-            this.configObject = JSONObject(this.configString)
-        }
+        this.configObject = this.makeConfigJSONObject(configString)
     }
 
     /**
@@ -67,17 +59,34 @@ class Config() {
      * @constructor creates a config from the speficied JSON string
      */
     constructor(json: String) : this() {
-        this.configString = json
-        try {
-            this.configObject = JSONObject(this.configString)
-        } catch (je: JSONException) {
-            println("Config file is improperly formatted!")
-            println("Creating empty configuration")
-            this.configString = Config.EMPTY_CONFIG_STRING
-            this.configObject = JSONObject(this.configString)
-        }
+        this.configObject = this.makeConfigJSONObject(json)
     }
 
+    /**
+     * create a json config object from the specified string
+     *
+     * If the specified string contains errors, an empty configuration is returned
+     */
+    private fun makeConfigJSONObject(json: String): JSONObject {
+        var configObject: JSONObject
+        // check if string contains correctly formatted json
+        try {
+            configObject = JSONObject(json)
+        } catch (je: JSONException) {
+            println("Config json is improperly formatted!")
+            println("Creating empty configuration")
+            configObject = JSONObject(Config.EMPTY_CONFIG_STRING)
+        }
+        // check if json contains "pages" element
+        if (!configObject.has("pages")) {
+            println("Config json does not contain \"pages\" element!")
+            println("Creating empty configuration")
+            configObject = JSONObject(Config.EMPTY_CONFIG_STRING)
+        }
+        return configObject
+    }
+
+    // config util functions
     /**
      * Returns the attributes for constructing the specified page
      *
@@ -94,5 +103,13 @@ class Config() {
         return HashMap<String, Any>()
     }
 
-    // config util functions
+    /**
+     * Get a list of the defined page names
+     *
+     * @return an Array of strings
+     */
+    fun getPageNames(): Array<String> {
+
+        return arrayOf<String>("")
+    }
 }
