@@ -86,6 +86,37 @@ class Config() {
         return configObject
     }
 
+    /**
+     * Fail with warning and set current object to empty config
+     */
+    private fun fail() {
+        println("resetting to empty config")
+        this.configObject = JSONObject(Config.EMPTY_CONFIG_STRING)
+    }
+
+    /**
+     * get the specified key as the specified type
+     *
+     * if the specified key is not found, a warning is printed and
+     * fail() is called
+     *
+     * @param key the key associated with the requested value
+     * @param T the type to return
+     */
+    @Suppress("ReturnCount")
+    private inline fun <reified T> JSONObject.getOrFail(key: String): T? {
+        if (!this.has(key)) {
+            println("Could not get key $key from JSONObject!")
+            fail()
+            return null
+        } else if (this.get(key) !is T) {
+            println("Could not get key $key from JSONObject as type ${T::class}!")
+            fail()
+            return null
+        }
+        return this.get(key) as T
+    }
+
     // config util functions
     /**
      * Returns the attributes for constructing the specified page
@@ -98,8 +129,10 @@ class Config() {
      * @param pageId the id of the requested page
      * @return the jinjava attributes for the page
      */
-    fun getPageAttributes(pageId: String): HashMap<String, Any> {
-
+    fun getPageAttributes(pageName: String): HashMap<String, Any> {
+        // try {
+        //     configObject.get()
+        // }
         return HashMap<String, Any>()
     }
 
@@ -109,7 +142,6 @@ class Config() {
      * @return an Array of strings
      */
     fun getPageNames(): Array<String> {
-
-        return arrayOf<String>("")
+        return configObject.getJSONObject("pages").keySet().toTypedArray()
     }
 }

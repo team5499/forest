@@ -1,12 +1,12 @@
 {
-  "pages": [
-    {
-      "name": "dev",
+  "pages": {
+    "dev": {
+      "navbarOrder": 0,
       "title": "Development",
       "widgets": []
     },
-    {
-      "name": "drive",
+    "drive": {
+      "navbarOrder": 1,
       "title": "Drive",
       "widgets": [
         {
@@ -23,10 +23,10 @@
         }
       ]
     },
-    {
-      "name": "test",
+    "test": {
+      "navbarOrder": 2,
       "title": "Test",
       "widgets": []
     }
-  ]
+  }
 }

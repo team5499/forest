@@ -15,8 +15,8 @@ import spark.template.jinjava.JinjavaEngine
  */
 object Dashboard {
 
-    private var config: Config? = null
-    private var pageSource: String = this::class.java.getResource("/page.html").path
+    private var config: Config = Config()
+    private val pageSource: String = this::class.java.getResource("/page.html").path
 
     /**
      * Start the dashboard server with the default port of 5800 and specified config file
@@ -48,7 +48,12 @@ object Dashboard {
 
         Spark.get("/page/:name", {
             request: Request, response: Response ->
-            val attributes: HashMap<String, Any> = config!!.getPageAttributes(request.params(":name"))
+            val requestedPageName: String = request.params(":name")
+            if (!config.getPageNames().contains(requestedPageName)) {
+                @Suppress("MagicNumber")
+                Spark.halt(404)
+            }
+            val attributes: HashMap<String, Any> = config.getPageAttributes(requestedPageName)
             JinjavaEngine().render(
                 ModelAndView(attributes, pageSource)
             )
