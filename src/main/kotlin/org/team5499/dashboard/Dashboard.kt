@@ -49,9 +49,8 @@ object Dashboard {
         Spark.get("/page/:name", {
             request: Request, response: Response ->
             val requestedPageName: String = request.params(":name")
-            if (!config.getPageNames().contains(requestedPageName)) {
-                @Suppress("MagicNumber")
-                Spark.halt(404)
+            if (!config.hasPageWithName(requestedPageName)) {
+                response.redirect("/")
             }
             val attributes: HashMap<String, Any> = config.getPageAttributes(requestedPageName)
             JinjavaEngine().render(

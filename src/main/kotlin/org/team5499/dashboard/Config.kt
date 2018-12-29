@@ -26,6 +26,12 @@ class Config() {
     var configObject: JSONObject = JSONObject(Config.EMPTY_CONFIG_STRING)
         private set
 
+    private var pages: JSONObject
+        get() = configObject.getJSONObject("pages")
+        set(value) {
+            configObject.put("pages", value)
+        }
+
     /**
      * Construct a configuration with the specified JSON file
      *
@@ -129,19 +135,66 @@ class Config() {
      * @param pageId the id of the requested page
      * @return the jinjava attributes for the page
      */
+    @Suppress("ReturnCount")
     fun getPageAttributes(pageName: String): HashMap<String, Any> {
-        // try {
-        //     configObject.get()
-        // }
-        return HashMap<String, Any>()
+        var attributes: HashMap<String, Any> = HashMap<String, Any>()
+        var navbar: ArrayList<Array<String>> = ArrayList<Array<String>>()
+        val page: JSONObject
+        try {
+            page = pages.getJSONObject(pageName)
+        } catch (je: JSONException) {
+            throw ConfigException("Could not get configuration for page with name $pageName")
+        }
+        val title: String? = page.getOrFail("title")
+        if (title == null) {
+            return HashMap<String, Any>()
+        }
+        for (i in getPageNamesInNavBarOrder()) {
+            val tmpTitle: String? = pages.getJSONObject(i).getOrFail<String>("title")
+            if (tmpTitle == null) {
+                return HashMap<String, Any>()
+            }
+            navbar.add(arrayOf(i, tmpTitle))
+        }
+        attributes.put("pageTitle", title)
+        attributes.put("activePage", pageName)
+        attributes.put("navbar", navbar.toTypedArray())
+
+        return attributes
     }
 
     /**
-     * Get a list of the defined page names
+     * Get an array of the defined page names
      *
      * @return an Array of strings
      */
     fun getPageNames(): Array<String> {
-        return configObject.getJSONObject("pages").keySet().toTypedArray()
+        return pages.keySet().toTypedArray()
+    }
+
+    /**
+     * Get an array of the defined page names in the order that they should appear on the nav bar
+     *
+     * @return an Array of strings
+     */
+    fun getPageNamesInNavBarOrder(): Array<String> {
+        val unorderedNames: Array<String> = getPageNames()
+        val orderedNames: Array<String> = unorderedNames.copyOf()
+        for (n in unorderedNames) {
+            val order = pages.getJSONObject(n).getOrFail<Int>("navbarOrder")
+            if (order == null) {
+                return arrayOf<String>()
+            }
+            orderedNames[order] = n
+        }
+        return orderedNames
+    }
+
+    fun getNumberOfPages(): Int {
+        return getPageNames().size
+    }
+
+    fun hasPageWithName(name: String): Boolean {
+        return getPageNames().contains(name)
     }
 }
