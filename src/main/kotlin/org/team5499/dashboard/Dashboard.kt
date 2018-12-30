@@ -6,6 +6,9 @@ import spark.Response
 import spark.ModelAndView
 import spark.template.jinjava.JinjavaEngine
 
+import com.hubspot.jinjava.loader.ClasspathResourceLocator
+import com.hubspot.jinjava.JinjavaConfig
+
 // import org.json.json
 
 /**
@@ -31,10 +34,16 @@ object Dashboard {
         config = Config(Utils.readResourceAsString(obj, path))
 
         Spark.port(port)
-
         Spark.webSocket("/socket", SocketHandler::class.java)
-
         Spark.staticFiles.location("/static")
+
+        Spark.get("/", {
+            request: Request, response: Response ->
+            val attributes: HashMap<String, Any> = HashMap()
+            JinjavaEngine(JinjavaConfig(), ClasspathResourceLocator()).render(
+                ModelAndView(attributes, "home.html")
+            )
+        })
 
         Spark.get("/page/:name", {
             request: Request, response: Response ->
@@ -43,7 +52,7 @@ object Dashboard {
                 response.redirect("/")
             }
             val attributes: HashMap<String, Any> = config.getPageAttributes(requestedPageName)
-            JinjavaEngine().render(
+            JinjavaEngine(JinjavaConfig(), ClasspathResourceLocator()).render(
                 ModelAndView(attributes, "page.html")
             )
         })
