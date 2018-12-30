@@ -18,6 +18,7 @@ dependencies {
     compile 'com.sparkjava:spark-template-jinjava:2.7.1'
     compile 'org.slf4j:slf4j-simple:1.7.21'
     compile 'org.json:json:20180813'
+    compile group: 'commons-io', name: 'commons-io', version: '2.6'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.1'
