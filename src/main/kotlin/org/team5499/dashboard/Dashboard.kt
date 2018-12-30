@@ -58,4 +58,19 @@ object Dashboard {
             )
         })
     }
+    fun addVarible(input: String?, type: String){
+        when(type){
+            "String" -> continue
+            "Int" -> input = input as? Int
+            "Double" -> input = input as? Double
+        }
+        
+    }
+
+    fun editVarible(name: String, input: Any){
+        if(input is name::class){
+            continue
+        }
+
+    }
 }
