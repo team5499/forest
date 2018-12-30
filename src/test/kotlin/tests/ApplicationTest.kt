@@ -12,7 +12,8 @@ class ApplicationTest {
     fun runServer() {
         println("starting server...")
         println("go to http://localhost:5800/")
-        Dashboard.start(this::class.java.getClassLoader().getResource("integrationConf.json").path)
+        println(this::class.java.getClassLoader().getResource("integrationConf.json").path)
+        Dashboard.start("/Users/acate/Documents/Robotics/Code/forest/build/resources/test/integrationConf.json")
         println("server started")
         while (true) { // find a better way to wait?
             @Suppress("MagicNumber")

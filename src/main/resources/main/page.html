@@ -27,7 +27,7 @@
             <div class="collapse navbar-collapse" id="navbar">
                 <ul class="navbar-nav mr-auto">
                     {% for name, title in navbar %}
-                    <li class="nav-item{% if id == activePage %} active{% endif %}">
+                    <li class="nav-item{% if name == activePage %} active{% endif %}">
                         <a class="nav-link" href="/page/{{ name|e }}">{{ title|e }}</a>
                     </li>
                     {% endfor %}

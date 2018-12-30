@@ -24,6 +24,7 @@ object Dashboard {
      * @param confPath the absolute path to the JSON configuration file
      */
     fun start(confPath: String) {
+        println("start")
         @Suppress("MagicNumber")
         start(confPath, 5800)
     }
