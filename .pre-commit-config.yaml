@@ -20,3 +20,11 @@ repos:
         args: [--color, --format, --relative, --verbose]
     -   id: detekt-wrapper
         args: [--config .detekt-config.yml]
+-   repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v5.11.1  # Use the sha / tag you want to point at
+    hooks:
+    -   id: eslint
+        additional_dependencies:
+        -   eslint@^4.19.1
+        -   eslint-config-airbnb-base@13.1.0
+        -   eslint-plugin-import@2.14.0

@@ -49,19 +49,20 @@ class Config() {
      * If the specified string contains errors, an empty configuration is returned
      */
     private fun makeConfigJSONObject(json: String): JSONObject {
-        var configObject: JSONObject
+        var newConfigObject: JSONObject
         // check if string contains correctly formatted json
         try {
-            configObject = JSONObject(json)
+            newConfigObject = JSONObject(json)
         } catch (je: JSONException) {
             throw ConfigException("Improperly formatted JSON was detected when reading the dashboard configuration!")
         }
         // check if json contains "pages" element
-        if (!configObject.has("pages")) {
+        if (!newConfigObject.has("pages")) {
             println("Config json does not contain \"pages\" element!")
             fail()
+            return configObject
         }
-        return configObject
+        return newConfigObject
     }
 
     /**
@@ -101,7 +102,6 @@ class Config() {
      * @param pageId the id of the requested page
      * @return the jinjava attributes for the page
      */
-    @Suppress("ReturnCount")
     fun getPageAttributes(pageName: String): HashMap<String, Any> {
         var attributes: HashMap<String, Any> = HashMap<String, Any>()
         var navbar: HashMap<String, String> = HashMap()
@@ -113,16 +113,21 @@ class Config() {
         }
 
         val title: String = page.getOrFail<String>("title")
+
+        attributes.put("pageTitle", title)
+        attributes.put("activePage", pageName)
+        attributes.put("navbar", getNavbarAttributes())
+
+        return attributes
+    }
+
+    fun getNavbarAttributes(): HashMap<String, String> {
+        var navbar: HashMap<String, String> = HashMap()
         for (i in getPageNamesInNavBarOrder()) {
             val tmpTitle: String = pages.getJSONObject(i).getOrFail<String>("title")
             navbar.put(i, tmpTitle)
         }
-
-        attributes.put("pageTitle", title)
-        attributes.put("activePage", pageName)
-        attributes.put("navbar", navbar)
-
-        return attributes
+        return navbar
     }
 
     /**

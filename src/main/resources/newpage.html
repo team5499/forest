@@ -4,8 +4,10 @@
 {% block head %}{% endblock %}
 {% block navbarCollapse %}{% endblock %}
 {% block container %}
-<a class="btn btn-primary" href="/config">Configuration</a>
-<a class="btn btn-primary" href="/utils/newpage">New Page</a>
+<form action="/actions/newpage" method="post" autocomplete="off">
+    <input class="form-control mb-2" type="text" name="pagename" value="" placeholder="new page name" style="max-width:250px;">
+    <button class="btn btn-light" type="submit">Submit</button>
+</form>
 {% endblock %}
 {% block body %}{% endblock %}
 {% block beforeScripts %}{% endblock %}

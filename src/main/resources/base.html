@@ -37,17 +37,17 @@
         </div>
     </nav>
 
-    <div class="container-fluid m-0">
+    <div class="container-fluid m-0 p-3">
     {% block container %}{% endblock %}
     </div>
 
     {% block body %}{% endblock %}
 
     {% block beforeScripts %}{% endblock %}
-    <script src="/javascript/jquery-3.3.1.min.js"></script>
-    <script src="/javascript/popper.min.js"></script>
-    <script src="/javascript/tooltip.min.js"></script>
-    <script src="/javascript/bootstrap.min.js"></script>
+    <script src="/javascript/libs/jquery-3.3.1.min.js"></script>
+    <script src="/javascript/libs/popper.min.js"></script>
+    <script src="/javascript/libs/tooltip.min.js"></script>
+    <script src="/javascript/libs/bootstrap.min.js"></script>
     {% block afterJSLibs %}{% endblock %}
     <script src="/javascript/base.js"></script>
     {% block afterJS %}{% endblock %}

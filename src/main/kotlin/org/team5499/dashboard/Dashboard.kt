@@ -40,6 +40,7 @@ object Dashboard {
         Spark.get("/", {
             request: Request, response: Response ->
             val attributes: HashMap<String, Any> = HashMap()
+            attributes.put("navbar", config.getNavbarAttributes())
             JinjavaEngine(JinjavaConfig(), ClasspathResourceLocator()).render(
                 ModelAndView(attributes, "home.html")
             )
@@ -55,6 +56,37 @@ object Dashboard {
             JinjavaEngine(JinjavaConfig(), ClasspathResourceLocator()).render(
                 ModelAndView(attributes, "page.html")
             )
+        })
+
+        Spark.get("/config", {
+            request: Request, response: Response ->
+            response.type("text/json")
+            @Suppress("MagicNumber")
+            config.configObject.toString(4)
+        })
+
+        // Utils
+        Spark.get("/utils/newpage", {
+            request: Request, response: Response ->
+            val attributes: HashMap<String, Any> = HashMap()
+            attributes.put("navbar", config.getNavbarAttributes())
+            JinjavaEngine(JinjavaConfig(), ClasspathResourceLocator()).render(
+                ModelAndView(attributes, "newpage.html")
+            )
+        })
+
+        // Actions
+        Spark.post("/actions/newpage", {
+            request: Request, response: Response ->
+            val pagename: String = request.queryParams("pagename")
+            println("Attempting to create page with name: $pagename")
+            if (config.hasPageWithName(pagename)) {
+                response.header("newpageerror", "Page already exists!")
+                response.redirect("/utils/newpage")
+            } else {
+                // make the new page and redirect to it
+            }
+            null
         })
     }
 }
