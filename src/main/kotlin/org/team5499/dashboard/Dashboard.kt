@@ -6,6 +6,8 @@ import spark.Response
 import spark.ModelAndView
 import spark.template.jinjava.JinjavaEngine
 
+import org.json.JSONObject
+
 // import org.json.json
 
 /**
@@ -17,6 +19,8 @@ object Dashboard {
 
     private var config: Config = Config()
     private val pageSource: String = this::class.java.getResource("/page.html").path
+
+    var variables: JSONObject = JSONObject()
 
     /**
      * Start the dashboard server with the default port of 5800 and specified config file
@@ -61,8 +65,8 @@ object Dashboard {
     fun addVarible(input: String?, type: String){
         when(type){
             "String" -> continue
-            "Int" -> input = input as? Int
-            "Double" -> input = input as? Double
+            "Int" -> input as? Int
+            "Double" -> input as? Double
         }
         
     }
