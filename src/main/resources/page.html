@@ -1,66 +1,21 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% extends "base.html" %}
 
-    <title>Dashboard - {{ pageTitle }}</title>
-
-    <link rel="stylesheet" href="{{ url_for("static", filename="css/bootstrap.min.css") }}">
-    <link rel="stylesheet" href="{{ url_for("static", filename="css/font-awesome.min.css") }}">
-    <link rel="stylesheet" href="{{ url_for("static", filename="css/main.css") }}">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='logo.png') }}" sizes="32x32">
-    <link rel="icon" href="{{ url_for('static', filename='logo.png') }}" sizes="32x32">
-
-    {% block head %}{% endblock %}
-
-</head>
-
-<body>
-
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid m-0">
-            <a class="navbar-brand" href="/">Forest</a>
-            <button id="nav-collapse-button" class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbar">
-                <ul class="navbar-nav mr-auto">
-                    {% for name, title in navbar %}
-                    <li class="nav-item{% if id == activePage %} active{% endif %}">
-                        <a class="nav-link" href="/page/{{ name|e }}">{{ title|e }}</a>
-                    </li>
-                    {% endfor %}
-                </ul>
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item dropleft">
-                        <a class="nav-link p-0" href="#" role="button" data-toggle="dropdown" style="font-size: 2rem; line-height: 2rem" title="Add a card to the dashboard">&plus;</a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <a class="dropdown-item" href="#">Something else here</a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+{% block title %}{{ pageTitle }}{% endblock %}
+{% block head %}{% endblock %}
+{% block navbarCollapse %}
+<ul class="navbar-nav ml-auto">
+    <li class="nav-item dropleft">
+        <a class="nav-link p-0" href="#" role="button" data-toggle="dropdown" style="font-size: 2rem; line-height: 2rem" title="Add a card to the dashboard">&plus;</a>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
         </div>
-    </nav>
-
-    
-
-    <div class="container-fluid m-0">
-    </div>
-
-    <script src="{{ url_for("static", filename="javascript/jquery-3.3.1.min.js") }}"></script>
-    <script src="{{ url_for("static", filename="javascript/popper.min.js") }}"></script>
-    <script src="{{ url_for("static", filename="javascript/tooltip.min.js") }}"></script>
-    <script src="{{ url_for("static", filename="javascript/bootstrap.min.js") }}"></script>
-    <script src="{{ url_for("static", filename="javascript/main.js") }}"></script>
-    {% comment %} <script>
-        {% for w in widgetList %}
-            var {{ w["id"] }} = new {{ w["javascript_class"] }}({{ w|to_json|safe }})
-        {% endfor %}
-    </script> {% endcomment %}
-
-</body>
-</html>
+    </li>
+</ul>
+{% endblock %}
+{% block container %}{% endblock %}
+{% block body %}{% endblock %}
+{% block beforeScripts %}{% endblock %}
+{% block afterJSLibs %}{% endblock %}
+{% block afterJS %}{% endblock %}
