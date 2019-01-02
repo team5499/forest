@@ -114,12 +114,13 @@ object Dashboard {
     }
 
     fun editVarible(varName: String, newValue: Any) {
+        val oldValue: Any = varsJSON.get(varName)
         if (!varsJSON.has(varName)) {
             throw IllegalArgumentException("varible does not exist")
         }
-        // if (newValue !is varsJSON.get(varName)::class.simpleName){
-        // 	throw IllegalArgumentException("New varible is not the same as old varible")
-        // }
+        if (newValue::class == oldValue::class) {
+            throw IllegalArgumentException("New varible is not the same as old varible")
+        }
         varsJSON.put(varName, newValue)
     }
     // push varsJSON to js?
