@@ -68,6 +68,9 @@ object Dashboard {
             request: Request, response: Response ->
             val attributes: HashMap<String, Any> = HashMap()
             attributes.put("navbar", config.getNavbarAttributes())
+            if (request.queryParams("pageexists") == "true") {
+                attributes.put("pageExistsError", true)
+            }
             JinjavaEngine(JinjavaConfig(), ClasspathResourceLocator()).render(
                 ModelAndView(attributes, "newpage.html")
             )
@@ -77,12 +80,14 @@ object Dashboard {
         Spark.post("/actions/newpage", {
             request: Request, response: Response ->
             val pagename: String = request.queryParams("pagename")
+            val pagetitle: String = request.queryParams("pagetitle")
             println("Attempting to create page with name: $pagename")
             if (config.hasPageWithName(pagename)) {
-                response.header("newpageerror", "Page already exists!")
-                response.redirect("/utils/newpage")
+                response.redirect("/utils/newpage?pageexists=true")
             } else {
                 // make the new page and redirect to it
+                config.addPage(pagename, pagetitle)
+                response.redirect("/page/$pagename")
             }
             null
         })

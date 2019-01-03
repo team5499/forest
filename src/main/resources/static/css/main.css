@@ -60,7 +60,10 @@
   .navbar .navbar-toggle:focus {
     background-color: #0b3311;
   }
-  .navbar .navbar-toggle .navbar-toggler-icon {
+  /* .navbar .navbar-toggle .navbar-toggler-icon {
+    color: #cdcdcd;
+  } */
+  .navbar .navbar-toggler {
     color: #cdcdcd;
   }
   .navbar .navbar-collapse,

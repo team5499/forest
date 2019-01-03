@@ -1,6 +1,7 @@
 package org.team5499.dashboard
 
 import org.json.JSONObject
+import org.json.JSONArray
 import org.json.JSONException
 
 /**
@@ -16,6 +17,7 @@ class Config() {
 
     companion object {
         const val EMPTY_CONFIG_STRING: String = "{\"pages\":[]}"
+
         var widgets: String = Utils.readResourceAsString(this, "widgets.json")
             private set
     }
@@ -160,5 +162,13 @@ class Config() {
 
     fun hasPageWithName(name: String): Boolean {
         return getPageNames().contains(name)
+    }
+
+    fun addPage(name: String, title: String) {
+        var page: JSONObject = JSONObject()
+        page.put("navbarOrder", getNumberOfPages())
+        page.put("title", title)
+        page.put("widgets", JSONArray())
+        pages.put(name, page)
     }
 }
