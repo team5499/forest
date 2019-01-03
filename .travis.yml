@@ -5,7 +5,7 @@ script:
 - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
 - docker run -t -d -v $(pwd):/code:rw --name frc-testing-image team5499/frc-testing-image; docker exec frc-testing-image /code/gradlew -p /code test jacocoTestReport
 after_success:
-- echo "$BRANCH"; IFS='.' read -r -a BRANCH_INFO <<< "$BRANCH"; if [[ "${#BRANCH_INFO[@]}" == 3 ]] && [[ "${BRANCH_INFO[0]}" =~ ^[0-9]+$ ]] && [[ "${BRANCH_INFO[1]}" =~ ^[0-9]+$ ]] && [[ "${BRANCH_INFO[2]}" =~ ^[0-9]+$ ]]; then docker exec frc-testing-image /code/gradlew -p /code publishToTeamRepo --username=$USERNAME --password=$PASSWORD --url=$URL; elif [ "${BRANCH_INFO[0]}" == "master" ]; then docker exec frc-testing-image /code/gradlew -p /code publishToTeamRepo --username=$USERNAME --password=$PASSWORD --url=$URL; fi
+- source travis-deploy.sh
 - bash <(curl -s https://codecov.io/bash)
 env:
   global:

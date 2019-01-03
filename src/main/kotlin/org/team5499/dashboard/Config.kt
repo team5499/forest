@@ -17,7 +17,6 @@ class Config() {
 
     companion object {
         const val EMPTY_CONFIG_STRING: String = "{\"pages\":[]}"
-
         var widgets: String = Utils.readResourceAsString(this, "widgets.json")
             private set
     }
@@ -75,6 +74,7 @@ class Config() {
         this.configObject = JSONObject(Config.EMPTY_CONFIG_STRING)
     }
 
+    // config util functions
     /**
      * get the specified key as the specified type
      *
