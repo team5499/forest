@@ -124,7 +124,7 @@ class Config() {
     }
 
     fun getNavbarAttributes(): HashMap<String, String> {
-        var navbar: HashMap<String, String> = HashMap()
+        var navbar: LinkedHashMap<String, String> = LinkedHashMap()
         for (i in getPageNamesInNavBarOrder()) {
             val tmpTitle: String = pages.getJSONObject(i).getOrFail<String>("title")
             navbar.put(i, tmpTitle)
