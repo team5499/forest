@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Dashboard - {% block title %}{% endblock %}</title>
+
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="shortcut icon" href="/imgs/logo.png" sizes="32x32">
+    <link rel="icon" href="/imgs/logo.png" sizes="32x32">
+
+    {% block head %}{% endblock %}
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid m-0">
+            <a class="navbar-brand" href="/">Forest</a>
+            <button id="nav-collapse-button" class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar">
+                <ul class="navbar-nav mr-auto">
+                    {% for name, title in navbar.items() %}
+                    <li class="nav-item{% if name == activePage %} active{% endif %}">
+                        <a class="nav-link" href="/page/{{ name|e }}">{{ title|e }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% block navbarCollapse %}{% endblock %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid m-0 p-3">
+    {% block container %}{% endblock %}
+    </div>
+
+    {% block body %}{% endblock %}
+
+    {% block beforeScripts %}{% endblock %}
+    <script src="/javascript/libs/jquery-3.3.1.min.js"></script>
+    <script src="/javascript/libs/popper.min.js"></script>
+    <script src="/javascript/libs/tooltip.min.js"></script>
+    <script src="/javascript/libs/bootstrap.min.js"></script>
+    {% block afterJSLibs %}{% endblock %}
+    <script src="/javascript/base.js"></script>
+    {% block afterJS %}{% endblock %}
+
+</body>
+</html>
