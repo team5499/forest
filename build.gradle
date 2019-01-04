@@ -54,6 +54,7 @@ test {
 
     useJUnitPlatform {
         excludeTags 'integration'
+        excludeTags 'playground'
     }
 
     testLogging {
