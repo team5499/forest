@@ -53,6 +53,8 @@ object Dashboard {
         @Suppress("MagicNumber")
         start(confPath, "5800")
     }
+    private var config: Config = Config()
+    private val pageSource: String = Utils.readResourceAsString(this, "page.html")
 
     // init{
     //     var sr: Shared = Shared()
@@ -60,14 +62,14 @@ object Dashboard {
     // }
 
     /**
-	 * Start the dashboard server with a custom port and specified config file
-	 *
-	 * Open ports on the FMS are 5800 - 5810
-	 *
-	 * @param obj the object that this function is being called from
-	 * @param path the relative path to the JSON config file
-	 * @param port the port to host the dashboard on
-	 */
+     * Start the dashboard server with a custom port and specified config file
+     *
+     * Open ports on the FMS are 5800 - 5810
+     *
+     * @param obj the object that this function is being called from
+     * @param path the relative path to the JSON config file
+     * @param port the port to host the dashboard on
+     */
     fun start(obj: Any, path: String, port: Int = 5800) {
         config = Config(Utils.readResourceAsString(obj, path))
 

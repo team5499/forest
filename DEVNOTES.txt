@@ -5,4 +5,6 @@ jinjava usage:
 
 config format:
 - page
+    - name: the name of the link to the page (page id)
+    - title: the title of the page
 - widget
