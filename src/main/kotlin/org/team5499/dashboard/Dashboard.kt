@@ -17,7 +17,7 @@ import org.json.JSONObject
  */
 class Shared {
     @Suppress("MagicNumber")
-    fun runThread() {
+    fun runThread(s: String) {
         try {
             Thread.sleep(500)
         } catch (e: InterruptedException) {
@@ -26,7 +26,7 @@ class Shared {
     }
 }
 
-class Syncronize : Thread {
+class MyThread : Thread {
     var sr: Shared
     constructor(sr1: Shared) {
         sr = sr1
@@ -34,7 +34,7 @@ class Syncronize : Thread {
     }
     override fun run() {
         synchronized(sr) {
-            sr.runThread()
+            sr.runThread(sr.currentThread().name)
         }
     }
 }
@@ -53,6 +53,11 @@ object Dashboard {
         @Suppress("MagicNumber")
         start(confPath, "5800")
     }
+
+    // init{
+    //     var sr: Shared = Shared()
+    //     var thread: MyThread = MyThread(sr)
+    // }
 
     /**
 	 * Start the dashboard server with a custom port and specified config file
