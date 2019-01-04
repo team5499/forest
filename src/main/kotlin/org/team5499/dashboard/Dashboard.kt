@@ -15,10 +15,34 @@ import org.json.JSONObject
  *
  * Handles starting the server
  */
+class Shared {
+    @Suppress("MagicNumber")
+    fun runThread() {
+        try {
+            Thread.sleep(500)
+        } catch (e: InterruptedException) {
+            println("failed")
+        }
+    }
+}
+
+class Syncronize : Thread {
+    var sr: Shared
+    constructor(sr1: Shared) {
+        sr = sr1
+        start()
+    }
+    override fun run() {
+        synchronized(sr) {
+            sr.runThread()
+        }
+    }
+}
+
 object Dashboard {
     private var config: Config = Config()
     private val pageSource: String = this::class.java.getResource("/page.html").path
-    private val varsJSON: JSONObject = JSONObject()
+    val varsJSON: JSONObject = JSONObject()
 
     /**
 	 * Start the dashboard server with the default port of 5800 and specified config file
@@ -98,30 +122,19 @@ object Dashboard {
             null
         })
     }
-
-    fun addVarible(value: Any?, varName: String, type: String) {
-        when (type) {
-            "String" -> value as? String
-            "Int" -> value as? Int
-            "Double" -> value as? Double
-            "Float" -> value as? Float
+    @Suppress("ComplexCondition")
+    fun editVarible(varName: String, value: Any) {
+        if (varsJSON.has(varName)) {
+            val oldValue: Any = varsJSON.get(varName)
+            if (value::class == oldValue::class) {
+                throw IllegalArgumentException("New varible is not the same type as original varible")
+            }
+            varsJSON.put(varName, value)
+        } else {
+            if (!(value is String || value is Int || value is Double || value is Float)) {
+                throw IllegalArgumentException("varible is not valid type")
+            }
+            varsJSON.put(varName, value)
         }
-        if (value == null) {
-            throw IllegalArgumentException("varible is not valid type")
-        }
-        varsJSON.put(varName, value)
-        // push varsJSON to js?
     }
-
-    fun editVarible(varName: String, newValue: Any) {
-        val oldValue: Any = varsJSON.get(varName)
-        if (!varsJSON.has(varName)) {
-            throw IllegalArgumentException("varible does not exist")
-        }
-        if (newValue::class == oldValue::class) {
-            throw IllegalArgumentException("New varible is not the same as old varible")
-        }
-        varsJSON.put(varName, newValue)
-    }
-    // push varsJSON to js?
 }
