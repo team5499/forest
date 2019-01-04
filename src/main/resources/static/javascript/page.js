@@ -38,3 +38,10 @@
 //         });
 //     }
 // }
+
+$(function() { // runs when document finishes loading
+    $.getJSON( "/config", function( data ) {
+        console.log("config:")
+        console.log(data)
+    });
+});
