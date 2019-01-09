@@ -39,9 +39,18 @@
 //     }
 // }
 
+var config = {}
+
 $(function() { // runs when document finishes loading
     $.getJSON( "/config", function( data ) {
         console.log("config:")
         console.log(data)
     });
+    const name = 'Josh';
+    const element = <h1>Hello, {name}</h1>;
+
+    ReactDOM.render(
+        element,
+        $("#reactapp")[ 0 ]
+    );
 });
