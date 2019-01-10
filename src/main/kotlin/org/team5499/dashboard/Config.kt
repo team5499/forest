@@ -29,6 +29,8 @@ class Config() {
             configObject.put("pages", value)
         }
 
+    public var devMode: Boolean = false
+
     /**
      * Construct a configuration with the specified JSON string
      *
@@ -41,6 +43,9 @@ class Config() {
      */
     constructor(json: String) : this() {
         this.configObject = this.makeConfigJSONObject(json)
+        if (this.configObject.opt("devMode") is Boolean) {
+            this.devMode = this.configObject.getBoolean("devMode")
+        }
     }
 
     /**
@@ -104,7 +109,6 @@ class Config() {
      */
     fun getPageAttributes(pageName: String): HashMap<String, Any> {
         var attributes: HashMap<String, Any> = HashMap<String, Any>()
-        var navbar: HashMap<String, String> = HashMap()
         val page: JSONObject
         try {
             page = pages.getJSONObject(pageName)
@@ -116,18 +120,21 @@ class Config() {
 
         attributes.put("pageTitle", title)
         attributes.put("activePage", pageName)
-        attributes.put("navbar", getNavbarAttributes())
+        attributes.putAll(getBaseAttributes())
 
         return attributes
     }
 
-    fun getNavbarAttributes(): HashMap<String, String> {
-        var navbar: HashMap<String, String> = HashMap()
+    fun getBaseAttributes(): HashMap<String, Any> {
+        var attributes: HashMap<String, Any> = HashMap()
+        var navbar: HashMap<String, Any> = HashMap()
         for (i in getPageNamesInNavBarOrder()) {
             val tmpTitle: String = pages.getJSONObject(i).getOrFail<String>("title")
             navbar.put(i, tmpTitle)
         }
-        return navbar
+        attributes.put("navbar", navbar)
+        attributes.put("developmentEnvironment", devMode)
+        return attributes
     }
 
     /**

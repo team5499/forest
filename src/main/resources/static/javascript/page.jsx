@@ -1,7 +1,4 @@
 class WidgetContainer extends React.Component {
-    constructor() {
-    }
-
     render() {
         // we need IDs for Bootstrap
         return (

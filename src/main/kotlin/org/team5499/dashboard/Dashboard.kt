@@ -37,8 +37,7 @@ object Dashboard {
 
         Spark.get("/", {
             request: Request, response: Response ->
-            val attributes: HashMap<String, Any> = HashMap()
-            attributes.put("navbar", config.getNavbarAttributes())
+            val attributes: HashMap<String, Any> = config.getBaseAttributes()
             JinjavaEngine(JinjavaConfig(), ClasspathResourceLocator()).render(
                 ModelAndView(attributes, "home.html")
             )
@@ -66,8 +65,7 @@ object Dashboard {
         // Utils
         Spark.get("/utils/newpage", {
             request: Request, response: Response ->
-            val attributes: HashMap<String, Any> = HashMap()
-            attributes.put("navbar", config.getNavbarAttributes())
+            val attributes: HashMap<String, Any> = config.getBaseAttributes()
             JinjavaEngine(JinjavaConfig(), ClasspathResourceLocator()).render(
                 ModelAndView(attributes, "newpage.html")
             )
