@@ -15,7 +15,8 @@
 </ul>
 {% endblock %}
 {% block container %}
-<div id="reactapp"></div>
+    <div class="card-group" id="reactapp">
+    </div>
 {% endblock %}
 {% block body %}{% endblock %}
 {% block beforeScripts %}{% endblock %}
@@ -30,5 +31,6 @@
     {% endif %}
 {% endblock %}
 {% block afterJS %}
+<script src="/javascript/widgets/rawvareditor.jsx", type="text/babel"></script>
 <script src="/javascript/page.jsx" type="text/babel"></script>
 {% endblock %}
