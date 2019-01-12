@@ -20,6 +20,17 @@
             "target": "TEST"
           },
           "width": "12rem"
+        },
+        {
+          "height": "15rem",
+          "id": "deekVarEditor",
+          "kwargs": {},
+          "title": "Deek Variable",
+          "type": "RawVarEditor",
+          "variables": {
+            "target": "DEEK"
+          },
+          "width": "15rem"
         }
       ]
     },

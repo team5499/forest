@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 
 {% block title %}{{ pageTitle }}{% endblock %}
-{% block head %}{% endblock %}
+{% block head %}
+    <link rel="stylesheet" href="/css/gridstack.min.css">
+{% endblock %}
 {% block navbarCollapse %}
 <ul class="navbar-nav ml-auto">
     <li class="nav-item dropleft">
@@ -29,8 +31,11 @@
         <script src="/javascript/libs/react.production.min.js"></script>
         <script src="/javascript/libs/react-dom.production.min.js"></script>
     {% endif %}
+    <script src="/javascript/libs/lodash.min.js"></script>
+    <script src="/javascript/libs/gridstack.min.js"></script>
+    <script src="/javascript/libs/gridstack.jQueryUI.min.js"></script>
 {% endblock %}
 {% block afterJS %}
-<script src="/javascript/widgets/rawvareditor.jsx", type="text/babel"></script>
 <script src="/javascript/page.jsx" type="text/babel"></script>
+<script src="/javascript/widgets/rawvareditor.jsx", type="text/babel"></script>
 {% endblock %}
