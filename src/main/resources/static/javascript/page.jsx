@@ -185,7 +185,7 @@ class SocketHandler {
     static BROADCAST_INTERVAL = 40.0; // Hertz
     static socket = {};
     static variables = {};
-    static lastVariables = {};
+    static variableUpdates = {};
     static callbacks = {};
     static isConnected = false;
     static broadcastInterval = 0;
@@ -197,20 +197,15 @@ class SocketHandler {
         SocketHandler.socket.onmessage = SocketHandler.onmessage
 
         SocketHandler.broadcastInterval = window.setInterval(function() {
-            // check for changes
-            var updates = {};
-            for(var u in SocketHandler.variables) {
-                if (!(u in SocketHandler.lastVariables)) {
-                    updates[u] = SocketHandler.variables[u];
-                } else if (!SocketHandler.lastVariables[u] === SocketHandler.variables[u]) {
-                    updates[u] = SocketHandler.variables[u];
-                }
-            }
             // if changes, broadcast them
-            if (Object.keys(updates).length > 0) {
+            if (Object.keys(SocketHandler.variableUpdates).length > 0) {
+                console.log("sending update");
                 SocketHandler.socket.send(JSON.stringify(updates));
+                for(var i in SocketHandler.variableUpdates) {
+                    SocketHandler.variables[i] = SocketHandler.variableUpdates[i]
+                }
+                SocketHandler.variableUpdates = {};
             }
-            SocketHandler.lastVariables = SocketHandler.variables;
 
         }, 1000.0 / SocketHandler.BROADCAST_INTERVAL);
     }
@@ -234,12 +229,19 @@ class SocketHandler {
         let prefix = event.data.substring(0, event.data.indexOf(":"));
         let updates = JSON.parse(event.data.substring(event.data.indexOf(":") + 1, event.data.length));
         if(prefix === "variables") {
+            console.log("set variables");
             SocketHandler.variables = updates;
+            for(var u in updates) {
+                for(var c in SocketHandler.callbacks[u]) {
+                    SocketHandler.callbacks[u][c](updates[u]);
+                }
+            }
         } else if(prefix === "updates") {
+            console.log("do updates");
             for(var u in updates) {
                 SocketHandler.variables[u] = updates[u];
                 for(var c in SocketHandler.callbacks[u]) {
-                    c(updates[u]);
+                    SocketHandler.callbacks[u][c](updates[u]);
                 }
             }
         }
@@ -259,14 +261,17 @@ class SocketHandler {
     }
 
     static getVariable(key) {
-        if(!(key in SocketHandler.variables)) {
+        if((!(key in SocketHandler.variables)) && (!(key in SocketHandler.variableUpdates))) {
             console.warn("variable " + key + " not found!");
-            return null
+            return undefined;
+        } else if(key in SocketHandler.variableUpdates) {
+            return SocketHandler.variableUpdates[key];
+        } else {
+            return SocketHandler.variables[key];
         }
-        return SocketHandler.variables[key]
     }
 
     static setVariable(key, value) {
-        SocketHandler.variables[key] = value
+        SocketHandler.variableUpdates[key] = value;
     }
 }

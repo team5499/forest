@@ -16,6 +16,10 @@ class PlaygroundTest {
         println("server started")
         Dashboard.setVariable("TEST", "test value here")
         Dashboard.setVariable("DEEK", "deek value here")
+        Thread.sleep(30000)
+        println("setting new variables")
+        Dashboard.setVariable("TEST", "new test value here")
+        Dashboard.setVariable("DEEK", "new deek value here")
         while (true) { // find a better way to wait?
             @Suppress("MagicNumber")
             Thread.sleep(1000)

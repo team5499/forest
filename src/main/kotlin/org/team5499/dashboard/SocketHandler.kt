@@ -25,7 +25,7 @@ class SocketHandler {
         private val broadcastThread: Thread = Thread(Broadcaster())
         public fun broadcastJSON(json: JSONObject, prefix: String) {
             for (s in sessions) {
-                sendJSON(s, json, "update")
+                sendJSON(s, json, "updates")
             }
         }
         public fun sendJSON(session: Session, json: JSONObject, prefix: String) {
@@ -35,18 +35,11 @@ class SocketHandler {
             sendJSON(session, Dashboard.variables, "variables")
         }
         public fun broadcastUpdates() {
-            var updates = JSONObject()
-            for (u in Dashboard.variables.keys()) {
-                if (!lastVariables.has(u)) {
-                    updates.put(u, Dashboard.variables.get(u))
-                } else if (!lastVariables.get(u).equals(Dashboard.variables.get(u))) {
-                    updates.put(u, Dashboard.variables.get(u))
-                }
+            if (Dashboard.variableUpdates.keySet().size > 0) {
+                println("broadcasting updates")
+                broadcastJSON(Dashboard.variableUpdates, "updates")
+                Dashboard.mergeVariableUpdates()
             }
-            if (updates.keySet().size > 0) {
-                broadcastJSON(updates, "updates")
-            }
-            lastVariables = Dashboard.variables
         }
         public fun startBroadcastThread() {
             broadcastThread.start()

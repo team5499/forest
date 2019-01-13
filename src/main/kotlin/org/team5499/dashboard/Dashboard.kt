@@ -20,7 +20,18 @@ object Dashboard {
 
     private var config: Config = Config()
     private val pageSource: String = Utils.readResourceAsString(this, "page.html")
-    var variables: JSONObject = JSONObject()
+    public var variables: JSONObject = JSONObject()
+        get() {
+            synchronized(field) {
+                return field
+            }
+        }
+        private set(value) {
+            synchronized(field) {
+                field = value
+            }
+        }
+    public var variableUpdates: JSONObject = JSONObject()
         get() {
             synchronized(field) {
                 return field
@@ -107,13 +118,24 @@ object Dashboard {
     }
 
     fun setVariable(key: String, value: Any) {
-        variables.put(key, value)
+        println("putting variable in JSON")
+        variableUpdates.put(key, value)
     }
 
     fun <T> getVariable(key: String): T {
-        if (!variables.has(key)) {
+        if ((!variables.has(key)) && (!variableUpdates.has(key))) {
             throw DashboardException("The variable with name " + key + " was not found.")
+        } else if (variableUpdates.has(key)) {
+            return variableUpdates.get(key) as T
+        } else {
+            return variables.get(key) as T
         }
-        return variables.get(key) as T
+    }
+
+    fun mergeVariableUpdates() {
+        for (u in variableUpdates.keys()) {
+            variables.put(u, variableUpdates.get(u))
+        }
+        variableUpdates = JSONObject()
     }
 }

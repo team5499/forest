@@ -3,11 +3,14 @@ class RawVarEditor extends React.Component {
         super(props);
         this.state = {
             targetName: this.props.variables.target,
-            targetValue: SocketHandler.getVariable(this.props.variables.target)
+            targetValue: SocketHandler.getVariable(this.props.variables.target) || ""
         };
-        this.callbackId = SocketHandler.addVariableListener(this.state.targetName, function(value) {
-            this.setState({targetName: this.state.targetName, targetValue: value});
-        });
+        this.callbackId = SocketHandler.addVariableListener(this.state.targetName, (value) => this.updateState(value));
+    }
+
+    updateState(value) {
+        console.log("callback called");
+        this.setState({targetName: this.state.targetName, targetValue: value});
     }
 
     onSettingsSave() {
@@ -33,14 +36,15 @@ class RawVarEditor extends React.Component {
     }
 
     render() {
+        console.log("render:" + this.state.targetValue);
         return (
             <WidgetContainer title={this.props.title} width={this.props.width} height={this.props.height} id={this.props.id}>
                 <WidgetBody title={this.props.title} id={this.props.id}>
-                    <input className='form-control mb-2' type='text' id={this.props.id + '_var_display'} placeholder='value' defaultValue={this.state.target} />
+                    <input className='form-control mb-2' type='text' id={this.props.id + '_var_display'} value={this.state.targetValue} onChange={() => console.log("change!")} />
                     <button className='btn btn-primary' id={this.props.id + '_body_submit'} onClick={() => this.onVarSave()} >Submit</button>
                 </WidgetBody>
                 <WidgetSettings title={this.props.title} id={this.props.id} onSave={() => this.onSettingsSave()}>
-                    <input className='form-control mb-2' type='text' id={this.props.id + '_settings_variable'} defaultValue={this.props.variables.target} />
+                    <input className='form-control mb-2' type='text' id={this.props.id + '_settings_variable'} value={this.state.targetName} onChange={() => console.log("change!")} />
                 </WidgetSettings>
             </WidgetContainer>
         );
