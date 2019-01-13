@@ -110,7 +110,7 @@ class PageUtils {
             },
             error: function (jqxhr, status, error) {
 
-                console.log('error sending config json: ' + status + ' : ' + error);
+                console.warn('error sending config json: ' + status + ' : ' + error);
             }
         });
         return success;
@@ -160,7 +160,6 @@ class PageUtils {
         let newConfig = PageUtils.Config;
         newConfig.pages[PageUtils.getPageName()].widgets[index] = json;
         PageUtils.setPageConfig(newConfig);
-        console.log("set widget:" + id);
         return PageUtils.sendPageConfig();
     }
 
@@ -199,8 +198,7 @@ class SocketHandler {
         SocketHandler.broadcastInterval = window.setInterval(function() {
             // if changes, broadcast them
             if (Object.keys(SocketHandler.variableUpdates).length > 0) {
-                console.log("sending update");
-                SocketHandler.socket.send(JSON.stringify(updates));
+                SocketHandler.socket.send(JSON.stringify(SocketHandler.variableUpdates));
                 for(var i in SocketHandler.variableUpdates) {
                     SocketHandler.variables[i] = SocketHandler.variableUpdates[i]
                 }
@@ -212,12 +210,12 @@ class SocketHandler {
 
     static onopen(event) {
         SocketHandler.isConnected = true;
-        console.log("Robot connected!")
+        console.warn("Robot connected!")
     }
 
     static onclose(event) {
         SocketHandler.isConnected = false;
-        console.log("Robot disconnected!");
+        console.warn("Robot disconnected!");
         // stop the websocket sender loop
         window.clearInterval(SocketHandler.broadcastInterval);
         // maybe reconnect?
@@ -229,7 +227,6 @@ class SocketHandler {
         let prefix = event.data.substring(0, event.data.indexOf(":"));
         let updates = JSON.parse(event.data.substring(event.data.indexOf(":") + 1, event.data.length));
         if(prefix === "variables") {
-            console.log("set variables");
             SocketHandler.variables = updates;
             for(var u in updates) {
                 for(var c in SocketHandler.callbacks[u]) {
@@ -237,7 +234,6 @@ class SocketHandler {
                 }
             }
         } else if(prefix === "updates") {
-            console.log("do updates");
             for(var u in updates) {
                 SocketHandler.variables[u] = updates[u];
                 for(var c in SocketHandler.callbacks[u]) {
@@ -249,7 +245,6 @@ class SocketHandler {
 
     static addVariableListener(key, callback) {
         if(!Array.isArray(SocketHandler.callbacks[key])) {
-            console.log("reset")
             SocketHandler.callbacks[key] = [];
         }
         SocketHandler.callbacks[key].push(callback);

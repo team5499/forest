@@ -118,7 +118,6 @@ object Dashboard {
     }
 
     fun setVariable(key: String, value: Any) {
-        println("putting variable in JSON")
         variableUpdates.put(key, value)
     }
 
@@ -137,5 +136,11 @@ object Dashboard {
             variables.put(u, variableUpdates.get(u))
         }
         variableUpdates = JSONObject()
+    }
+
+    fun mergeVariableUpdates(json: JSONObject) {
+        for (u in json.keys()) {
+            variables.put(u, json.get(u))
+        }
     }
 }

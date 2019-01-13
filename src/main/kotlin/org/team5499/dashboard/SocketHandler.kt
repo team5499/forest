@@ -36,7 +36,6 @@ class SocketHandler {
         }
         public fun broadcastUpdates() {
             if (Dashboard.variableUpdates.keySet().size > 0) {
-                println("broadcasting updates")
                 broadcastJSON(Dashboard.variableUpdates, "updates")
                 Dashboard.mergeVariableUpdates()
             }
@@ -60,10 +59,7 @@ class SocketHandler {
     @OnWebSocketMessage
     fun onMessage(session: Session, message: String) {
         val updates = JSONObject(message)
-        for (u in updates.keys()) {
-            // is this an ok way to do it? Maybe block `variables` while entire loop runs
-            Dashboard.setVariable(u, updates.get(u))
-        }
+        Dashboard.mergeVariableUpdates(updates)
     }
 
     @Suppress("EmptyDefaultConstructor")
