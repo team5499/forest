@@ -62,6 +62,11 @@ object Dashboard {
             config.configObject.toString(4)
         })
 
+        Spark.post("/config", {
+            request: Request, response: Response ->
+            config.setConfigJSON(request.body())
+        })
+
         // Utils
         Spark.get("/utils/newpage", {
             request: Request, response: Response ->

@@ -39,7 +39,7 @@ class WidgetSettings extends React.Component {
                         </div>
                         <div className='modal-footer'>
                             <button type='button' className='btn btn-secondary' data-dismiss='modal'>Close</button>
-                            <button type='button' className='btn btn-primary'>Save changes</button>
+                            <button type='button' className='btn btn-primary' onClick={() => this.props.onSave()} data-dismiss='modal'>Save changes</button>
                         </div>
                     </div>
                 </div>
@@ -51,60 +51,120 @@ class WidgetSettings extends React.Component {
 
 
 
-var config = {};
-var pagename = '';
 
 $(function() { // runs when document finishes loading
-    let pathname = window.location.pathname;
-    pagename = pathname.substring(pathname.lastIndexOf('/') + 1, pathname.length);
-    console.log(pagename);
-
-    $.getJSON( '/config', function( data ) {
-        console.log('config:');
-        console.log(data);
-        config = data;
-        let TestElement = 'WidgetContainer';
-        console.log(TestElement);
+    if(PageUtils.loadPageConfig()) {
         ReactDOM.render(
             <div>
-                {PageUtils.renderWidgets(config, pagename)}
+                {PageUtils.renderWidgets()}
             </div>,
             $('#reactapp')[ 0 ]
         );
-    }).done(function () {
-    }).fail(function (jqxhr, textStatus, error) {
-        // display error on page
+    } else {
         let err = textStatus + ', ' + error;
         ReactDOM.render(
-            <div>
-                <div class='alert alert-danger p-2 show' role='alert'>
-                    There was an error loading the JSON config from the robot:
-                    <br />
-                    <b>{err}</b>
-                </div>
-            </div>,
-            $('#reactapp')[ 0 ]);
-    }).always(function () {
-    });
+        <div>
+            <div class='alert alert-danger p-2 show' role='alert'>
+                There was an error loading the JSON config from the robot:
+                <br />
+                <b>{err}</b>
+            </div>
+        </div>,
+        $('#reactapp')[ 0 ]);
+    }
 });
 
 class PageUtils {
     static WidgetClasses = {};
+    static Config = {};
 
-    static getPageJSON(json, page) {
-        return json['pages'][page];
+    static addWidgetClass(classname, widgetclass) {
+        PageUtils.WidgetClasses[classname] = widgetclass;
     }
 
-    static getPageWidgets(json, page) {
-        return PageUtils.getPageJSON(json, page)['widgets'];
+    static loadPageConfig() {
+        var newConfig = {};
+        let success = false;
+        $.getJSON({
+            url: '/config',
+            async: false
+        }).done(function( data ) {
+            newConfig = data;
+            PageUtils.setPageConfig(newConfig);
+            success = true;
+        });
+        return success;
+    }
+
+    static sendPageConfig() {
+        let success = false;
+        $.ajax({
+            async: false,
+            method: 'POST',
+            url: '/config',
+            contentType: 'application/json',
+            data: JSON.stringify(PageUtils.getPageConfig()),
+            success: function () {
+                success = true;
+            },
+            error: function (jqxhr, status, error) {
+
+                console.log('error sending config json: ' + status + ' : ' + error);
+            }
+        });
+        return success;
+    }
+
+    static getPageConfig() {
+        return PageUtils.Config;
+    }
+
+    static setPageConfig(json) {
+        PageUtils.Config = json;
+    }
+
+    static getPageName() {
+        let pathname = window.location.pathname;
+        return pathname.substring(pathname.lastIndexOf('/') + 1, pathname.length);
+    }
+
+    static getPageJSON() {
+        return PageUtils.Config['pages'][PageUtils.getPageName()];
+    }
+
+    static getPageWidgets() {
+        return PageUtils.getPageJSON()['widgets'];
+    }
+
+    static getPageWidgetIndex(id) {
+        const widgets = PageUtils.getPageWidgets();
+        for(var i in widgets) {
+            if(widgets[i]['id'] === id) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    static getPageWidget(id) {
+        return PageUtils.getPageWidgets()[PageUtils.getPageWidgetIndex(id)];
+    }
+
+    static setPageWidget(id, json) {
+        const index = PageUtils.getPageWidgetIndex(id);
+        let newConfig = PageUtils.Config;
+        newConfig.pages[PageUtils.getPageName()].widgets[index] = json;
+        PageUtils.setPageConfig(newConfig);
+        console.log("set widget:" + id);
+        return PageUtils.sendPageConfig();
     }
 
     static getWidgetTag(widget) {
         return `${widget.type}`;
     }
 
-    static renderWidgets(json, page) {
-        let widgetsJson = PageUtils.getPageWidgets(json, page);
+    static renderWidgets() {
+        let widgetsJson = PageUtils.getPageWidgets();
         let widgets = [];
         for(var i in widgetsJson) {
             let widget = widgetsJson[i];

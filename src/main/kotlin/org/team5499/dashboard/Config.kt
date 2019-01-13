@@ -24,9 +24,15 @@ class Config() {
         private set
 
     private var pages: JSONObject
-        get() = configObject.getJSONObject("pages")
+        get() {
+            synchronized(configObject) {
+                return configObject.getJSONObject("pages")
+            }
+        }
         set(value) {
-            configObject.put("pages", value)
+            synchronized(configObject) {
+                configObject.put("pages", value)
+            }
         }
 
     public var devMode: Boolean = false
@@ -65,7 +71,9 @@ class Config() {
         if (!newConfigObject.has("pages")) {
             println("Config json does not contain \"pages\" element!")
             fail()
-            return configObject
+            synchronized(configObject) {
+                return configObject
+            }
         }
         return newConfigObject
     }
@@ -75,7 +83,9 @@ class Config() {
      */
     private fun fail() {
         println("resetting to empty config")
-        this.configObject = JSONObject(Config.EMPTY_CONFIG_STRING)
+        synchronized(configObject) {
+            configObject = JSONObject(Config.EMPTY_CONFIG_STRING)
+        }
     }
 
     /**
@@ -167,5 +177,11 @@ class Config() {
 
     fun hasPageWithName(name: String): Boolean {
         return getPageNames().contains(name)
+    }
+
+    fun setConfigJSON(json: String) {
+        synchronized(configObject) {
+            configObject = makeConfigJSONObject(json)
+        }
     }
 }
