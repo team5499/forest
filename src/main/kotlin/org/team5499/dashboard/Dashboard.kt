@@ -9,6 +9,8 @@ import spark.template.jinjava.JinjavaEngine
 import com.hubspot.jinjava.loader.ClasspathResourceLocator
 import com.hubspot.jinjava.JinjavaConfig
 
+import org.json.JSONObject
+
 /**
  * The main Dashboard object
  *
@@ -18,6 +20,17 @@ object Dashboard {
 
     private var config: Config = Config()
     private val pageSource: String = Utils.readResourceAsString(this, "page.html")
+    var variables: JSONObject = JSONObject()
+        get() {
+            synchronized(field) {
+                return field
+            }
+        }
+        private set(value) {
+            synchronized(field) {
+                field = value
+            }
+        }
 
     /**
      * Start the dashboard server with a custom port and specified config file
@@ -89,5 +102,18 @@ object Dashboard {
             }
             null
         })
+
+        SocketHandler.startBroadcastThread() // start broadcasting data
+    }
+
+    fun setVariable(key: String, value: Any) {
+        variables.put(key, value)
+    }
+
+    fun <T> getVariable(key: String): T {
+        if (!variables.has(key)) {
+            throw DashboardException("The variable with name " + key + " was not found.")
+        }
+        return variables.get(key) as T
     }
 }
