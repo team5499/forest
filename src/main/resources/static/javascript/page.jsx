@@ -54,6 +54,7 @@ class WidgetSettings extends React.Component {
 
 $(function() { // runs when document finishes loading
     if(PageUtils.loadPageConfig()) {
+        SocketHandler.connect(PageUtils.getWebSocketPageAddress());
         ReactDOM.render(
             <div>
                 {PageUtils.renderWidgets()}
@@ -128,6 +129,10 @@ class PageUtils {
         return pathname.substring(pathname.lastIndexOf('/') + 1, pathname.length);
     }
 
+    static getWebSocketPageAddress() {
+        return 'ws://' + window.location.host + '/socket';
+    }
+
     static getPageJSON() {
         return PageUtils.Config['pages'][PageUtils.getPageName()];
     }
@@ -173,5 +178,95 @@ class PageUtils {
             //widgets.push(<GenericWidget key={i.id} title={i.title} id={i.id} width={i.width} height={i.height} variables={i.variables} kwargs={i.kwargs} />);
         }
         return widgets;
+    }
+}
+
+class SocketHandler {
+    static BROADCAST_INTERVAL = 40.0; // Hertz
+    static socket = {};
+    static variables = {};
+    static lastVariables = {};
+    static callbacks = {};
+    static isConnected = false;
+    static broadcastInterval = 0;
+
+    static connect(address) {
+        SocketHandler.socket = new WebSocket(address);
+        SocketHandler.socket.onopen = SocketHandler.onopen
+        SocketHandler.socket.onclose = SocketHandler.onclose
+        SocketHandler.socket.onmessage = SocketHandler.onmessage
+
+        SocketHandler.broadcastInterval = window.setInterval(function() {
+            // check for changes
+            var updates = {};
+            for(var u in SocketHandler.variables) {
+                if (!(u in SocketHandler.lastVariables)) {
+                    updates[u] = SocketHandler.variables[u];
+                } else if (!SocketHandler.lastVariables[u] === SocketHandler.variables[u]) {
+                    updates[u] = SocketHandler.variables[u];
+                }
+            }
+            // if changes, broadcast them
+            if (Object.keys(updates).length > 0) {
+                SocketHandler.socket.send(JSON.stringify(updates));
+            }
+            SocketHandler.lastVariables = SocketHandler.variables;
+
+        }, 1000.0 / SocketHandler.BROADCAST_INTERVAL);
+    }
+
+    static onopen(event) {
+        SocketHandler.isConnected = true;
+        console.log("Robot connected!")
+    }
+
+    static onclose(event) {
+        SocketHandler.isConnected = false;
+        console.log("Robot disconnected!");
+        // stop the websocket sender loop
+        window.clearInterval(SocketHandler.broadcastInterval);
+        // maybe reconnect?
+    }
+
+    static onmessage(event) {
+        // update page
+        // update variables
+        let prefix = event.data.substring(0, event.data.indexOf(":"));
+        let updates = JSON.parse(event.data.substring(event.data.indexOf(":") + 1, event.data.length));
+        if(prefix === "variables") {
+            SocketHandler.variables = updates;
+        } else if(prefix === "updates") {
+            for(var u in updates) {
+                SocketHandler.variables[u] = updates[u];
+                for(var c in SocketHandler.callbacks[u]) {
+                    c(updates[u]);
+                }
+            }
+        }
+    }
+
+    static addVariableListener(key, callback) {
+        if(!Array.isArray(SocketHandler.callbacks[key])) {
+            console.log("reset")
+            SocketHandler.callbacks[key] = [];
+        }
+        SocketHandler.callbacks[key].push(callback);
+        return SocketHandler.callbacks[key].length - 1;
+    }
+
+    static removeVariableListener(key, id) {
+        SocketHandler.callbacks[key].splice(id, 1);
+    }
+
+    static getVariable(key) {
+        if(!(key in SocketHandler.variables)) {
+            console.warn("variable " + key + " not found!");
+            return null
+        }
+        return SocketHandler.variables[key]
+    }
+
+    static setVariable(key, value) {
+        SocketHandler.variables[key] = value
     }
 }

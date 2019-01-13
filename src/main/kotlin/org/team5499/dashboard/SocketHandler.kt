@@ -60,7 +60,7 @@ class SocketHandler {
     }
 
     @OnWebSocketClose
-    fun onClose(session: Session) {
+    fun onClose(session: Session, statusCode: Int, reason: String) {
         sessions.remove(session)
     }
 
