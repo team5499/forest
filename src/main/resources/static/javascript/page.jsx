@@ -48,10 +48,6 @@ class WidgetSettings extends React.Component {
     }
 }
 
-
-
-
-
 $(function() { // runs when document finishes loading
     if(PageUtils.loadPageConfig()) {
         SocketHandler.connect(PageUtils.getWebSocketPageAddress());
