@@ -1,6 +1,7 @@
 package org.team5499.dashboard
 
 import org.json.JSONObject
+import org.json.JSONArray
 import org.json.JSONException
 
 /**
@@ -12,6 +13,7 @@ import org.json.JSONException
  *
  * @constructor Creates an empty config object
  */
+@Suppress("TooManyFunctions")
 class Config() {
 
     companion object {
@@ -88,6 +90,7 @@ class Config() {
         }
     }
 
+    // config util functions
     /**
      * get the specified key as the specified type
      *
@@ -183,5 +186,13 @@ class Config() {
         synchronized(configObject) {
             configObject = makeConfigJSONObject(json)
         }
+    }
+
+    fun addPage(name: String, title: String) {
+        var page: JSONObject = JSONObject()
+        page.put("navbarOrder", getNumberOfPages())
+        page.put("title", title)
+        page.put("widgets", JSONArray())
+        pages.put(name, page)
     }
 }
