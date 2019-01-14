@@ -43,6 +43,13 @@ class SocketHandler {
         public fun startBroadcastThread() {
             broadcastThread.start()
         }
+        public fun broadcastJSONMinusSession(json: JSONObject, session: Session) {
+            for (s in sessions) {
+                if (!s.equals(session)) {
+                    sendJSON(s, json, "updates")
+                }
+            }
+        }
     }
 
     @OnWebSocketConnect
@@ -59,6 +66,7 @@ class SocketHandler {
     @OnWebSocketMessage
     fun onMessage(session: Session, message: String) {
         val updates = JSONObject(message)
+        broadcastJSONMinusSession(updates, session)
         Dashboard.mergeVariableUpdates(updates)
     }
 
