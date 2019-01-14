@@ -9,6 +9,8 @@ import spark.template.jinjava.JinjavaEngine
 import com.hubspot.jinjava.loader.ClasspathResourceLocator
 import com.hubspot.jinjava.JinjavaConfig
 
+import org.json.JSONObject
+
 /**
  * The main Dashboard object
  *
@@ -18,6 +20,28 @@ object Dashboard {
 
     private var config: Config = Config()
     private val pageSource: String = Utils.readResourceAsString(this, "page.html")
+    public var variables: JSONObject = JSONObject()
+        get() {
+            synchronized(field) {
+                return field
+            }
+        }
+        private set(value) {
+            synchronized(field) {
+                field = value
+            }
+        }
+    public var variableUpdates: JSONObject = JSONObject()
+        get() {
+            synchronized(field) {
+                return field
+            }
+        }
+        private set(value) {
+            synchronized(field) {
+                field = value
+            }
+        }
 
     /**
      * Start the dashboard server with a custom port and specified config file
@@ -37,8 +61,7 @@ object Dashboard {
 
         Spark.get("/", {
             request: Request, response: Response ->
-            val attributes: HashMap<String, Any> = HashMap()
-            attributes.put("navbar", config.getNavbarAttributes())
+            val attributes: HashMap<String, Any> = config.getBaseAttributes()
             JinjavaEngine(JinjavaConfig(), ClasspathResourceLocator()).render(
                 ModelAndView(attributes, "home.html")
             )
@@ -63,11 +86,18 @@ object Dashboard {
             config.configObject.toString(4)
         })
 
+        Spark.post("/config", {
+            request: Request, response: Response ->
+            config.setConfigJSON(request.body())
+        })
+
         // Utils
         Spark.get("/utils/newpage", {
             request: Request, response: Response ->
-            val attributes: HashMap<String, Any> = HashMap()
-            attributes.put("navbar", config.getNavbarAttributes())
+            val attributes: HashMap<String, Any> = config.getBaseAttributes()
+            if (request.queryParams("pageexists") == "true") {
+                attributes.put("pageExistsError", true)
+            }
             JinjavaEngine(JinjavaConfig(), ClasspathResourceLocator()).render(
                 ModelAndView(attributes, "newpage.html")
             )
@@ -77,14 +107,45 @@ object Dashboard {
         Spark.post("/actions/newpage", {
             request: Request, response: Response ->
             val pagename: String = request.queryParams("pagename")
+            val pagetitle: String = request.queryParams("pagetitle")
             println("Attempting to create page with name: $pagename")
             if (config.hasPageWithName(pagename)) {
-                response.header("newpageerror", "Page already exists!")
-                response.redirect("/utils/newpage")
+                response.redirect("/utils/newpage?pageexists=true")
             } else {
                 // make the new page and redirect to it
+                config.addPage(pagename, pagetitle)
+                response.redirect("/page/$pagename")
             }
             null
         })
+
+        SocketHandler.startBroadcastThread() // start broadcasting data
+    }
+
+    fun setVariable(key: String, value: Any) {
+        variableUpdates.put(key, value)
+    }
+
+    fun <T> getVariable(key: String): T {
+        if ((!variables.has(key)) && (!variableUpdates.has(key))) {
+            throw DashboardException("The variable with name " + key + " was not found.")
+        } else if (variableUpdates.has(key)) {
+            return variableUpdates.get(key) as T
+        } else {
+            return variables.get(key) as T
+        }
+    }
+
+    fun mergeVariableUpdates() {
+        for (u in variableUpdates.keys()) {
+            variables.put(u, variableUpdates.get(u))
+        }
+        variableUpdates = JSONObject()
+    }
+
+    fun mergeVariableUpdates(json: JSONObject) {
+        for (u in json.keys()) {
+            variables.put(u, json.get(u))
+        }
     }
 }

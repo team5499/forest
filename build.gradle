@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    compile 'org.jetbrains.kotlin:kotlin-stdlib'
+    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.3.0'
     // compile 'org.jetbrains.kotlin:kotlin-reflection'
     compile 'com.sparkjava:spark-kotlin:1.0.0-alpha'
     compile 'com.sparkjava:spark-template-jinjava:2.7.1'
@@ -34,7 +34,7 @@ task sourcesJar(type: Jar) {
 }
 
 task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
-    outputFormat = 'javadoc'
+    outputFormat = 'html'
     outputDirectory = javadoc.destinationDir
     inputs.dir 'src/main/kotlin'
 }
@@ -45,7 +45,7 @@ task javadocJar(type: Jar, dependsOn: dokkaJavadoc) {
 }
 
 dokka {
-    outputFormat = 'javadoc'
+    outputFormat = 'html'
     outputDirectory = "$buildDir/javadoc"
 }
 
@@ -54,6 +54,7 @@ test {
 
     useJUnitPlatform {
         excludeTags 'integration'
+        excludeTags 'playground'
     }
 
     testLogging {
@@ -75,6 +76,31 @@ test {
 task integrationTest(type: Test) {
     useJUnitPlatform {
         includeTags 'integration'
+    }
+
+    testLogging {
+        events 'PASSED', 'FAILED', 'SKIPPED'
+        showStandardStreams true
+    }
+
+    afterSuite { desc, result ->
+        if (!desc.parent) {
+            println "\nTest result: ${result.resultType}"
+            println "Test summary: ${result.testCount} tests, " +
+                    "${result.successfulTestCount} succeeded, " +
+                    "${result.failedTestCount} failed, " +
+                    "${result.skippedTestCount} skipped"
+        }
+    }
+
+    outputs.upToDateWhen { false }
+
+    shouldRunAfter test
+}
+
+task playgroundTest(type: Test) {
+    useJUnitPlatform {
+        includeTags 'playground'
     }
 
     testLogging {

@@ -5,14 +5,14 @@ import org.junit.jupiter.api.Tag
 
 import org.team5499.dashboard.Dashboard
 
-@Tag("integration")
-class ApplicationTest {
+@Tag("playground")
+class PlaygroundTest {
 
     @Test
     fun runServer() {
         println("starting server...")
         println("go to http://localhost:5800/")
-        Dashboard.start(this, "integrationConf.json")
+        Dashboard.start(this, "playgroundConf.json")
         println("server started")
         while (true) { // find a better way to wait?
             @Suppress("MagicNumber")

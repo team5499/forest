@@ -4,8 +4,11 @@
 {% block head %}{% endblock %}
 {% block navbarCollapse %}{% endblock %}
 {% block container %}
+<div class="alert alert-danger p-2 collapse {%- if pageExistsError %} show d-inline-block {%- endif %}" role="alert">A page with that name already exists!
+</div>
 <form action="/actions/newpage" method="post" autocomplete="off">
     <input class="form-control mb-2" type="text" name="pagename" value="" placeholder="new page name" style="max-width:250px;">
+    <input class="form-control mb-2" type="text" name="pagetitle" value="" placeholder="new page title" style="max-width:250px;">
     <button class="btn btn-light" type="submit">Submit</button>
 </form>
 {% endblock %}

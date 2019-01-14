@@ -1,6 +1,7 @@
 package org.team5499.dashboard
 
 import org.json.JSONObject
+import org.json.JSONArray
 import org.json.JSONException
 
 /**
@@ -12,6 +13,7 @@ import org.json.JSONException
  *
  * @constructor Creates an empty config object
  */
+@Suppress("TooManyFunctions")
 class Config() {
 
     companion object {
@@ -24,10 +26,18 @@ class Config() {
         private set
 
     private var pages: JSONObject
-        get() = configObject.getJSONObject("pages")
-        set(value) {
-            configObject.put("pages", value)
+        get() {
+            synchronized(configObject) {
+                return configObject.getJSONObject("pages")
+            }
         }
+        set(value) {
+            synchronized(configObject) {
+                configObject.put("pages", value)
+            }
+        }
+
+    public var devMode: Boolean = false
 
     /**
      * Construct a configuration with the specified JSON string
@@ -41,6 +51,9 @@ class Config() {
      */
     constructor(json: String) : this() {
         this.configObject = this.makeConfigJSONObject(json)
+        if (this.configObject.opt("devMode") is Boolean) {
+            this.devMode = this.configObject.getBoolean("devMode")
+        }
     }
 
     /**
@@ -60,7 +73,9 @@ class Config() {
         if (!newConfigObject.has("pages")) {
             println("Config json does not contain \"pages\" element!")
             fail()
-            return configObject
+            synchronized(configObject) {
+                return configObject
+            }
         }
         return newConfigObject
     }
@@ -70,9 +85,12 @@ class Config() {
      */
     private fun fail() {
         println("resetting to empty config")
-        this.configObject = JSONObject(Config.EMPTY_CONFIG_STRING)
+        synchronized(configObject) {
+            configObject = JSONObject(Config.EMPTY_CONFIG_STRING)
+        }
     }
 
+    // config util functions
     /**
      * get the specified key as the specified type
      *
@@ -104,7 +122,6 @@ class Config() {
      */
     fun getPageAttributes(pageName: String): HashMap<String, Any> {
         var attributes: HashMap<String, Any> = HashMap<String, Any>()
-        var navbar: HashMap<String, String> = HashMap()
         val page: JSONObject
         try {
             page = pages.getJSONObject(pageName)
@@ -116,18 +133,21 @@ class Config() {
 
         attributes.put("pageTitle", title)
         attributes.put("activePage", pageName)
-        attributes.put("navbar", getNavbarAttributes())
+        attributes.putAll(getBaseAttributes())
 
         return attributes
     }
 
-    fun getNavbarAttributes(): HashMap<String, String> {
-        var navbar: HashMap<String, String> = HashMap()
+    fun getBaseAttributes(): HashMap<String, Any> {
+        var attributes: HashMap<String, Any> = HashMap()
+        var navbar: HashMap<String, Any> = HashMap()
         for (i in getPageNamesInNavBarOrder()) {
             val tmpTitle: String = pages.getJSONObject(i).getOrFail<String>("title")
             navbar.put(i, tmpTitle)
         }
-        return navbar
+        attributes.put("navbar", navbar)
+        attributes.put("developmentEnvironment", devMode)
+        return attributes
     }
 
     /**
@@ -160,5 +180,19 @@ class Config() {
 
     fun hasPageWithName(name: String): Boolean {
         return getPageNames().contains(name)
+    }
+
+    fun setConfigJSON(json: String) {
+        synchronized(configObject) {
+            configObject = makeConfigJSONObject(json)
+        }
+    }
+
+    fun addPage(name: String, title: String) {
+        var page: JSONObject = JSONObject()
+        page.put("navbarOrder", getNumberOfPages())
+        page.put("title", title)
+        page.put("widgets", JSONArray())
+        pages.put(name, page)
     }
 }
