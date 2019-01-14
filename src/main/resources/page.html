@@ -5,16 +5,8 @@
     <link rel="stylesheet" href="/css/gridstack.min.css">
 {% endblock %}
 {% block navbarCollapse %}
-<ul class="navbar-nav ml-auto">
-    <li class="nav-item dropleft">
-        <a class="nav-link p-0" href="#" role="button" data-toggle="dropdown" style="font-size: 2rem; line-height: 2rem" title="Add a card to the dashboard">&plus;</a>
-        <div class="dropdown-menu">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <a class="dropdown-item" href="#">Something else here</a>
-        </div>
-    </li>
-</ul>
+    <ul class="navbar-nav ml-auto" id="reactnavbar">
+    </ul>
 {% endblock %}
 {% block container %}
     <div class="card-group" id="reactapp">
@@ -36,8 +28,8 @@
     <script src="/javascript/libs/gridstack.jQueryUI.min.js"></script>
 {% endblock %}
 {% block afterJS %}
-<script src="/javascript/page.jsx" type="text/babel"></script>
-{% for path in widgetScripts %}
-    <script src="{{ path }}" type="text/babel"></script>
-{% endfor %}
+    <script src="/javascript/page.jsx" type="text/babel"></script>
+    {% for path in widgetScripts %}
+        <script src="{{ path }}" type="text/babel"></script>
+    {% endfor %}
 {% endblock %}

@@ -205,4 +205,16 @@ class Config() {
         page.put("widgets", JSONArray())
         pages.put(name, page)
     }
+
+    fun deletePage(name: String) {
+        val lostOrder = pages.getOrFail<JSONObject>(name).getOrFail<Int>("navbarOrder")
+        pages.remove(name)
+        val unorderedNames = getPageNames()
+        for (i in unorderedNames) {
+            if (pages.getOrFail<JSONObject>(i).getOrFail<Int>("navbarOrder") > unorderedNames.size - 1) {
+                pages.put(i, pages.getOrFail<JSONObject>(i).put("navbarOrder", lostOrder))
+                break
+            }
+        }
+    }
 }

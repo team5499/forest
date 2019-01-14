@@ -120,6 +120,19 @@ object Dashboard {
             null
         })
 
+        Spark.post("/actions/deletepage", {
+            request: Request, response: Response ->
+            val pagename: String = request.queryParams("pagename")
+            println("Attempting to delete page with name: $pagename")
+            if (config.hasPageWithName(pagename)) {
+                config.deletePage(pagename)
+            } else {
+                println("the page to delete was not found")
+            }
+            response.redirect("/")
+            null
+        })
+
         SocketHandler.startBroadcastThread() // start broadcasting data
     }
 

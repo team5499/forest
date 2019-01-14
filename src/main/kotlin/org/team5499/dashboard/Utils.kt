@@ -29,7 +29,6 @@ object Utils {
 
     fun convertToRelativePaths(obj: Any, paths: Array<String>, parent: String): Array<String> {
         val parentPath: Path = Paths.get(obj::class.java.getClassLoader().getResource(parent).path)
-        println("parent path: $parentPath")
         var newPaths = mutableListOf<String>()
         paths.forEach({
             path: String ->

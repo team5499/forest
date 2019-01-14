@@ -1,3 +1,40 @@
+class WidgetAdder extends React.Component {
+    render() {
+        let widgets = [];
+        for(var i in PageUtils.WidgetClasses) {
+            widgets.push(<a className='dropdown-item' href='#' key={i}>{i}</a>);
+        }
+
+        return (
+            <li className='nav-item dropleft'>
+                <a className='nav-link p-0' href='#' role='button' data-toggle='dropdown' style={{fontSize: '2rem', lineHeight: '2rem'}} title='Add a card to the dashboard'>+</a>
+                <div className='dropdown-menu'>
+                    {widgets}
+                </div>
+            </li>
+        );
+    }
+}
+
+class PageDelete extends React.Component {
+    onClick() {
+        if(window.confirm('Are you sure you want to delete this page?')) {
+            $('#deletepageform').submit();
+        }
+    }
+
+    render() {
+        return (
+            <li className='nav-item dropleft'>
+                <a className='nav-link p-0' href='#' role='button' style={{fontSize: '2rem', lineHeight: '2rem'}} title='Delete page' onClick={() => this.onClick()}><h5 className='fas fa-trash m-0'></h5></a>
+                <form id='deletepageform' method='post' action='/actions/deletepage' style={{display: 'none'}}>
+                    <input type='hidden' name='pagename' value={PageUtils.getPageName()} />
+                </form>
+            </li>
+        );
+    }
+}
+
 class WidgetContainer extends React.Component {
     render() {
         return (
@@ -56,6 +93,14 @@ $(function() { // runs when document finishes loading
                 {PageUtils.renderWidgets()}
             </div>,
             $('#reactapp')[ 0 ]
+        );
+
+        ReactDOM.render(
+            [
+                <WidgetAdder key='widgetadder' />,
+                <PageDelete key='pagedelete' />
+            ],
+            $('#reactnavbar')[ 0 ]
         );
     } else {
         let err = textStatus + ', ' + error;
@@ -206,12 +251,12 @@ class SocketHandler {
 
     static onopen(event) {
         SocketHandler.isConnected = true;
-        console.warn("Robot connected!")
+        console.warn('Robot connected!')
     }
 
     static onclose(event) {
         SocketHandler.isConnected = false;
-        console.warn("Robot disconnected!");
+        console.warn('Robot disconnected!');
         // stop the websocket sender loop
         window.clearInterval(SocketHandler.broadcastInterval);
         // maybe reconnect?
@@ -220,16 +265,16 @@ class SocketHandler {
     static onmessage(event) {
         // update page
         // update variables
-        let prefix = event.data.substring(0, event.data.indexOf(":"));
-        let updates = JSON.parse(event.data.substring(event.data.indexOf(":") + 1, event.data.length));
-        if(prefix === "variables") {
+        let prefix = event.data.substring(0, event.data.indexOf(':'));
+        let updates = JSON.parse(event.data.substring(event.data.indexOf(':') + 1, event.data.length));
+        if(prefix === 'variables') {
             SocketHandler.variables = updates;
             for(var u in updates) {
                 for(var c in SocketHandler.callbacks[u]) {
                     SocketHandler.callbacks[u][c](updates[u]);
                 }
             }
-        } else if(prefix === "updates") {
+        } else if(prefix === 'updates') {
             for(var u in updates) {
                 SocketHandler.variables[u] = updates[u];
                 for(var c in SocketHandler.callbacks[u]) {
@@ -253,7 +298,7 @@ class SocketHandler {
 
     static getVariable(key) {
         if((!(key in SocketHandler.variables)) && (!(key in SocketHandler.variableUpdates))) {
-            console.warn("variable " + key + " not found!");
+            console.warn('variable ' + key + ' not found!');
             return undefined;
         } else if(key in SocketHandler.variableUpdates) {
             return SocketHandler.variableUpdates[key];
