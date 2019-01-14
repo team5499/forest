@@ -122,6 +122,7 @@ class Config() {
      */
     fun getPageAttributes(pageName: String): HashMap<String, Any> {
         var attributes: HashMap<String, Any> = HashMap<String, Any>()
+        var widgetScripts = mutableListOf<String>()
         val page: JSONObject
         try {
             page = pages.getJSONObject(pageName)
@@ -131,8 +132,17 @@ class Config() {
 
         val title: String = page.getOrFail<String>("title")
 
+        Utils.convertToRelativePaths(this,
+                                    Utils.getResourceDirectoryContents(this,
+                                                                        "static/javascript/widgets/"),
+                                    "static").forEach({
+                                        path: String ->
+                                        widgetScripts.add("/$path")
+                                    })
+
         attributes.put("pageTitle", title)
         attributes.put("activePage", pageName)
+        attributes.put("widgetScripts", widgetScripts.toTypedArray())
         attributes.putAll(getBaseAttributes())
 
         return attributes

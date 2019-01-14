@@ -72,11 +72,12 @@ object Dashboard {
             val requestedPageName: String = request.params(":name")
             if (!config.hasPageWithName(requestedPageName)) {
                 response.redirect("/")
+            } else {
+                val attributes: HashMap<String, Any> = config.getPageAttributes(requestedPageName)
+                JinjavaEngine(JinjavaConfig(), ClasspathResourceLocator()).render(
+                    ModelAndView(attributes, "page.html")
+                )
             }
-            val attributes: HashMap<String, Any> = config.getPageAttributes(requestedPageName)
-            JinjavaEngine(JinjavaConfig(), ClasspathResourceLocator()).render(
-                ModelAndView(attributes, "page.html")
-            )
         })
 
         Spark.get("/config", {

@@ -37,5 +37,7 @@
 {% endblock %}
 {% block afterJS %}
 <script src="/javascript/page.jsx" type="text/babel"></script>
-<script src="/javascript/widgets/rawvareditor.jsx", type="text/babel"></script>
+{% for path in widgetScripts %}
+    <script src="{{ path }}" type="text/babel"></script>
+{% endfor %}
 {% endblock %}
