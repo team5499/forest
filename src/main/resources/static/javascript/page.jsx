@@ -1,7 +1,7 @@
 class WidgetContainer extends React.Component {
     render() {
         return (
-            <div className='card m-1' style={{width: this.props.width, height: this.props.height, display:'inline-block'}} id={this.props.id + '_card'}>
+            <div className='card m-1 grid-stack-item' style={{width: this.props.width, height: this.props.height, display:'inline-block'}} id={this.props.id + '_card'}>
                 <div className='card-header p-1'>
                     <h4 className='m-0 d-inline'>{this.props.title}</h4>
                     <button className='btn btn-light float-right d-inline p-0 m-1' type='button' data-toggle='modal' data-target={'#' + this.props.id + '_modal'}><h5 className='fas fa-cog m-0'></h5></button>
@@ -52,11 +52,12 @@ $(function() { // runs when document finishes loading
     if(PageUtils.loadPageConfig()) {
         SocketHandler.connect(PageUtils.getWebSocketPageAddress());
         ReactDOM.render(
-            <div>
+            <div className='grid-stack'>
                 {PageUtils.renderWidgets()}
             </div>,
             $('#reactapp')[ 0 ]
         );
+        $('.grid-stack').gridstack();
     } else {
         let err = textStatus + ', ' + error;
         ReactDOM.render(
