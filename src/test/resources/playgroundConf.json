@@ -12,6 +12,17 @@
       "widgets": [
         {
           "height": "15rem",
+          "id": "testVarEditor",
+          "kwargs": {},
+          "title": "Test Variable",
+          "type": "RawVarEditor",
+          "variables": {
+            "target": "TEST"
+          },
+          "width": "15rem"
+        },
+        {
+          "height": "15rem",
           "id": "deekVarEditor",
           "kwargs": {},
           "title": "Deek Variable",

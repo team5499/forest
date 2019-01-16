@@ -1,8 +1,21 @@
+var widgetNum = -1
+console.log('start')
+$(".grid-stack>div").resizable()
+$(".grid-stack").gridstack({
+    width: 35,
+    float: true,
+    resizable: { autoHide: false, handles: "se" },
+    animate: true,
+    placeholderClass: "grid-stack-placeholder"
+});
+console.log('end')
+
 class WidgetContainer extends React.Component {
     render() {
         console.log("rerender");
+        widgetNum += 4
         return (
-            <div className='card m-1 grid-stack-item ui-dragable ui-resizable' style={{width: this.props.width, height: this.props.height, display:'inline-block'}} id={this.props.id + '_card'} data-gs-width="4" data-gs-height="4">
+            <div className='card m-1 grid-stack-item ui-dragable ui-resizable' style={{width: this.props.width, height: this.props.height, display:'inline-block'}} id={this.props.id + '_card'} data-gs-width="4" data-gs-height="4" data-gs-y="0" data-gs-x={widgetNum}>
                 <div className='grid-stack-item-content'>
                     <div className='card-header p-1'>
                         <h4 className='m-0 d-inline'>{this.props.title}</h4>
@@ -14,6 +27,7 @@ class WidgetContainer extends React.Component {
         );
     }
 }
+
 
 class WidgetBody extends React.Component {
     render() {
@@ -54,13 +68,15 @@ class WidgetSettings extends React.Component {
 $(function() { // runs when document finishes loading
     if(PageUtils.loadPageConfig()) {
         SocketHandler.connect(PageUtils.getWebSocketPageAddress());
-        ReactDOM.render(
-            <div className='grid-stack' data-gs-width="12" data-gs-current-height="6" data-gs-animate="yes" style={{width: 100+'%', height: 100+'%'}}>
-                {PageUtils.renderWidgets()}
-            </div>,
-            $('#reactapp')[ 0 ]
-        );
-        $('.grid-stack').gridstack();
+        // ReactDOM.render(
+        //     <div className='grid-stack' data-gs-width="12" data-gs-current-height="6" data-gs-animate="yes" style={{width: 100+'%', height: 100+'%'}}>
+        //         {PageUtils.renderWidgets()}
+        //     </div>,
+        //     $('#reactapp')[ 0 ]
+        // );
+
+
+
         console.log('function')
     } else {
         let err = textStatus + ', ' + error;
