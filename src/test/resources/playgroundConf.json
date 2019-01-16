@@ -22,6 +22,17 @@
           "width": "12rem"
         },
         {
+          "height": "auto",
+          "id": "testImg",
+          "kwargs": {},
+          "title": "Image Tester",
+          "type": "RawVarEditor",
+          "variables": {
+            "target": "TEST"
+          },
+          "width": "12rem"
+        },
+        {
           "height": "15rem",
           "id": "deekVarEditor",
           "kwargs": {},
