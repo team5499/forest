@@ -22,15 +22,12 @@
           "width": "12rem"
         },
         {
-          "height": "auto",
-          "id": "testImg",
+          "height": "330px",
+          "id": "limeLightVideo",
           "kwargs": {},
-          "title": "Image Tester",
-          "type": "RawVarEditor",
-          "variables": {
-            "target": "TEST"
-          },
-          "width": "12rem"
+          "title": "Live Video Feed",
+          "type": "LimeLightVideoFeed",
+          "width": "250px"
         },
         {
           "height": "15rem",
