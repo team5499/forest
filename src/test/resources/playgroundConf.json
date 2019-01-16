@@ -11,17 +11,6 @@
       "title": "Drive",
       "widgets": [
         {
-          "height": "auto",
-          "id": "testVarEditor",
-          "kwargs": {},
-          "title": "Test Variable",
-          "type": "RawVarEditor",
-          "variables": {
-            "target": "TEST"
-          },
-          "width": "12rem"
-        },
-        {
           "height": "15rem",
           "id": "deekVarEditor",
           "kwargs": {},
