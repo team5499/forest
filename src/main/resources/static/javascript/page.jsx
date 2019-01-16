@@ -1,27 +1,19 @@
-var widgetNum = -1
-console.log('start')
-$(".grid-stack>div").resizable()
-$(".grid-stack").gridstack({
-    width: 35,
-    float: true,
-    resizable: { autoHide: false, handles: "se" },
-    animate: true,
-    placeholderClass: "grid-stack-placeholder"
-});
-console.log('end')
+var widgetNum = -4
+
 
 class WidgetContainer extends React.Component {
     render() {
         console.log("rerender");
         widgetNum += 4
         return (
-            <div className='card m-1 grid-stack-item ui-dragable ui-resizable' style={{width: this.props.width, height: this.props.height, display:'inline-block'}} id={this.props.id + '_card'} data-gs-width="4" data-gs-height="4" data-gs-y="0" data-gs-x={widgetNum}>
+            <div className='card m-1 grid-stack-item ui-draggable ui-resizable ui-resizable-autohide' style={{width: this.props.width, height: this.props.height, display:'inline-block'}} id={this.props.id + '_card'} data-gs-width="2" data-gs-height="2" data-gs-y="0" data-gs-x={widgetNum}>
                 <div className='grid-stack-item-content'>
-                    <div className='card-header p-1'>
+                    <div className='card-header p-1 grid-stack-item-content ui-draggable-handle'>
                         <h4 className='m-0 d-inline'>{this.props.title}</h4>
                         <button className='btn btn-light float-right d-inline p-0 m-1' type='button' data-toggle='modal' data-target={'#' + this.props.id + '_modal'}><h5 className='fas fa-cog m-0'></h5></button>
                     </div>
                     {this.props.children}
+                    <div className="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div>
                 </div>
             </div>
         );
@@ -68,21 +60,50 @@ class WidgetSettings extends React.Component {
 $(function() { // runs when document finishes loading
     if(PageUtils.loadPageConfig()) {
         SocketHandler.connect(PageUtils.getWebSocketPageAddress());
-        // ReactDOM.render(
-        //     <div className='grid-stack' data-gs-width="12" data-gs-current-height="6" data-gs-animate="yes" style={{width: 100+'%', height: 100+'%'}}>
-        //         {PageUtils.renderWidgets()}
-        //     </div>,
-        //     $('#reactapp')[ 0 ]
-        // );
+        ReactDOM.render(
+            <div className="grid-stack" data-gs-width="35">
+            <div className="grid-stack-item ui-draggable ui-resizable ui-resizable-autohide" data-gs-x="0" data-gs-y="0" data-gs-width="2" data-gs-height="2">
+              <div className="grid-stack-item-content ui-draggable-handle">1</div>
+              <div className="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div>
+            </div>
+            <div className="grid-stack-item ui-draggable ui-resizable ui-resizable-autohide" data-gs-x="4" data-gs-y="0" data-gs-width="2" data-gs-height="2">
+              <div className="grid-stack-item-content ui-draggable-handle">2</div>
+              <div className="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div>
+            </div>
+            <div className="grid-stack-item ui-draggable ui-resizable ui-resizable-autohide" data-gs-x="8" data-gs-y="0" data-gs-width="2" data-gs-height="2">
+              <div className="grid-stack-item-content ui-draggable-handle">3</div>
+              <div className="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div>
+            </div>
+            <div className="grid-stack-item ui-draggable ui-resizable ui-resizable-autohide" data-gs-x="0" data-gs-y="2" data-gs-width="2" data-gs-height="2">
+              <div className="grid-stack-item-content ui-draggable-handle">4</div>
+              <div className="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div>
+            </div>
+            <div className="grid-stack-item ui-draggable ui-resizable ui-resizable-autohide" data-gs-x="4" data-gs-y="2" data-gs-width="2" data-gs-height="2">
+              <div className="grid-stack-item-content ui-draggable-handle">5</div>
+              <div className="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div>
+            </div>
+            <div className="grid-stack-item ui-draggable ui-resizable ui-resizable-autohide" data-gs-x="8" data-gs-y="2" data-gs-width="2" data-gs-height="2">
+              <div className="grid-stack-item-content ui-draggable-handle">6</div>
+              <div className="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div>
+            </div>
+          </div>,
+            $('#reactapp')[ 0 ]
+        );
 
-
+        $(".grid-stack").gridstack({
+            width: 35,
+            float: true,
+            resizable: { autoHide: false, handles: "se" },
+            animate: true,
+            placeholderClass: "grid-stack-placeholder"
+        });
 
         console.log('function')
     } else {
         let err = textStatus + ', ' + error;
         ReactDOM.render(
         <div>
-            <div class='alert alert-danger p-2 show' role='alert'>
+            <div className='alert alert-danger p-2 show' role='alert'>
                 There was an error loading the JSON config from the robot:
                 <br/>
                 <b>{err}</b>
