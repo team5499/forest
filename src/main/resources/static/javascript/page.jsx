@@ -2,7 +2,7 @@ class WidgetContainer extends React.Component {
     render() {
         return (
             <div className='card m-1 grid-stack-item' style={{width: this.props.width, height: this.props.height, display:'inline-block'}} id={this.props.id + '_card'}>
-                <div className='card-header p-1'>
+                <div className='card-header p-1 grid-stack'>
                     <h4 className='m-0 d-inline'>{this.props.title}</h4>
                     <button className='btn btn-light float-right d-inline p-0 m-1' type='button' data-toggle='modal' data-target={'#' + this.props.id + '_modal'}><h5 className='fas fa-cog m-0'></h5></button>
                 </div>
@@ -57,14 +57,15 @@ $(function() { // runs when document finishes loading
             </div>,
             $('#reactapp')[ 0 ]
         );
-        $('.grid-stack').gridstack();
+        $('#grid-stack').gridstack();
+        console.log('function')
     } else {
         let err = textStatus + ', ' + error;
         ReactDOM.render(
         <div>
             <div class='alert alert-danger p-2 show' role='alert'>
                 There was an error loading the JSON config from the robot:
-                <br />
+                <br/>
                 <b>{err}</b>
             </div>
         </div>,

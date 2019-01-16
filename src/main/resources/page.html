@@ -4,8 +4,6 @@
 {% block head %}
     <link rel="stylesheet" href="/css/gridstack.min.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 {% endblock %}
 {% block navbarCollapse %}
 <ul class="navbar-nav ml-auto">
@@ -34,9 +32,10 @@
         <script src="/javascript/libs/react.production.min.js"></script>
         <script src="/javascript/libs/react-dom.production.min.js"></script>
     {% endif %}
+    <script src="/javascript/libs/jquery-ui.min.js"></script>
     <script src="/javascript/libs/lodash.min.js"></script>
     <script src="/javascript/libs/gridstack.min.js"></script>
-    <script src="/javascript/libs/gridstack.jQueryUI.min.js"></script>
+    <!--<script src="/javascript/libs/gridstack.jQueryUI.min.js"></script>-->
 {% endblock %}
 {% block afterJS %}
 <script src="/javascript/page.jsx" type="text/babel"></script>
