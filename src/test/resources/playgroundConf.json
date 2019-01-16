@@ -11,7 +11,7 @@
       "title": "Drive",
       "widgets": [
         {
-          "height": "15rem",
+          "height": "3",
           "id": "testVarEditor",
           "kwargs": {},
           "title": "Test Variable",
@@ -19,10 +19,10 @@
           "variables": {
             "target": "TEST"
           },
-          "width": "15rem"
+          "width": "6"
         },
         {
-          "height": "15rem",
+          "height": "3",
           "id": "deekVarEditor",
           "kwargs": {},
           "title": "Deek Variable",
@@ -30,7 +30,18 @@
           "variables": {
             "target": "DEEK"
           },
-          "width": "15rem"
+          "width": "6"
+        },
+        {
+          "height": "3",
+          "id": "deekVarEditor",
+          "kwargs": {},
+          "title": "Deek Variable",
+          "type": "RawVarEditor",
+          "variables": {
+            "target": "DEEK"
+          },
+          "width": "6"
         }
       ]
     },
