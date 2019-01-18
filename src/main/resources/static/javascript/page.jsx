@@ -65,12 +65,9 @@ $(function() { // runs when document finishes loading
         ReactDOM.render(
             <div className="grid-stack" data-gs-width="35">
                 {PageUtils.renderWidgets()}
-
-
-          </div>,
+            </div>,
             $('#reactapp')[ 0 ]
         );
-
         $(".grid-stack").gridstack({
             width: 35,
             float: true,
@@ -78,8 +75,6 @@ $(function() { // runs when document finishes loading
             animate: true,
             placeholderClass: "grid-stack-placeholder"
         });
-
-        console.log('function')
     } else {
         let err = textStatus + ', ' + error;
         ReactDOM.render(
