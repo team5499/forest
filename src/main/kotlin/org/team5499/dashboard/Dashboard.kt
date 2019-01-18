@@ -7,6 +7,7 @@ import spark.ModelAndView
 import spark.template.jinjava.JinjavaEngine
 
 import com.hubspot.jinjava.loader.ClasspathResourceLocator
+import com.hubspot.jinjava.loader.FileLocator
 import com.hubspot.jinjava.JinjavaConfig
 
 import org.json.JSONObject
@@ -52,12 +53,17 @@ object Dashboard {
      * @param path the relative path to the JSON config file
      * @param port the port to host the dashboard on
      */
+    @Suppress("ComplexMethod")
     fun start(obj: Any, path: String, port: Int = 5800) {
         config = Config(Utils.readResourceAsString(obj, path))
 
         Spark.port(port)
         Spark.webSocket("/socket", SocketHandler::class.java)
-        Spark.staticFiles.location("/static")
+        if (config.devMode) {
+            Spark.staticFiles.externalLocation(Utils.getResourceAbsolutePath(this, "/static"))
+        } else {
+            Spark.staticFiles.location("/static")
+        }
 
         Spark.get("/", {
             request: Request, response: Response ->
@@ -161,5 +167,9 @@ object Dashboard {
         for (u in json.keys()) {
             variables.put(u, json.get(u))
         }
+    }
+
+    fun makeJinjavaEngine(attributes: HashMap, page: String): JinjavaEngine {
+        return JinjavaEngine(JinjavaConfig(), FileLocator())
     }
 }

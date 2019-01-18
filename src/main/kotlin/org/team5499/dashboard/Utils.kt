@@ -16,6 +16,10 @@ object Utils {
         return writer.toString()
     }
 
+    fun getResourceAbsolutePath(obj: Any, path: String): String {
+        return obj::class.java.getClassLoader().getResource(path).path.toString()
+    }
+
     fun getResourceDirectoryContents(obj: Any, path: String): Array<String> {
         val url: URL = obj::class.java.getClassLoader().getResource(path)
         val path: String = url.path
