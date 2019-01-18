@@ -184,8 +184,8 @@
       min-width: 2%;
   }
   .ui-resizable-handle{
-    z-index: auto;
+    z-index: 1 !important;
   }
-  .modal{
+  .modal div{
     z-index: 1050;
   }
