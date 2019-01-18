@@ -17,13 +17,11 @@ class WidgetContainer extends React.Component {
                         <button className='btn btn-light float-right d-inline p-0 m-1' type='button' data-toggle='modal' data-target={'#' + this.props.id + '_modal'}><h5 className='fas fa-cog m-0'></h5></button>
                     </div>
                     {this.props.children}
-                    <div className="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div>
                 </div>
             </div>
         );
     }
 }
-
 
 class WidgetBody extends React.Component {
     render() {

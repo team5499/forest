@@ -23,7 +23,7 @@
         },
         {
           "height": "3",
-          "id": "deekVarEditor",
+          "id": "deekVarEditor2",
           "kwargs": {},
           "title": "Deek Variable",
           "type": "RawVarEditor",

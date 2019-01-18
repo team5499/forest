@@ -1,4 +1,6 @@
-
+  body{
+    overflow: hidden;
+  }
   .navbar {
     background-color: #0b3311;
   }
@@ -154,7 +156,7 @@
   }
 
   .grid-stack-item {
-    box-shadow: 9px 9px 9px #a0a0a0;
+    box-shadow: 5px 5px 9px #a0a0a0;
     background: white;
   }
 
@@ -180,4 +182,10 @@
 
   .grid-stack > .grid-stack-item {
       min-width: 2%;
+  }
+  .ui-resizable-handle{
+    z-index: auto;
+  }
+  .modal{
+    z-index: 1050;
   }
