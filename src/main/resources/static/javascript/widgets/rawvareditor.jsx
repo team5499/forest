@@ -42,17 +42,17 @@ class RawVarEditor extends React.Component {
     }
 
     render() {
-        return (
-            <WidgetContainer title={this.props.title} width={this.props.width} height={this.props.height} id={this.props.id}>
+        return ([
+            <WidgetContainer key={this.props.id + '_main'}title={this.props.title} width={this.props.width} height={this.props.height} id={this.props.id}>
                 <WidgetBody title={this.props.title} id={this.props.id}>
                     <input className='form-control mb-2' type='text' id={this.props.id + '_var_display'} placeholder="value" value={this.state.targetValue} onChange={(e) => this.onFieldEdit(e)} />
                     <button className='btn btn-primary' id={this.props.id + '_body_submit'} onClick={() => this.onVarSave()} >Submit</button>
                 </WidgetBody>
-                <WidgetSettings title={this.props.title} id={this.props.id} onSave={() => this.onSettingsSave()}>
-                    <input className='form-control mb-2' type='text' id={this.props.id + '_settings_variable'} placeholder="variable" value={this.state.updateName} onChange={(e) => this.onSettingsEdit(e)} />
-                </WidgetSettings>
-            </WidgetContainer>
-        );
+            </WidgetContainer>,
+            <WidgetSettings key={this.props.id + '_settings'} title={this.props.title} id={this.props.id} onSave={() => this.onSettingsSave()}>
+                <input className='form-control mb-2' type='text' id={this.props.id + '_settings_variable'} placeholder="variable" value={this.state.updateName} onChange={(e) => this.onSettingsEdit(e)} />
+            </WidgetSettings>
+        ]);
     }
 }
 
