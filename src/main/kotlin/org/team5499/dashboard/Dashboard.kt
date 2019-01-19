@@ -57,7 +57,13 @@ object Dashboard {
 
         Spark.port(port)
         Spark.webSocket("/socket", SocketHandler::class.java)
-        Spark.staticFiles.location("/static")
+        if (config.devMode) {
+            val projectDir: String = System.getProperty("user.dir")
+            val staticDir: String = "/src/main/resources/static"
+            Spark.staticFiles.externalLocation(projectDir + staticDir)
+        } else {
+            Spark.staticFiles.location("/static")
+        }
 
         Spark.get("/", {
             request: Request, response: Response ->
