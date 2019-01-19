@@ -183,9 +183,10 @@ body {
 .grid-stack > .grid-stack-item {
   min-width: 2%;
 }
-.ui-resizable-handle{
-  z-index: 1 !important;
+.ui-draggble-handle{
+  background: #6666;
+  cursor: grab;
 }
-.modal, .modal div{
-  z-index: 2000;
+.ui-draggable-handle:active{
+  cursor: grabbing;
 }

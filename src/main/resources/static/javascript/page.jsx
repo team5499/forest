@@ -73,7 +73,8 @@ $(function() { // runs when document finishes loading
             float: true,
             resizable: { autoHide: false, handles: "se" },
             animate: true,
-            placeholderClass: "grid-stack-placeholder"
+            placeholderClass: "grid-stack-placeholder",
+            draggable: {handle: '.ui-draggable-handle' }
         });
     } else {
         let err = textStatus + ', ' + error;
