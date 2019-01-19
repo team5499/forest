@@ -68,9 +68,7 @@ object Dashboard {
         Spark.get("/", {
             request: Request, response: Response ->
             val attributes: HashMap<String, Any> = config.getBaseAttributes()
-            JinjavaEngine(JinjavaConfig(), ClasspathResourceLocator()).render(
-                ModelAndView(attributes, "home.html")
-            )
+            renderWithJinjava(attributes, "home.html")
         })
 
         Spark.get("/page/:name", {
@@ -80,9 +78,7 @@ object Dashboard {
                 response.redirect("/")
             }
             val attributes: HashMap<String, Any> = config.getPageAttributes(requestedPageName)
-            JinjavaEngine(JinjavaConfig(), ClasspathResourceLocator()).render(
-                ModelAndView(attributes, "page.html")
-            )
+            renderWithJinjava(attributes, "page.html")
         })
 
         Spark.get("/config", {
@@ -104,9 +100,7 @@ object Dashboard {
             if (request.queryParams("pageexists") == "true") {
                 attributes.put("pageExistsError", true)
             }
-            JinjavaEngine(JinjavaConfig(), ClasspathResourceLocator()).render(
-                ModelAndView(attributes, "newpage.html")
-            )
+            renderWithJinjava(attributes, "newpage.html")
         })
 
         // Actions
@@ -153,5 +147,11 @@ object Dashboard {
         for (u in json.keys()) {
             variables.put(u, json.get(u))
         }
+    }
+
+    fun renderWithJinjava(attributes: HashMap<String, Any>, path: String): String {
+        return JinjavaEngine(JinjavaConfig(), ClasspathResourceLocator()).render(
+                ModelAndView(attributes, path)
+            )
     }
 }
