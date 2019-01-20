@@ -11,37 +11,15 @@
       "title": "Drive",
       "widgets": [
         {
+          "dataset": [],
           "height": "3",
-          "id": "testVarEditor",
+          "id": "testGraphing",
           "kwargs": {},
-          "title": "Test Variable",
-          "type": "RawVarEditor",
-          "variables": {
-            "target": "TEST"
-          },
-          "width": "6"
-        },
-        {
-          "height": "3",
-          "id": "deekVarEditor2",
-          "kwargs": {},
-          "title": "Deek Variable",
-          "type": "RawVarEditor",
-          "variables": {
-            "target": "DEEK"
-          },
-          "width": "6"
-        },
-        {
-          "height": "3",
-          "id": "deekVarEditor",
-          "kwargs": {},
-          "title": "Deek Variable",
-          "type": "RawVarEditor",
-          "variables": {
-            "target": "DEEK"
-          },
-          "width": "6"
+          "title": "Graph",
+          "type": "Chart",
+          "width": "6",
+          "xAxis": "Time",
+          "yAxis": "Value"
         }
       ]
     },

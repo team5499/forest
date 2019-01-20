@@ -3,7 +3,6 @@ var widgetY = -4;
 
 class WidgetContainer extends React.Component {
     render() {
-        console.log("rerender");
         widgetX += 7;
         if(widgetX>29){
             widgetY += 4;
@@ -75,6 +74,22 @@ $(function() { // runs when document finishes loading
             animate: true,
             placeholderClass: "grid-stack-placeholder",
             draggable: {handle: '.ui-draggable-handle' }
+        });
+        var ctx = document.getElementById('canvas').getContext('2d');
+        window.myMixedChart = new Chart(ctx, {
+            type: 'bar',
+            data: chartData,
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Chart.js Combo Bar Line Chart'
+                },
+                tooltips: {
+                    mode: 'index',
+                    intersect: true
+                }
+            }
         });
     } else {
         let err = textStatus + ', ' + error;

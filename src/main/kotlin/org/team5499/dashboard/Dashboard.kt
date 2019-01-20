@@ -17,7 +17,6 @@ import org.json.JSONObject
  * Handles starting the server
  */
 object Dashboard {
-
     private var config: Config = Config()
     private val pageSource: String = Utils.readResourceAsString(this, "page.html")
     public var variables: JSONObject = JSONObject()
@@ -31,6 +30,7 @@ object Dashboard {
                 field = value
             }
         }
+
     public var variableUpdates: JSONObject = JSONObject()
         get() {
             synchronized(field) {
