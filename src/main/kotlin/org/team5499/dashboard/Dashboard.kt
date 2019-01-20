@@ -4,12 +4,14 @@ import spark.Spark
 import spark.Request
 import spark.Response
 import spark.ModelAndView
-import spark.template.jinjava.JinjavaEngine
 
 import com.hubspot.jinjava.loader.ClasspathResourceLocator
+import com.hubspot.jinjava.loader.FileLocator
 import com.hubspot.jinjava.JinjavaConfig
 
 import org.json.JSONObject
+
+import java.io.File
 
 /**
  * The main Dashboard object
@@ -150,8 +152,16 @@ object Dashboard {
     }
 
     fun renderWithJinjava(attributes: HashMap<String, Any>, path: String): String {
-        return JinjavaEngine(JinjavaConfig(), ClasspathResourceLocator()).render(
+        if (config.devMode) {
+            val projectDir: String = System.getProperty("user.dir")
+            val staticDir: String = "/src/main/resources/"
+            return ModifiedJinjavaEngine(JinjavaConfig(), FileLocator(File(projectDir + staticDir))).render(
                 ModelAndView(attributes, path)
             )
+        } else {
+            return ModifiedJinjavaEngine(JinjavaConfig(), ClasspathResourceLocator()).render(
+                ModelAndView(attributes, path)
+            )
+        }
     }
 }
