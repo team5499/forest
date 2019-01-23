@@ -22,7 +22,7 @@ class Graph(vararg keys: String) {
 
     fun updateJSON(): JSONObject {
         // create a MutableList with an emtpy MutableList for each dataset
-        var datasets: MutableList<Any?> = mutableListOf(mKeys.replaceAll(mutableListOf()))
+        var datasets: MutableList<MutableList> = mutableListOf(mKeys.replaceAll(mutableListOf()))
         // sorts values into MutableList based on keys
         for (dataPoint in values) {
             datasets[mKeys.indexOf(dataPoint.toList()[0])].add(dataPoint.toList()[1])
