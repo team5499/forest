@@ -31,6 +31,20 @@
             "target": "DEEK"
           },
           "width": "15rem"
+        },
+        {
+          "height": "15rem",
+          "id": "pidWidget",
+          "kwargs": {},
+          "title": "PID Editor",
+          "type": "PIDWidget",
+          "variables": {
+            "ptarget": "P",
+            "itarget": "I",
+            "dtarget": "D",
+            "ftarget": "F"
+          },
+          "width": "15rem"
         }
       ]
     },
