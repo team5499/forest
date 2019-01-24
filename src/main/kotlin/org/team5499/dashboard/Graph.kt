@@ -6,12 +6,12 @@ class Graph(vararg keys: String) {
     val values: MutableList<Pair<String, Double>> = mutableListOf()
     val labels: MutableList<Double> = mutableListOf()
     var chartData: JSONObject = JSONObject()
-    var mKeys: Array<String>
-    init { val mKeys = keys }
+    var mKeys: Array<out String>
+    init { mKeys = keys }
 
     fun addDataPoint(x: Double, y: Double, key: String) {
         labels += y
-        values.add(Pair(key, y))
+        values.add(Pair(key, x))
         // Unit test for values = keys
     }
 
@@ -22,7 +22,10 @@ class Graph(vararg keys: String) {
 
     fun updateJSON(): JSONObject {
         // create a MutableList with an emtpy MutableList for each dataset
-        var datasets: MutableList<MutableList> = mutableListOf(mKeys.replaceAll(mutableListOf()))
+        var datasets: MutableList<MutableList<Any>> = mutableListOf()
+        for (i in mKeys) {
+            datasets.add(mutableListOf())
+        }
         // sorts values into MutableList based on keys
         for (dataPoint in values) {
             datasets[mKeys.indexOf(dataPoint.toList()[0])].add(dataPoint.toList()[1])

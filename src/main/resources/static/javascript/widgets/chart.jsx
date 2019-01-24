@@ -8,46 +8,46 @@ class RawVarEditor extends React.Component {
             targetValue: SocketHandler.getVariable(this.props.variables.target) || ""
         };
         this.callbackId = SocketHandler.addVariableListener(this.state.targetName, (value) => this.updateState(value));
-
-        let config = {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: []
-            },
-            options: {
-                responsive: true,
-                title: {
-                    display: true,
-                    text: this.props.title
-                },
-                tooltips: {
-                    mode: 'index',
-                    intersect: false,
-                },
-                hover: {
-                    mode: 'nearest',
-                    intersect: true
-                },
-                scales: {
-                    xAxes: [{
-                        display: true,
-                        scaleLabel: {
-                            display: true,
-                            labelString: this.props.xAxes
-                        }
-                    }],
-                    yAxes: [{
-                        display: true,
-                        scaleLabel: {
-                            display: true,
-                            labelString: this.props.yAxes
-                        }
-                    }]
-                }
-            }
-        };
     }
+
+    config = {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: []
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                text: this.props.title
+            },
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+            },
+            hover: {
+                mode: 'nearest',
+                intersect: true
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: this.props.xAxes
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: this.props.yAxes
+                    }
+                }]
+            }
+        }
+    };
 
     updateState(xValues, datasets) {
         config.labels = xValues
