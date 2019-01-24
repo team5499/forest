@@ -3,7 +3,7 @@ class PIDWidget extends React.Component {
         super(props);
         this.state = {
             pTargetName: this.props.variables.ptarget,
-            pupdateName: this.props.variables.ptarget,
+            pUpdateName: this.props.variables.ptarget,
             iTargetName: this.props.variables.itarget,
             iUpdateName: this.props.variables.itarget,
             dTargetName: this.props.variables.dtarget,

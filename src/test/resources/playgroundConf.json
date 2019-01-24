@@ -33,7 +33,7 @@
           "width": "15rem"
         },
         {
-          "height": "15rem",
+          "height": "17rem",
           "id": "pidWidget",
           "kwargs": {},
           "title": "PID Editor",
