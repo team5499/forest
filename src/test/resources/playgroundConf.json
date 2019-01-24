@@ -22,12 +22,12 @@
           "width": "12rem"
         },
         {
-          "height": "330px",
+          "height": "300px",
           "id": "limeLightVideo",
           "kwargs": {},
           "title": "Live Video Feed",
           "type": "LimeLightVideoFeed",
-          "width": "250px"
+          "width": "338px"
         },
         {
           "height": "15rem",
@@ -39,6 +39,17 @@
             "target": "DEEK"
           },
           "width": "15rem"
+        },
+        {
+          "height": "auto",
+          "id": "testSelectorWidget",
+          "kwargs": {},
+          "title": "Test Variable",
+          "type": "SelectorWidget",
+          "variables": {
+            "target": "TEST"
+          },
+          "width": "12rem"
         }
       ]
     },

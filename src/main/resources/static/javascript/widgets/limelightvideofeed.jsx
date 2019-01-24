@@ -4,7 +4,7 @@ class LimeLightVideoFeed extends React.Component {
     }
     render() {
         return (
-            <WidgetContainer title={this.props.title} width={this.props.width} height={this.props.height} id={this.props.id}>
+            <WidgetContainer className = ".card-img-top" title={this.props.title} width={this.props.width} height={this.props.height} id={this.props.id}>
                 <WidgetBody title={this.props.title} id={this.props.id}>
                     <img src="http://limelight.local:5800/" width="320" height="240"></img>
                 </WidgetBody>
