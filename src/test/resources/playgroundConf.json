@@ -39,10 +39,10 @@
           "title": "PID Editor",
           "type": "PIDWidget",
           "variables": {
-            "ptarget": "P",
-            "itarget": "I",
             "dtarget": "D",
-            "ftarget": "F"
+            "ftarget": "F",
+            "itarget": "I",
+            "ptarget": "P"
           },
           "width": "15rem"
         }
