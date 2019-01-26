@@ -119,10 +119,10 @@ class PIDWidget extends React.Component {
         return (
             <WidgetContainer title={this.props.title} width={this.props.width} height={this.props.height} id={this.props.id}>
                 <WidgetBody title={this.props.title} id={this.props.id}>
-                    <input className='form-control mb-2' type='text' id={this.props.id + 'p_var_display'} placeholder="value1" value={this.state.pTargetValue} onChange={(e) => this.onPFieldEdit(e)} />
-                    <input className='form-control mb-2' type='text' id={this.props.id + 'i_var_display'} placeholder="value2" value={this.state.iTargetValue} onChange={(e) => this.onIFieldEdit(e)} />
-                    <input className='form-control mb-2' type='text' id={this.props.id + 'd_var_display'} placeholder="value3" value={this.state.dTargetValue} onChange={(e) => this.onDFieldEdit(e)} />
-                    <input className='form-control mb-2' type='text' id={this.props.id + 'f_var_display'} placeholder="value4" value={this.state.fTargetValue} onChange={(e) => this.onFFieldEdit(e)} />
+                    <input className='form-control mb-2' type='text' id={this.props.id + 'p_var_display'} placeholder="P" value={this.state.pTargetValue} onChange={(e) => this.onPFieldEdit(e)} />
+                    <input className='form-control mb-2' type='text' id={this.props.id + 'i_var_display'} placeholder="I" value={this.state.iTargetValue} onChange={(e) => this.onIFieldEdit(e)} />
+                    <input className='form-control mb-2' type='text' id={this.props.id + 'd_var_display'} placeholder="D" value={this.state.dTargetValue} onChange={(e) => this.onDFieldEdit(e)} />
+                    <input className='form-control mb-2' type='text' id={this.props.id + 'f_var_display'} placeholder="F" value={this.state.fTargetValue} onChange={(e) => this.onFFieldEdit(e)} />
                     <button className='btn btn-primary' id={this.props.id + '_body_submit'} onClick={() => this.onVarSave()} >Submit</button>
                 </WidgetBody>
                 <WidgetSettings title={this.props.title} id={this.props.id} onSave={() => this.onSettingsSave()}>
