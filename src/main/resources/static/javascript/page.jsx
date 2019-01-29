@@ -1,16 +1,14 @@
 var widgetX = -7;
 var widgetY = -4;
-
 class WidgetContainer extends React.Component {
     render() {
-        console.log("rerender");
         widgetX += 7;
         if(widgetX>29){
             widgetY += 4;
             widgetX = 0;
         }
         return (
-            <div className='card m-1 grid-stack-item ui-draggable ui-resizable ui-resizable-autohide' style={{display:'inline-block'}} id={this.props.id + '_card'} data-gs-width={this.props.width} data-gs-height={this.props.height} data-gs-y={widgetY} data-gs-x={widgetX}>
+            <div className='card m-1 grid-stack-item' style={{display:'inline-block'}} id={this.props.id + '_card'} data-gs-no-resize={this.props.noResize} data-gs-width={this.props.width} data-gs-height={this.props.height} data-gs-y={widgetY} data-gs-x={widgetX}>
                 <div className='grid-stack-item-content'>
                     <div className='card-header p-1 grid-stack-item-content ui-draggable-handle'>
                         <h4 className='m-0 d-inline'>{this.props.title}</h4>
@@ -71,7 +69,7 @@ $(function() { // runs when document finishes loading
         $(".grid-stack").gridstack({
             width: 35,
             float: true,
-            resizable: { autoHide: false, handles: "se" },
+            resizable: { autoHide: true, handles: "se" },
             animate: true,
             placeholderClass: "grid-stack-placeholder",
             draggable: {handle: '.ui-draggable-handle' }
@@ -186,23 +184,15 @@ class PageUtils {
         let widgets = [];
         for(var i in widgetsJson) {
             let widget = widgetsJson[i];
+            let noResize = "yes"
             const GenericWidget = PageUtils.getWidgetTag(widget);
-            widgets.push(React.createElement(PageUtils.WidgetClasses[GenericWidget], {key: widget.id, title: widget.title, id: widget.id, width: widget.width, height: widget.height, variables: widget.variables, kwargs: widget.kwargs}, null));
-            console.log(PageUtils.WidgetClasses);
+            if(widget.resize){
+                noResize = "no"
+            }
+            widgets.push(React.createElement(PageUtils.WidgetClasses[GenericWidget], {key: widget.id, title: widget.title, id: widget.id, width: widget.width, height: widget.height, variables: widget.variables, kwargs: widget.kwargs, noResize: noResize}, null));
             //widgets.push(<GenericWidget key={i.id} title={i.title} id={i.id} width={i.width} height={i.height} variables={i.variables} kwargs={i.kwargs} />);
         }
-        return widgets;
-    }
-
-    static renderSetting() {
-        let widgetsJson = PageUtils.getPageWidgets();
-        let widgets = [];
-        for(var i in widgetsJson) {
-            let widget = widgetsJson[i];
-            const GenericWidget = PageUtils.getWidgetTag(widget);
-            widgets.push(React.createElement(PageUtils.WidgetClasses[GenericWidget], {key: widget.id, title: widget.title, id: widget.id, width: widget.width, height: widget.height, variables: widget.variables, kwargs: widget.kwargs}, null));
-
-        }
+        console.log(widgets)
         return widgets;
     }
 }
