@@ -24,6 +24,7 @@
 {% block beforeScripts %}{% endblock %}
 {% block afterJSLibs %}
 <script src="/javascript/libs/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.js"></script>
     {% if developmentEnvironment %}
         <script src="/javascript/libs/react.development.js"></script>
         <script src="/javascript/libs/react-dom.development.js"></script>
@@ -38,4 +39,5 @@
 {% block afterJS %}
 <script src="/javascript/page.jsx" type="text/babel"></script>
 <script src="/javascript/widgets/rawvareditor.jsx", type="text/babel"></script>
+<script src="/javascript/widgets/CompassWidget.jsx", type="text/babel"></script>
 {% endblock %}

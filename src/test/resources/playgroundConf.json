@@ -31,6 +31,17 @@
             "target": "DEEK"
           },
           "width": "15rem"
+        },
+        {
+          "height": "15rem",
+          "id": "CompassWidget",
+          "kwargs": {},
+          "title": "Compass",
+          "type": "CompassWidget",
+          "variables": {
+            "target": "angle"
+          },
+          "width": "15rem"
         }
       ]
     },

@@ -18,7 +18,8 @@ import org.json.JSONObject
  */
 object Dashboard {
 
-    private var config: Config = Config()
+    var config: Config = Config()
+        private set
     private val pageSource: String = Utils.readResourceAsString(this, "page.html")
     public var variables: JSONObject = JSONObject()
         get() {
