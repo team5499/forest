@@ -81,9 +81,7 @@ object Dashboard {
                 response.redirect("/")
             } else {
                 val attributes: HashMap<String, Any> = config.getPageAttributes(requestedPageName)
-                JinjavaEngine(JinjavaConfig(), ClasspathResourceLocator()).render(
-                    ModelAndView(attributes, "page.html")
-                )
+                renderWithJinjava(attributes, "page.html")
             }
             val attributes: HashMap<String, Any> = config.getPageAttributes(requestedPageName)
             renderWithJinjava(attributes, "page.html")
