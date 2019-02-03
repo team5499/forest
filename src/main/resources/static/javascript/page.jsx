@@ -1,14 +1,8 @@
-var widgetX = -7;
-var widgetY = -4;
 class WidgetContainer extends React.Component {
     render() {
-        widgetX += 7;
-        if(widgetX>29){
-            widgetY += 4;
-            widgetX = 0;
-        }
+         console.log(this.props.x);
         return (
-            <div className='card m-1 grid-stack-item' style={{display:'inline-block'}} id={this.props.id + '_card'} data-gs-no-resize={this.props.noResize} data-gs-width={this.props.width} data-gs-height={this.props.height} data-gs-y={widgetY} data-gs-x={widgetX}>
+            <div className='card m-1 grid-stack-item' style={{display:'inline-block'}} id={this.props.id + '_card'} data-gs-no-resize={this.props.noResize} data-gs-width={this.props.width} data-gs-height={this.props.height} data-gs-x={this.props.x} data-gs-y={0}>
                 <div className='grid-stack-item-content'>
                     <div className='card-header p-1 grid-stack-item-content ui-draggable-handle'>
                         <h4 className='m-0 d-inline'>{this.props.title}</h4>
@@ -180,6 +174,7 @@ class PageUtils {
     }
 
     static renderWidgets() {
+        var widgetX = 0;
         let widgetsJson = PageUtils.getPageWidgets();
         let widgets = [];
         for(var i in widgetsJson) {
@@ -189,8 +184,9 @@ class PageUtils {
             if(widget.resize){
                 noResize = "no"
             }
-            widgets.push(React.createElement(PageUtils.WidgetClasses[GenericWidget], {key: widget.id, title: widget.title, id: widget.id, width: widget.width, height: widget.height, variables: widget.variables, kwargs: widget.kwargs, noResize: noResize}, null));
+            widgets.push(React.createElement(PageUtils.WidgetClasses[GenericWidget], {key: widget.id, title: widget.title, id: widget.id, width: widget.width, height: widget.height, variables: widget.variables, kwargs: widget.kwargs, noResize: noResize, x: widgetX}, null));
             //widgets.push(<GenericWidget key={i.id} title={i.title} id={i.id} width={i.width} height={i.height} variables={i.variables} kwargs={i.kwargs} />);
+            widgetX += 7;
         }
         console.log(widgets)
         return widgets;
