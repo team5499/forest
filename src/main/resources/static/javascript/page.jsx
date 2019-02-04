@@ -226,14 +226,14 @@ class SocketHandler {
             SocketHandler.variables = updates;
             for(var u in updates) {
                 for(var c in SocketHandler.callbacks[u]) {
-                    SocketHandler.callbacks[u][c](updates[u]);
+                    SocketHandler.callbacks[u][c](u, updates[u]);
                 }
             }
         } else if(prefix === "updates") {
             for(var u in updates) {
                 SocketHandler.variables[u] = updates[u];
                 for(var c in SocketHandler.callbacks[u]) {
-                    SocketHandler.callbacks[u][c](updates[u]);
+                    SocketHandler.callbacks[u][c](u, updates[u]);
                 }
             }
         }

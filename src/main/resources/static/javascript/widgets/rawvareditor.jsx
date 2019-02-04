@@ -6,10 +6,10 @@ class RawVarEditor extends React.Component {
             updateName: this.props.variables.target,
             targetValue: SocketHandler.getVariable(this.props.variables.target) || ""
         };
-        this.callbackId = SocketHandler.addVariableListener(this.state.targetName, (value) => this.updateState(value));
+        this.callbackId = SocketHandler.addVariableListener(this.state.targetName, (key, value) => this.updateState(key, value));
     }
 
-    updateState(value) {
+    updateState(key, value) {
         this.setState({targetValue: value || ""});
     }
 
