@@ -122,17 +122,59 @@ object Dashboard {
         SocketHandler.startBroadcastThread() // start broadcasting data
     }
 
-    fun setVariable(key: String, value: Any) {
+    fun setString(key: String, value: String) {
         variableUpdates.put(key, value)
     }
 
-    fun <T> getVariable(key: String): T {
+    fun setInt(key: Int, value: Int) {
+        variableUpdates.put(key, value)
+    }
+
+    fun setBool(key: Boolean, value: Boolean) {
+        variableUpdates.put(key, value)
+    }
+
+    fun setDouble(key: Double, value: Double) {
+        variableUpdates.put(key, value)
+    }
+
+    fun getString(key: String): T {
         if ((!variables.has(key)) && (!variableUpdates.has(key))) {
             throw DashboardException("The variable with name " + key + " was not found.")
         } else if (variableUpdates.has(key)) {
-            return variableUpdates.get(key) as T
+            return variableUpdates.get(key)
         } else {
-            return variables.get(key) as T
+            return variables.get(key)
+        }
+    }
+
+    fun getInt(key: Int): T {
+        if ((!variables.has(key)) && (!variableUpdates.has(key))) {
+            throw DashboardException("The variable with name " + key + " was not found.")
+        } else if (variableUpdates.has(key)) {
+            return variableUpdates.get(key)
+        } else {
+            return variables.get(key)
+        }
+    }
+
+    fun getBool(key: Boolean): T {
+        if ((!variables.has(key)) && (!variableUpdates.has(key))) {
+            throw DashboardException("The variable with name " + key + " was not found.")
+        } else if (variableUpdates.has(key)) {
+            return variableUpdates.get(key)
+        } else {
+            return variables.get(key)
+        }
+    }
+
+    fun getDouble(key: Double): T {
+        if ((!variables.has(key)) && (!variableUpdates.has(key))) {
+            throw DashboardException("The variable with name " + key + " was not found.")
+        } else if (variableUpdates.has(key)) {
+            return variableUpdates.get(key)
+        } else {
+            return variables.get(key)
         }
     }
 
