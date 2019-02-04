@@ -4,11 +4,6 @@
     "dev": {
       "navbarOrder": 0,
       "title": "Development",
-      "widgets": []
-    },
-    "drive": {
-      "navbarOrder": 1,
-      "title": "Drive",
       "widgets": [
         {
           "height": "auto",
@@ -20,24 +15,8 @@
             "target": "TEST"
           },
           "width": "12rem"
-        },
-        {
-          "height": "15rem",
-          "id": "deekVarEditor",
-          "kwargs": {},
-          "title": "Deek Variable",
-          "type": "RawVarEditor",
-          "variables": {
-            "target": "DEEK"
-          },
-          "width": "15rem"
         }
       ]
-    },
-    "test": {
-      "navbarOrder": 2,
-      "title": "Test",
-      "widgets": []
     }
   }
 }

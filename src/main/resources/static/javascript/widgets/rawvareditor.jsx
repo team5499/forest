@@ -4,13 +4,13 @@ class RawVarEditor extends React.Component {
         this.state = {
             targetName: this.props.variables.target,
             updateName: this.props.variables.target,
-            targetValue: SocketHandler.getVariable(this.props.variables.target) || ""
+            targetValue: SocketHandler.getVariable(this.props.variables.target)
         };
         this.callbackId = SocketHandler.addVariableListener(this.state.targetName, (value) => this.updateState(value));
     }
 
     updateState(value) {
-        this.setState({targetValue: value || ""});
+        this.setState({targetValue: value || ''});
     }
 
     onSettingsSave() {
@@ -29,27 +29,48 @@ class RawVarEditor extends React.Component {
     }
 
     onVarSave() {
-        let newVal = $('#' + this.props.id + '_var_display').val();
-        SocketHandler.setVariable(this.state.targetName, newVal);
+        SocketHandler.setVariable(this.state.targetName, this.state.targetValue);
     }
 
     onFieldEdit(e) {
-        this.setState({targetValue: e.target.value});
+        if(e.target.type === 'number') {
+            this.setState({targetValue: parseFloat(e.target.value)});
+        } else if(e.target.type === 'checkbox') {
+            this.setState({targetValue: e.target.checked});
+        } else {
+            this.setState({targetValue: e.target.value});
+        }
     }
 
     onSettingsEdit(e) {
         this.setState({updateName: e.target.value});
     }
 
+    getInputElement() {
+        if(typeof this.state.targetValue === 'string') {
+            return <input className='form-control mb-2' type='text' id={this.props.id + '_var_display'} placeholder='value' value={this.state.targetValue} onChange={(e) => this.onFieldEdit(e)} />;
+        } else if(typeof this.state.targetValue === 'number') {
+            return <input className='form-control mb-2' type='number' id={this.props.id + '_var_display'} placeholder='0.0' value={this.state.targetValue} onChange={(e) => this.onFieldEdit(e)} />;
+        } else if(typeof this.state.targetValue === 'boolean') {
+            return <input className='form-check-input' type='checkbox' id={this.props.id + '_var_display'} checked={this.state.targetValue} onClick={(e) => this.onFieldEdit(e)} />;
+        } else {
+            return (
+                <div className='alert alert-primary' role='alert'>
+                    The variable type {typeof this.state.targetValue} is not supported for this widget.
+                </div>
+            );
+        }
+    }
+
     render() {
         return (
             <WidgetContainer title={this.props.title} width={this.props.width} height={this.props.height} id={this.props.id}>
                 <WidgetBody title={this.props.title} id={this.props.id}>
-                    <input className='form-control mb-2' type='text' id={this.props.id + '_var_display'} placeholder="value" value={this.state.targetValue} onChange={(e) => this.onFieldEdit(e)} />
+                    {this.getInputElement()}
                     <button className='btn btn-primary' id={this.props.id + '_body_submit'} onClick={() => this.onVarSave()} >Submit</button>
                 </WidgetBody>
                 <WidgetSettings title={this.props.title} id={this.props.id} onSave={() => this.onSettingsSave()}>
-                    <input className='form-control mb-2' type='text' id={this.props.id + '_settings_variable'} placeholder="variable" value={this.state.updateName} onChange={(e) => this.onSettingsEdit(e)} />
+                    <input className='form-control mb-2' type='text' id={this.props.id + '_settings_variable'} placeholder='variable' value={this.state.updateName} onChange={(e) => this.onSettingsEdit(e)} />
                 </WidgetSettings>
             </WidgetContainer>
         );
