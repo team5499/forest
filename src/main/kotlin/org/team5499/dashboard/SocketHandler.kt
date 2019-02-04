@@ -27,7 +27,7 @@ class SocketHandler {
         private val broadcastThread: Thread = Thread(Broadcaster())
         public fun broadcastJSON(json: JSONObject, prefix: String) {
             for (s in sessions) {
-                sendJSON(s, json, "updates")
+                sendJSON(s, json, prefix)
             }
         }
         public fun sendJSON(session: Session, json: JSONObject, prefix: String) {
