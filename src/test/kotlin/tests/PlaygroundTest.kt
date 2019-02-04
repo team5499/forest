@@ -15,6 +15,7 @@ class PlaygroundTest {
         Dashboard.start(this, "playgroundConf.json")
         println("server started")
         Dashboard.setVariable("TEST", false)
+        Dashboard.setVariable("DEEK", "testdeek")
         while (true) { // find a better way to wait?
             @Suppress("MagicNumber")
             println(Dashboard.getVariable<Boolean>("TEST"))

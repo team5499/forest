@@ -4,7 +4,7 @@ class RawVarEditor extends React.Component {
         this.state = {
             targetName: this.props.variables.target,
             updateName: this.props.variables.target,
-            targetValue: SocketHandler.getVariable(this.props.variables.target)
+            targetValue: undefined
         };
         this.callbackId = SocketHandler.addVariableListener(this.state.targetName, (value) => this.updateState(value));
     }
@@ -14,22 +14,30 @@ class RawVarEditor extends React.Component {
     }
 
     onSettingsSave() {
-        let widget = PageUtils.getPageWidget(this.props.id);
         let newVar = $('#' + this.props.id + '_settings_variable').val();
-        widget.variables.target = newVar;
-        let success = PageUtils.setPageWidget(this.props.id, widget);
-        SocketHandler.removeVariableListener(this.state.targetName);
-        // do something with success, and also update event listener for variable changes
-        this.setState({
-            targetName: newVar,
-            updateName: newVar,
-            targetValue: SocketHandler.getVariable(newVar)
-        });
-        this.callbackId = SocketHandler.addVariableListener(this.state.updateName, (value) => this.updateState(value));
+        if(!SocketHandler.hasVariable(newVar)) {
+            this.setState({
+                updateName: this.state.targetName
+            });
+            return;
+        } else {
+            let widget = PageUtils.getPageWidget(this.props.id);
+            widget.variables.target = newVar;
+            let success = PageUtils.setPageWidget(this.props.id, widget);
+            SocketHandler.removeVariableListener(this.state.targetName);
+            // do something with success, and also update event listener for variable changes
+            this.setState({
+                targetName: newVar,
+                updateName: newVar,
+                targetValue: SocketHandler.getVariable(newVar)
+            });
+            this.callbackId = SocketHandler.addVariableListener(this.state.updateName, (value) => this.updateState(value));
+        }
     }
 
     onVarSave() {
-        SocketHandler.setVariable(this.state.targetName, this.state.targetValue);
+        // yeet this
+        // SocketHandler.setVariable(this.state.targetName, this.state.targetValue);
     }
 
     onFieldEdit(e) {
@@ -44,6 +52,11 @@ class RawVarEditor extends React.Component {
 
     onSettingsEdit(e) {
         this.setState({updateName: e.target.value});
+        if(!SocketHandler.hasVariable(e.target.value)) {
+            $('#' + this.props.id + '_modal_save').addClass('disabled');
+        } else {
+            $('#' + this.props.id + '_modal_save').removeClass('disabled');
+        }
     }
 
     getInputElement() {

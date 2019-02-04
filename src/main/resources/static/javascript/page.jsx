@@ -76,7 +76,7 @@ class WidgetSettings extends React.Component {
                         </div>
                         <div className='modal-footer'>
                             <button type='button' className='btn btn-secondary' data-dismiss='modal'>Close</button>
-                            <button type='submit' className='btn btn-primary' onClick={() => this.props.onSave()} data-dismiss='modal'>Save changes</button>
+                            <button type='submit' className='btn btn-primary' onClick={() => this.props.onSave()} id={this.props.id + '_modal_save'} data-dismiss='modal'>Save changes</button>
                         </div>
                     </div>
                 </div>
@@ -296,18 +296,92 @@ class SocketHandler {
         SocketHandler.callbacks[key].splice(id, 1);
     }
 
-    static getVariable(key) {
-        if((!(key in SocketHandler.variables)) && (!(key in SocketHandler.variableUpdates))) {
-            console.warn('variable ' + key + ' not found!');
-            return undefined;
-        } else if(key in SocketHandler.variableUpdates) {
+    static getVariableType(key) {
+        return typeof SocketHandler.variables[key]
+    }
+
+    static hasVariable(key) {
+        return (key in SocketHandler.variableUpdates) || (key in SocketHandler.variables);
+    }
+
+    static getString(key) {
+        if(key in SocketHandler.variableUpdates) {
+            if(typeof SocketHandler.variableUpdates[key] !== 'string') {
+                console.error(`variable ' + key + ' of type ${typeof SocketHandler.variableUpdates[key]} is not string`);
+                return undefined;
+            }
             return SocketHandler.variableUpdates[key];
-        } else {
+        } else if(key in SocketHandler.variables) {
+            if(typeof SocketHandler.variables[key] !== 'string') {
+                console.error(`variable ' + key + ' of type ${typeof SocketHandler.variableUpdates[key]} is not string`);
+                return undefined;
+            }
             return SocketHandler.variables[key];
+        } else {
+            console.error('variable ' + key + ' of type string not found!');
+            return undefined;
         }
     }
 
-    static setVariable(key, value) {
-        SocketHandler.variableUpdates[key] = value;
+    static getNumber(key) {
+        if(key in SocketHandler.variableUpdates) {
+            if(typeof SocketHandler.variableUpdates[key] !== 'number') {
+                console.error(`variable ' + key + ' of type ${typeof SocketHandler.variableUpdates[key]} is not number`);
+                return undefined;
+            }
+            return SocketHandler.variableUpdates[key];
+        } else if(key in SocketHandler.variables) {
+            if(typeof SocketHandler.variables[key] !== 'number') {
+                console.error(`variable ' + key + ' of type ${typeof SocketHandler.variableUpdates[key]} is not number`);
+                return undefined;
+            }
+            return SocketHandler.variables[key];
+        } else {
+            console.error('variable ' + key + ' of type number not found!');
+            return undefined;
+        }
+    }
+
+    static getBoolean(key) {
+        if(key in SocketHandler.variableUpdates) {
+            if(typeof SocketHandler.variableUpdates[key] !== 'boolean') {
+                console.error(`variable ' + key + ' of type ${typeof SocketHandler.variableUpdates[key]} is not boolean`);
+                return undefined;
+            }
+            return SocketHandler.variableUpdates[key];
+        } else if(key in SocketHandler.variables) {
+            if(typeof SocketHandler.variables[key] !== 'boolean') {
+                console.error(`variable ' + key + ' of type ${typeof SocketHandler.variableUpdates[key]} is not boolean`);
+                return undefined;
+            }
+            return SocketHandler.variables[key];
+        } else {
+            console.error('variable ' + key + ' of type boolean not found!');
+            return undefined;
+        }
+    }
+
+    static setString(key, value) {
+        if(typeof SocketHandler.variableUpdates[key] !== 'string') {
+            console.error(`cannot set variable ${key} of type ${typeof SocketHandler.variableUpdates[key]} to string`);
+        } else {
+            SocketHandler.variableUpdates[key] = value;
+        }
+    }
+
+    static setNumber(key, value) {
+        if(typeof SocketHandler.variableUpdates[key] !== 'number') {
+            console.error(`cannot set variable ${key} of type ${typeof SocketHandler.variableUpdates[key]} to number`);
+        } else {
+            SocketHandler.variableUpdates[key] = value;
+        }
+    }
+
+    static setBoolean(key, value) {
+        if(typeof SocketHandler.variableUpdates[key] !== 'boolean') {
+            console.error(`cannot set variable ${key} of type ${typeof SocketHandler.variableUpdates[key]} to boolean`);
+        } else {
+            SocketHandler.variableUpdates[key] = value;
+        }
     }
 }
