@@ -43,6 +43,12 @@ class RawVarEditor extends React.Component {
     }
 
     render() {
+        $( function() {
+            var availableVars = Object.values(this.props.variables);
+            $('#' + this.props.id + '_settings_variable').autocomplete({
+                source: availableVars
+            });
+        })
         let input;
         if(typeof $('#' + this.props.id + '_var_display').val() != "boolean"){
             input = <input className='form-control mb-2' type='text' id={this.props.id + '_var_display'} placeholder="value" value={this.state.targetValue} onChange={(e) => this.onFieldEdit(e)} />;
