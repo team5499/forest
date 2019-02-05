@@ -37,7 +37,7 @@ class WidgetSettings extends React.Component {
                                 <span aria-hidden='true'>&times;</span>
                             </button>
                         </div>
-                        <div className='modal-b ody'>
+                        <div className='modal-body'>
                             {this.props.children}
                         </div>
                         <div className='modal-footer'>
