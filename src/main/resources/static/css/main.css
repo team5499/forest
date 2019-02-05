@@ -154,13 +154,13 @@ body {
   margin: 10px;
   width: 100%;
   display: inline-block;
-  min-width: 1000px;
+  min-width: 1484px;
 }
 
 .grid-stack-item {
   box-shadow: 5px 5px 9px #a0a0a0;
   background: white;
-  min-width: 205px !important;
+  min-width: 251.988px !important;
 }
 
 .grid-stack-item-content {
@@ -175,9 +175,14 @@ body {
   display: block;
 }
 
-.grid-stack > .grid-stack-item {
-  min-width: 2%;
+.grid-stack-placeholder {
+  background: rgba(250, 250, 250, 0);
+  box-shadow: none;
+  border-width: 2px;
+  border-style: dashed;
+  border-color: #d3d3d3;
 }
+
 .ui-draggble-handle{
   background: #6666;
   cursor: grab;

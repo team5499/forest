@@ -57,6 +57,7 @@ function loadGrid(w) {
         float: true,
         resizable: { autoHide: true, handles: "se" },
         animate: true,
+        horizontalMargin: 1,
         placeholderClass: "grid-stack-placeholder",
         draggable: {handle: '.ui-draggable-handle' }
     });
