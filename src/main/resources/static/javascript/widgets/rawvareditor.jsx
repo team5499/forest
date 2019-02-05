@@ -31,6 +31,7 @@ class RawVarEditor extends React.Component {
     onVarSave() {
         let newVal = $('#' + this.props.id + '_var_display').val();
         SocketHandler.setVariable(this.state.targetName, newVal);
+
     }
 
     onFieldEdit(e) {
@@ -42,10 +43,19 @@ class RawVarEditor extends React.Component {
     }
 
     render() {
+        let input;
+        if(typeof $('#' + this.props.id + '_var_display').val() != "boolean"){
+            input = <input className='form-control mb-2' type='text' id={this.props.id + '_var_display'} placeholder="value" value={this.state.targetValue} onChange={(e) => this.onFieldEdit(e)} />;
+        }else{
+            input = <div id={this.props.id + '_var_display'} class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#">True</a>
+                        <a class="dropdown-item" href="#">False</a>
+                    </div>;
+        }
         return (
             <WidgetContainer title={this.props.title} width={this.props.width} height={this.props.height} id={this.props.id}>
                 <WidgetBody title={this.props.title} id={this.props.id}>
-                    <input className='form-control mb-2' type='text' id={this.props.id + '_var_display'} placeholder="value" value={this.state.targetValue} onChange={(e) => this.onFieldEdit(e)} />
+                    {input}
                     <button className='btn btn-primary' id={this.props.id + '_body_submit'} onClick={() => this.onVarSave()} >Submit</button>
                 </WidgetBody>
                 <WidgetSettings title={this.props.title} id={this.props.id} onSave={() => this.onSettingsSave()}>
