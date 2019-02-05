@@ -16,6 +16,7 @@ import org.json.JSONObject
  *
  * Handles starting the server
  */
+@Suppress("TooManyFunctions")
 object Dashboard {
 
     private var config: Config = Config()
@@ -126,55 +127,55 @@ object Dashboard {
         variableUpdates.put(key, value)
     }
 
-    fun setInt(key: Int, value: Int) {
+    fun setInt(key: String, value: Int) {
         variableUpdates.put(key, value)
     }
 
-    fun setBool(key: Boolean, value: Boolean) {
+    fun setBool(key: String, value: Boolean) {
         variableUpdates.put(key, value)
     }
 
-    fun setDouble(key: Double, value: Double) {
+    fun setDouble(key: String, value: Double) {
         variableUpdates.put(key, value)
     }
 
-    fun getString(key: String): T {
+    fun getString(key: String): String {
         if ((!variables.has(key)) && (!variableUpdates.has(key))) {
             throw DashboardException("The variable with name " + key + " was not found.")
         } else if (variableUpdates.has(key)) {
-            return variableUpdates.get(key)
+            return variableUpdates.getString(key)
         } else {
-            return variables.get(key)
+            return variables.getString(key)
         }
     }
 
-    fun getInt(key: Int): T {
+    fun getInt(key: String): Int {
         if ((!variables.has(key)) && (!variableUpdates.has(key))) {
             throw DashboardException("The variable with name " + key + " was not found.")
         } else if (variableUpdates.has(key)) {
-            return variableUpdates.get(key)
+            return variableUpdates.getInt(key)
         } else {
-            return variables.get(key)
+            return variables.getInt(key)
         }
     }
 
-    fun getBool(key: Boolean): T {
+    fun getBool(key: String): Boolean {
         if ((!variables.has(key)) && (!variableUpdates.has(key))) {
             throw DashboardException("The variable with name " + key + " was not found.")
         } else if (variableUpdates.has(key)) {
-            return variableUpdates.get(key)
+            return variableUpdates.getBoolean(key)
         } else {
-            return variables.get(key)
+            return variables.getBoolean(key)
         }
     }
 
-    fun getDouble(key: Double): T {
+    fun getDouble(key: String): Double {
         if ((!variables.has(key)) && (!variableUpdates.has(key))) {
             throw DashboardException("The variable with name " + key + " was not found.")
         } else if (variableUpdates.has(key)) {
-            return variableUpdates.get(key)
+            return variableUpdates.getDouble(key)
         } else {
-            return variables.get(key)
+            return variables.getDouble(key)
         }
     }
 
