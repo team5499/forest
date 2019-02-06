@@ -1,3 +1,5 @@
+import {WidgetContainer, WidgetBody, WidgetSettings} from "widgetcomponents";
+
 class RawVarEditor extends React.Component {
     constructor(props) {
         super(props);
