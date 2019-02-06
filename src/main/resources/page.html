@@ -36,7 +36,9 @@
     <script src="/javascript/libs/gridstack.jQueryUI.min.js"></script>
 {% endblock %}
 {% block afterJS %}
-<script src="/javascript/page.jsx" type="text/babel"></script>
-<script src="/javascript/widgetcomponents.jsx" data-plugins="transform-es2015-modules-umd" type="text/babel"></script>
-<script src="/javascript/widgets/rawvareditor.jsx" data-plugins="transform-es2015-modules-umd" type="text/babel"></script>
+<script src="/javascript/socket-handler.js" data-plugins="transform-es2015-modules-umd" type="text/babel"></script>
+<script src="/javascript/page-utils.jsx" data-plugins="transform-es2015-modules-umd" type="text/babel"></script>
+<script src="/javascript/page.jsx" data-plugins="transform-es2015-modules-umd" type="text/babel"></script>
+<script src="/javascript/widget-components.jsx" data-plugins="transform-es2015-modules-umd" type="text/babel"></script>
+<script src="/javascript/widgets/raw-var-editor.jsx" data-plugins="transform-es2015-modules-umd" type="text/babel"></script>
 {% endblock %}
