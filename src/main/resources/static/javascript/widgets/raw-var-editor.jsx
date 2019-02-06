@@ -1,3 +1,7 @@
+import {WidgetContainer, WidgetBody, WidgetSettings} from "widget-components";
+import PageUtils from "page-utils";
+import SocketHandler from "socket-handler";
+
 class RawVarEditor {}
 
 RawVarEditor.Body = class extends React.Component {
@@ -7,10 +11,10 @@ RawVarEditor.Body = class extends React.Component {
             targetName: this.props.variables.target,
             targetValue: SocketHandler.getVariable(this.props.variables.target) || ""
         };
-        this.callbackId = SocketHandler.addVariableListener(this.state.targetName, (value) => this.updateValue(value));
+        this.callbackId = SocketHandler.addVariableListener(this.state.targetName, (key, value) => this.updateState(key, value));
     }
 
-    updateValue(value) {
+    updateState(key, value) {
         this.setState({targetValue: value || ""});
     }
 
@@ -64,6 +68,8 @@ RawVarEditor.Settings = class extends React.Component {
         );
     }
 }
+
+export default RawVarEditor;
 
 // make sure to do this for every widget
 PageUtils.addWidgetClass('RawVarEditor', RawVarEditor);
