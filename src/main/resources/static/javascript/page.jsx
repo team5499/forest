@@ -169,7 +169,16 @@ class PageUtils {
         for(var i in widgetsJson) {
             let widget = widgetsJson[i];
             const GenericWidget = PageUtils.getWidgetTag(widget);
-            widgets.push(React.createElement(PageUtils.WidgetClasses[GenericWidget], {key: widget.id, title: widget.title, id: widget.id, width: widget.width, height: widget.height, variables: widget.variables, kwargs: widget.kwargs}, null));
+            widgets.push(
+                <WidgetContainer key={widget.id} title={widget.title} width={widget.width} height={widget.height} id={widget.id}>
+                    <WidgetBody title={widget.title} id={widget.id}>
+                        {React.createElement(PageUtils.WidgetClasses[GenericWidget].Body, {title: widget.title, id: widget.id, width: widget.width, height: widget.height, variables: widget.variables, kwargs: widget.kwargs}, null)}
+                    </WidgetBody>
+                    <WidgetSettings title={widget.title} id={widget.id} onSave={() => console.log("save settings")}>
+                        {React.createElement(PageUtils.WidgetClasses[GenericWidget].Settings, {title: widget.title, id: widget.id, width: widget.width, height: widget.height, variables: widget.variables, kwargs: widget.kwargs}, null)}
+                    </WidgetSettings>
+                </WidgetContainer>
+            );
             //widgets.push(<GenericWidget key={i.id} title={i.title} id={i.id} width={i.width} height={i.height} variables={i.variables} kwargs={i.kwargs} />);
         }
         return widgets;
