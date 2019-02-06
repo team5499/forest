@@ -4,12 +4,15 @@ import spark.Spark
 import spark.Request
 import spark.Response
 import spark.ModelAndView
-import spark.template.jinjava.JinjavaEngine
+import spark.staticfiles.MimeType
 
 import com.hubspot.jinjava.loader.ClasspathResourceLocator
+import com.hubspot.jinjava.loader.FileLocator
 import com.hubspot.jinjava.JinjavaConfig
 
 import org.json.JSONObject
+
+import java.io.File
 
 /**
  * The main Dashboard object
@@ -55,16 +58,24 @@ object Dashboard {
     fun start(obj: Any, path: String, port: Int = 5800) {
         config = Config(Utils.readResourceAsString(obj, path))
 
+        // register mime types for javascript, so that it isn't application/octet-stream
+        MimeType.register("jsx", "application/javascript")
+        MimeType.register("mjs", "application/javascript")
+
         Spark.port(port)
         Spark.webSocket("/socket", SocketHandler::class.java)
-        Spark.staticFiles.location("/static")
+        if (config.devMode) {
+            val projectDir: String = System.getProperty("user.dir")
+            val staticDir: String = "/src/main/resources/static"
+            Spark.staticFiles.externalLocation(projectDir + staticDir)
+        } else {
+            Spark.staticFiles.location("/static")
+        }
 
         Spark.get("/", {
             request: Request, response: Response ->
             val attributes: HashMap<String, Any> = config.getBaseAttributes()
-            JinjavaEngine(JinjavaConfig(), ClasspathResourceLocator()).render(
-                ModelAndView(attributes, "home.html")
-            )
+            renderWithJinjava(attributes, "home.html")
         })
 
         Spark.get("/page/:name", {
@@ -74,9 +85,7 @@ object Dashboard {
                 response.redirect("/")
             }
             val attributes: HashMap<String, Any> = config.getPageAttributes(requestedPageName)
-            JinjavaEngine(JinjavaConfig(), ClasspathResourceLocator()).render(
-                ModelAndView(attributes, "page.html")
-            )
+            renderWithJinjava(attributes, "page.html")
         })
 
         Spark.get("/config", {
@@ -98,9 +107,7 @@ object Dashboard {
             if (request.queryParams("pageexists") == "true") {
                 attributes.put("pageExistsError", true)
             }
-            JinjavaEngine(JinjavaConfig(), ClasspathResourceLocator()).render(
-                ModelAndView(attributes, "newpage.html")
-            )
+            renderWithJinjava(attributes, "newpage.html")
         })
 
         // Actions
@@ -146,6 +153,20 @@ object Dashboard {
     fun mergeVariableUpdates(json: JSONObject) {
         for (u in json.keys()) {
             variables.put(u, json.get(u))
+        }
+    }
+
+    fun renderWithJinjava(attributes: HashMap<String, Any>, path: String): String {
+        if (config.devMode) {
+            val projectDir: String = System.getProperty("user.dir")
+            val staticDir: String = "/src/main/resources/"
+            return ModifiedJinjavaEngine(JinjavaConfig(), FileLocator(File(projectDir + staticDir))).render(
+                ModelAndView(attributes, path)
+            )
+        } else {
+            return ModifiedJinjavaEngine(JinjavaConfig(), ClasspathResourceLocator()).render(
+                ModelAndView(attributes, path)
+            )
         }
     }
 }

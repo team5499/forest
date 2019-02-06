@@ -1,4 +1,8 @@
-class RawVarEditor extends React.Component {
+import {WidgetContainer, WidgetBody, WidgetSettings} from "widget-components";
+import PageUtils from "page-utils";
+import SocketHandler from "socket-handler";
+
+export default class RawVarEditor extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
