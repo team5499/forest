@@ -14,6 +14,7 @@ class PlaygroundTest {
         println("go to http://localhost:5800/")
         Dashboard.start(this, "playgroundConf.json")
         Dashboard.setVariable("TEST", "testvalue")
+        Dashboard.setVariable("DEEK", "anothervalue")
         println("server started")
         while (true) { // find a better way to wait?
             @Suppress("MagicNumber")

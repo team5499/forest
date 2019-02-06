@@ -94,22 +94,20 @@ class PageUtils {
     }
 
     static sendPageConfig() {
-        let success = false;
         $.ajax({
-            async: false,
+            async: true,
             method: 'POST',
             url: '/config',
             contentType: 'application/json',
             data: JSON.stringify(PageUtils.getPageConfig()),
             success: function () {
-                success = true;
             },
             error: function (jqxhr, status, error) {
 
                 console.warn('error sending config json: ' + status + ' : ' + error);
             }
         });
-        return success;
+        return true;
     }
 
     static getPageConfig() {
@@ -190,7 +188,10 @@ class SocketHandler {
         SocketHandler.socket.onopen = SocketHandler.onopen
         SocketHandler.socket.onclose = SocketHandler.onclose
         SocketHandler.socket.onmessage = SocketHandler.onmessage
+    }
 
+    static onopen(event) {
+        SocketHandler.isConnected = true;
         SocketHandler.broadcastInterval = window.setInterval(function() {
             // if changes, broadcast them
             if (Object.keys(SocketHandler.variableUpdates).length > 0) {
@@ -202,10 +203,6 @@ class SocketHandler {
             }
 
         }, 1000.0 / SocketHandler.BROADCAST_INTERVAL);
-    }
-
-    static onopen(event) {
-        SocketHandler.isConnected = true;
         console.warn("Robot connected!")
     }
 
