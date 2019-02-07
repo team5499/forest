@@ -1,4 +1,3 @@
-import {WidgetContainer, WidgetBody, WidgetSettings} from "widget-components";
 import PageUtils from "page-utils";
 import SocketHandler from "socket-handler";
 
