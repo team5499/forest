@@ -29,7 +29,7 @@ export default class RawVarEditor extends React.Component {
             updateName: newVar,
             targetValue: SocketHandler.getVariable(newVar)
         });
-        this.callbackId = SocketHandler.addVariableListener(this.state.updateName, (value) => this.updateState(value));
+        this.callbackId = SocketHandler.addVariableListener(this.state.updateName, (key, value) => this.updateState(key, value));
     }
 
     onVarSave() {
