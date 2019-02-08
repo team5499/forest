@@ -25,7 +25,7 @@ dependencies {
 }
 
 group = 'org.team5499'
-version = '0.2.0' /* Change this when deploying a new version */
+version = '0.2.1' /* Change this when deploying a new version */
 
 task sourcesJar(type: Jar) {
     from sourceSets.main.allJava
@@ -33,19 +33,19 @@ task sourcesJar(type: Jar) {
 }
 
 task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
-    outputFormat = 'html'
-    outputDirectory = javadoc.destinationDir
+    outputFormat = 'javadoc'
+    outputDirectory = "$buildDir/javadoc"
     inputs.dir 'src/main/kotlin'
 }
 
 task javadocJar(type: Jar, dependsOn: dokkaJavadoc) {
     classifier = 'javadoc'
-    from javadoc.destinationDir
+    from "$buildDir/javadoc"
 }
 
 dokka {
     outputFormat = 'html'
-    outputDirectory = "$buildDir/javadoc"
+    outputDirectory = "$buildDir/htmldoc"
 }
 
 test {
