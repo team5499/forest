@@ -59,7 +59,7 @@ export default class SocketHandler {
         for(var u in updates) {
             variables[u] = updates[u];
             for(var c in callbacks[u]) {
-                callbacks[u][c](updates[u]);
+                callbacks[u][c](u, updates[u]);
             }
         }
     }
