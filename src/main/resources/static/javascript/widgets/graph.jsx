@@ -1,4 +1,4 @@
-class Chart extends React.Component {
+class Graph extends React.Component {
 
     constructor(props) {
         super(props);
@@ -49,6 +49,8 @@ class Chart extends React.Component {
         }
     };
 
+    chartObject = new Chart($('#' + this.props.id + '_canvas'), this.config)
+
     updateState(xValues, datasets) {
         config.labels = xValues
         config.datasets = datasets
@@ -93,4 +95,4 @@ class Chart extends React.Component {
 }
 
 // make sure to do this for every widget
-PageUtils.addWidgetClass('Chart', Chart);
+PageUtils.addWidgetClass('Graph', Graph);

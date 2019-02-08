@@ -15,11 +15,27 @@
           "height": "3",
           "id": "testGraphing",
           "kwargs": {},
-          "title": "Graph",
-          "type": "chart",
+          "resize": true,
+          "title": "Test Graph",
+          "type": "Graph",
+          "variables": {
+            "target": "DEEK"
+          },
           "width": "6",
           "xAxis": "Time",
           "yAxis": "Value"
+        },
+        {
+          "height": "3",
+          "id": "deekVarEditor2",
+          "kwargs": {},
+          "resize": false,
+          "title": "Deek Variable",
+          "type": "RawVarEditor",
+          "variables": {
+            "target": "DEEK"
+          },
+          "width": "6"
         }
       ]
     },

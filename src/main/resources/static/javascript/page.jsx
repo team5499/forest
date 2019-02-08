@@ -1,15 +1,8 @@
-var widgetX = -7;
-var widgetY = -4;
-
 class WidgetContainer extends React.Component {
     render() {
-        widgetX += 7;
-        if(widgetX>29){
-            widgetY += 4;
-            widgetX = 0;
-        }
+         console.log(this.props.x);
         return (
-            <div className='card m-1 grid-stack-item ui-draggable ui-resizable ui-resizable-autohide' style={{display:'inline-block'}} id={this.props.id + '_card'} data-gs-width={this.props.width} data-gs-height={this.props.height} data-gs-y={widgetY} data-gs-x={widgetX}>
+            <div className='card m-1 grid-stack-item' style={{display:'inline-block'}} id={this.props.id + '_card'} data-gs-no-resize={this.props.noResize} data-gs-width={this.props.width} data-gs-height={this.props.height} data-gs-x={this.props.x} data-gs-y={0}>
                 <div className='grid-stack-item-content'>
                     <div className='card-header p-1 grid-stack-item-content ui-draggable-handle'>
                         <h4 className='m-0 d-inline'>{this.props.title}</h4>
@@ -44,7 +37,7 @@ class WidgetSettings extends React.Component {
                                 <span aria-hidden='true'>&times;</span>
                             </button>
                         </div>
-                        <div className='modal-b ody'>
+                        <div className='modal-body'>
                             {this.props.children}
                         </div>
                         <div className='modal-footer'>
@@ -58,39 +51,33 @@ class WidgetSettings extends React.Component {
     }
 }
 
+function loadGrid(w) {
+    $(".grid-stack").gridstack({
+        width: w,
+        float: true,
+        resizable: { autoHide: true, handles: "se" },
+        animate: true,
+        horizontalMargin: 1,
+        placeholderClass: "grid-stack-placeholder",
+        draggable: {handle: '.ui-draggable-handle' }
+    });
+}
 $(function() { // runs when document finishes loading
     if(PageUtils.loadPageConfig()) {
         SocketHandler.connect(PageUtils.getWebSocketPageAddress());
         ReactDOM.render(
-            <div className="grid-stack" data-gs-width="35">
+            <div className="grid-stack" id="gridstack" data-gs-width="35">
                 {PageUtils.renderWidgets()}
             </div>,
             $('#reactapp')[ 0 ]
         );
-        $(".grid-stack").gridstack({
-            width: 35,
-            float: true,
-            resizable: { autoHide: false, handles: "se" },
-            animate: true,
-            placeholderClass: "grid-stack-placeholder",
-            draggable: {handle: '.ui-draggable-handle' }
-        });
-        var ctx = document.getElementById('canvas').getContext('2d');
-        window.myMixedChart = new Chart(ctx, {
-            type: 'bar',
-            data: chartData,
-            options: {
-                responsive: true,
-                title: {
-                    display: true,
-                    text: 'Chart.js Combo Bar Line Chart'
-                },
-                tooltips: {
-                    mode: 'index',
-                    intersect: true
-                }
-            }
-        });
+
+        loadGrid(35);
+        let maxWidth = $('#gridstack').width()
+        $(window).resize(() => {
+            let width = Math.floor(35 * ($('#gridstack').width()/maxWidth));
+            loadGrid(width);
+        })
     } else {
         let err = textStatus + ', ' + error;
         ReactDOM.render(
@@ -111,6 +98,7 @@ class PageUtils {
 
     static addWidgetClass(classname, widgetclass) {
         PageUtils.WidgetClasses[classname] = widgetclass;
+        console.log("AddClass")
     }
 
     static loadPageConfig() {
@@ -196,27 +184,42 @@ class PageUtils {
         return `${widget.type}`;
     }
 
-    static renderWidgets() {
-        let widgetsJson = PageUtils.getPageWidgets();
-        let widgets = [];
-        for(var i in widgetsJson) {
-            let widget = widgetsJson[i];
-            const GenericWidget = PageUtils.getWidgetTag(widget);
-            widgets.push(React.createElement(PageUtils.WidgetClasses[GenericWidget], {key: widget.id, title: widget.title, id: widget.id, width: widget.width, height: widget.height, variables: widget.variables, kwargs: widget.kwargs}, null));
-            console.log(PageUtils.WidgetClasses);
-            //widgets.push(<GenericWidget key={i.id} title={i.title} id={i.id} width={i.width} height={i.height} variables={i.variables} kwargs={i.kwargs} />);
-        }
-        return widgets;
+    static loadGraphs(){
+        widgits = PageUtils.getPageWidgets()
+        var ctx = document.getElementById('canvas').getContext('2d');
+            window.myMixedChart = new Chart(ctx, {
+                type: 'bar',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'Chart.js Combo Bar Line Chart'
+                    },
+                    tooltips: {
+                        mode: 'index',
+                        intersect: true
+                    }
+                }
+            });
     }
 
-    static renderSetting() {
+    static renderWidgets() {
+        console.log(PageUtils.WidgetClasses)
+        var widgetX = 0;
         let widgetsJson = PageUtils.getPageWidgets();
         let widgets = [];
         for(var i in widgetsJson) {
             let widget = widgetsJson[i];
+            let noResize = "yes"
             const GenericWidget = PageUtils.getWidgetTag(widget);
-            widgets.push(React.createElement(PageUtils.WidgetClasses[GenericWidget], {key: widget.id, title: widget.title, id: widget.id, width: widget.width, height: widget.height, variables: widget.variables, kwargs: widget.kwargs}, null));
-
+            console.log(GenericWidget);
+            if(widget.resize){
+                noResize = "no"
+            }
+            widgets.push(React.createElement(PageUtils.WidgetClasses[GenericWidget], {key: widget.id, title: widget.title, id: widget.id, width: widget.width, height: widget.height, variables: widget.variables, kwargs: widget.kwargs, noResize: noResize, x: widgetX}, null));
+            //widgets.push(<GenericWidget key={i.id} title={i.title} id={i.id} width={i.width} height={i.height} variables={i.variables} kwargs={i.kwargs} />);
+            widgetX += 7;
         }
         return widgets;
     }
