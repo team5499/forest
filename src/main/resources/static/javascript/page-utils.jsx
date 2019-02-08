@@ -10,7 +10,7 @@ export default class PageUtils {
 
     static loadPageConfig() {
         var newconfig = {};
-        let success = false;
+        var success = false;
         $.getJSON({
             url: '/config',
             async: false
@@ -23,22 +23,20 @@ export default class PageUtils {
     }
 
     static sendPageConfig() {
-        let success = false;
         $.ajax({
-            async: false,
+            async: true,
             method: 'POST',
             url: '/config',
             contentType: 'application/json',
             data: JSON.stringify(PageUtils.getPageConfig()),
             success: function () {
-                success = true;
             },
             error: function (jqxhr, status, error) {
 
                 console.warn('error sending config json: ' + status + ' : ' + error);
             }
         });
-        return success;
+        return true;
     }
 
     static getPageConfig() {
