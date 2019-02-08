@@ -77,7 +77,7 @@ export default class SocketHandler {
         callbacks[key].splice(id, 1);
     }
 
-    static getVariable(key) {
+    static _getVariable(key) {
         if((!(key in variables)) && (!(key in variableUpdates))) {
             console.warn("variable " + key + " not found!");
             return undefined;
@@ -88,7 +88,43 @@ export default class SocketHandler {
         }
     }
 
-    static setVariable(key, value) {
+    static _setVariable(key, value) {
         variableUpdates[key] = value;
+    }
+
+    static setInt(key, value) {
+        let newValue = parseInt(value);
+        SocketHandler._setVariable(key, newValue);
+    }
+
+    static setDouble(key, value) {
+        let newValue = parseFloat(value);
+        SocketHandler._setVariable(key, newValue);
+    }
+
+    static setString(key, value) {
+        let newValue = String(value);
+        SocketHandler._setVariable(key, newValue);
+    }
+
+    static setBoolean(key, value) {
+        let newValue = Boolean(value);
+        SocketHandler._setVariable(key, newValue);
+    }
+
+    static getInt(key) {
+        return parseInt(SocketHandler._getVariable(key));
+    }
+
+    static getDouble(key) {
+        return parseFloat(SocketHandler._getVariable(key));
+    }
+
+    static getString(key) {
+        return String(SocketHandler._getVariable(key));
+    }
+
+    static getBoolean(key) {
+        return Boolean(SocketHandler._getVariable(key));
     }
 }

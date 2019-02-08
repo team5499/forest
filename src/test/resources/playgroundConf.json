@@ -10,7 +10,7 @@
           "id": "testVarEditor",
           "kwargs": {},
           "title": "Test Variable",
-          "type": "RawVarEditor",
+          "type": "StringEditor",
           "variables": {
             "target": "TEST"
           },
@@ -21,7 +21,7 @@
           "id": "deekVarEditor",
           "kwargs": {},
           "title": "Deek Variable",
-          "type": "RawVarEditor",
+          "type": "StringEditor",
           "variables": {
             "target": "DEEK"
           },

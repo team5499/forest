@@ -1,39 +1,38 @@
-import PageUtils from "page-utils";
-import SocketHandler from "socket-handler";
+import PageUtils from 'page-utils';
 
-class RawVarEditor {}
+class StringEditor {}
 
-RawVarEditor.Body = class extends React.Component {
+StringEditor.Body = class extends React.Component {
     constructor(props) {
         super(props);
+        this.props.setSettingsCallback((settings) => this.onSettingsChange(settings));
         this.state = {
             targetName: this.props.variables.target,
-            targetValue: SocketHandler.getVariable(this.props.variables.target) || ""
+            targetValue: this.props.getString(this.props.variables.target)
         };
-        this.callbackId = SocketHandler.addVariableListener(this.state.targetName, (key, value) => this.updateState(key, value));
+        this.callbackId = this.props.addVarListener(this.state.targetName, (key, value) => this.updateState(key, value));
     }
 
     updateState(key, value) {
-        this.setState({targetValue: value || ""});
+        this.setState({targetValue: value});
     }
 
     onSettingsChange(settings) {
-        let widget = PageUtils.getPageWidget(this.props.id);
-        SocketHandler.removeVariableListener(this.state.targetName);
+        this.props.removeVarListener(this.state.targetName);
         // do something with success, and also update event listener for variable changes
         this.setState({
             targetName: settings.target,
-            targetValue: SocketHandler.getVariable(settings.target) || ""
+            targetValue: this.props.getString(settings.target)
         });
-        this.callbackId = SocketHandler.addVariableListener(this.state.updateName, (value) => this.updateValue(value));
+        this.callbackId = this.props.addVarListener(this.state.targetName, (key, value) => this.updateState(key, value));
     }
 
     onVarSave() {
-        SocketHandler.setVariable(this.state.targetName, this.state.targetValue);
+        this.props.setString(this.state.targetName, this.state.targetValue);
     }
 
     onFieldEdit(e) {
-        this.updateValue(e.target.value)
+        this.updateState(this.state.targetName, e.target.value);
     }
 
     render() {
@@ -45,7 +44,8 @@ RawVarEditor.Body = class extends React.Component {
         );
     }
 }
-RawVarEditor.Settings = class extends React.Component {
+
+StringEditor.Settings = class extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -55,6 +55,10 @@ RawVarEditor.Settings = class extends React.Component {
 
     onSettingsSave() {
         console.log("save settings with target: " + this.state.targetName)
+        let settings = {
+            target: this.state.targetName
+        };
+        this.props.settingsCallback(settings);
     }
 
     onSettingsEdit(e) {
@@ -68,7 +72,7 @@ RawVarEditor.Settings = class extends React.Component {
     }
 }
 
-export default RawVarEditor;
+export default StringEditor;
 
 // make sure to do this for every widget
-PageUtils.addWidgetClass('RawVarEditor', RawVarEditor);
+PageUtils.addWidgetClass('StringEditor', StringEditor);
