@@ -44,7 +44,6 @@ class Graph(vararg keys: String) {
 //         borderColor: window.chartColors.blue,
 //         borderWidth: 2,
 //         fill: false,
-//         data: [
-//         ]
+//         data: []
 //     }
 // }

@@ -1,4 +1,4 @@
-class RawVarEditor extends React.Component {
+class Chart extends React.Component {
 
     constructor(props) {
         super(props);
@@ -93,4 +93,4 @@ class RawVarEditor extends React.Component {
 }
 
 // make sure to do this for every widget
-PageUtils.addWidgetClass('RawVarEditor', RawVarEditor);
+PageUtils.addWidgetClass('Chart', Chart);

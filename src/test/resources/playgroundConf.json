@@ -16,7 +16,7 @@
           "id": "testGraphing",
           "kwargs": {},
           "title": "Graph",
-          "type": "Chart",
+          "type": "chart",
           "width": "6",
           "xAxis": "Time",
           "yAxis": "Value"
