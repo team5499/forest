@@ -12,7 +12,15 @@ export default class SocketHandler {
         socket.onopen = SocketHandler.onopen
         socket.onclose = SocketHandler.onclose
         socket.onmessage = SocketHandler.onmessage
+    }
 
+    static isConnected() {
+        return isConnected;
+    }
+
+    static onopen(event) {
+        isConnected = true;
+        console.warn("Robot connected! Event: " + event)
         broadcastInterval = window.setInterval(function() {
             // if changes, broadcast them
             if (Object.keys(variableUpdates).length > 0) {
@@ -24,15 +32,6 @@ export default class SocketHandler {
             }
 
         }, 1000.0 / BROADCAST_INTERVAL);
-    }
-
-    static isConnected() {
-        return isConnected;
-    }
-
-    static onopen(event) {
-        isConnected = true;
-        console.warn("Robot connected! Event: " + event)
     }
 
     static onclose(event) {
