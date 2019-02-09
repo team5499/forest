@@ -1,26 +1,25 @@
 package tests
 
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.BeforeEach
 
 import org.openqa.selenium.WebDriver
-import org.openqa.selenium.phantomjs.PhantomJSDriver
-import org.openqa.selenium.phantomjs.PhantomJSDriverService
-import org.openqa.selenium.remote.DesiredCapabilities
+import org.openqa.selenium.chrome.ChromeDriver
 
 class WebdriverTest {
 
-    var caps: DesiredCapabilities
-    var driver: WebDriver
+    lateinit var driver: WebDriver
+        private set
 
-    init {
-        caps = DesiredCapabilities()
-        caps.setJavascriptEnabled(true)
-        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, "src/test/resources/phantomjs")
-        driver = PhantomJSDriver(caps)
+    @BeforeEach
+    fun setup() {
+        System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver")
+        driver = ChromeDriver()
     }
 
     @Test
     fun webTest() {
         driver.get("https://example.com")
+        driver.quit()
     }
 }
