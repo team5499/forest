@@ -15,7 +15,9 @@ class PlaygroundTest {
         Dashboard.start(this, "playgroundConf.json")
         Dashboard.setVariable("TEST", "testvalue")
         Dashboard.setVariable("DEEK", "anothervalue")
+        Dashboard.setVariable("SWITCH", "thirdvalue")
         Dashboard.setVariable("INTEG", 3)
+        Dashboard.setVariable("DOUBLE", 5.6)
         Dashboard.addVarListener("TEST", {
             key: String, value: Any? ->
             println("$key : $value")
@@ -25,6 +27,10 @@ class PlaygroundTest {
             println("$key : $value")
         })
         Dashboard.addVarListener("INTEG", {
+            key: String, value: Any? ->
+            println("$key : $value")
+        })
+        Dashboard.addVarListener("DOUBLE", {
             key: String, value: Any? ->
             println("$key : $value")
         })

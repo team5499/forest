@@ -37,6 +37,17 @@
             "target": "INTEG"
           },
           "width": "15rem"
+        },
+        {
+          "height": "auto",
+          "id": "doubleVarEditor",
+          "kwargs": {},
+          "title": "Double Variable",
+          "type": "DoubleEditor",
+          "variables": {
+            "target": "DOUBLE"
+          },
+          "width": "15rem"
         }
       ]
     }
