@@ -5,7 +5,7 @@ class IntEditor {}
 IntEditor.Body = class extends React.Component {
     constructor(props) {
         super(props);
-        this.props.setSettingsCallback((settings) => this.onSettingsChange(settings));
+        this.props.setSettingsSaveCallback((settings) => this.settingsSave(settings));
         let newValue = (this.props.getInt(this.props.variables.target) === undefined) ? "" : this.props.getInt(this.props.variables.target);
         this.state = {
             targetName: this.props.variables.target,
@@ -18,14 +18,14 @@ IntEditor.Body = class extends React.Component {
         this.setState({targetValue: value});
     }
 
-    onSettingsChange(settings) {
+    settingsSave(settings) {
         this.props.removeVarListener(this.state.targetName);
         let newValue = (this.props.getInt(settings.target) === undefined) ? "" : this.props.getInt(settings.target);
         this.setState({
             targetName: settings.target,
             targetValue: newValue
         });
-        this.callbackId = this.props.registerVarListener(this.state.targetName, (key, value) => this.updateState(key, value));
+        this.callbackId = this.props.registerVarListener(settings.target, (key, value) => this.updateState(key, value));
     }
 
     onVarSave() {
@@ -50,7 +50,7 @@ IntEditor.Body = class extends React.Component {
 IntEditor.Settings = class extends React.Component {
     constructor(props) {
         super(props);
-        this.props.setSettingsSaveCallback(() => this.settingsData())
+        this.props.setSettingsDataCallback(() => this.settingsData())
         this.state = {
             targetName: this.props.variables.target
         };

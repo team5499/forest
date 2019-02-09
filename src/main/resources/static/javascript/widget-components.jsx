@@ -4,25 +4,41 @@ export class WidgetContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            settingsCallback: () => console.error("No settings callback set!"),
-            settingsSave: () => console.error("No settings save callback set!")
+            settingsSave: () => console.error("No settings save callback set!"),
+            settingsData: () => console.error("No settings data callback set!")
         }
     }
 
-    setSettingsCallback(callback) {
-        this.setState({
-            settingsCallback: (settings) => callback(settings)
-        });
-    }
-
+    /**
+    * This sets the callback that will get called with the current settings
+    * when the settings are updated.
+    *
+    * @param {function} callback the callback to call
+    */
     setSettingsSaveCallback(callback) {
         this.setState({
-            settingsSave: () => callback()
+            settingsSave: (settings) => callback(settings)
         });
     }
 
+    /**
+    * This sets the callback that will get the current
+    * settings data when the save settings button is pressed.
+    *
+    * @param {function} callback the callback to call
+    */
+    setSettingsDataCallback(callback) {
+        this.setState({
+            settingsData: () => callback()
+        });
+    }
+
+    /**
+     * This function gets called when the settings save button is pressed,
+     * and sends the updated settings to the body of the widget.
+     */
     onSettingsSave() {
-        this.state.settingsCallback(this.state.settingsSave());
+        this.state.settingsSave(this.state.settingsData());
     }
 
     render() {
@@ -45,7 +61,7 @@ export class WidgetContainer extends React.Component {
                             getString: (key) => SocketHandler.getString(key),
                             getBoolean: (key) => SocketHandler.getBoolean(key),
 
-                            setSettingsCallback: (callback) => this.setSettingsCallback(callback),
+                            setSettingsSaveCallback: (callback) => this.setSettingsSaveCallback(callback),
 
                             title: this.props.widgetConfig.title,
                             id: this.props.widgetConfig.id,
@@ -54,7 +70,7 @@ export class WidgetContainer extends React.Component {
                             variables: this.props.widgetConfig.variables,
                             kwargs: this.props.widgetConfig.kwargs}, null)}
                 </WidgetBody>
-                <WidgetSettings title={this.props.widgetConfig.title} id={this.props.widgetConfig.id} onSave={() => this.onSettingsSave()} setSettingsSaveCallback={(callback) => this.setSettingsSaveCallback(callback)}>
+                <WidgetSettings title={this.props.widgetConfig.title} id={this.props.widgetConfig.id} onSave={() => this.onSettingsSave()}>
                     {React.createElement(this.props.widgetClass.Settings,
                         {registerVarListener: (variable, callback) => SocketHandler.addVariableListener(variable, callback),
                             removeVarListener: (variable, id) => SocketHandler.removeVariableListener(variable, id),
@@ -67,7 +83,7 @@ export class WidgetContainer extends React.Component {
                             getString: (key) => SocketHandler.getString(key),
                             getBoolean: (key) => SocketHandler.getBoolean(key),
 
-                            setSettingsSaveCallback: (callback) => this.setSettingsSaveCallback(callback),
+                            setSettingsDataCallback: (callback) => this.setSettingsDataCallback(callback),
 
                             title: this.props.widgetConfig.title,
                             id: this.props.widgetConfig.id,

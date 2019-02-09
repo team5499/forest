@@ -5,7 +5,7 @@ class DoubleEditor {}
 DoubleEditor.Body = class extends React.Component {
     constructor(props) {
         super(props);
-        this.props.setSettingsCallback((settings) => this.onSettingsChange(settings));
+        this.props.setSettingsSaveCallback((settings) => this.settingsSave(settings));
         let newValue = (this.props.getDouble(this.props.variables.target) === undefined) ? '' : this.props.getDouble(this.props.variables.target);
         this.state = {
             targetName: this.props.variables.target,
@@ -18,7 +18,7 @@ DoubleEditor.Body = class extends React.Component {
         this.setState({targetValue: value});
     }
 
-    onSettingsChange(settings) {
+    settingsSave(settings) {
         this.props.removeVarListener(this.state.targetName);
         // do something with success, and also update event listener for variable changes
         let newValue = (this.props.getDouble(settings.target) === undefined) ? '' : this.props.getDouble(settings.target);
@@ -26,7 +26,7 @@ DoubleEditor.Body = class extends React.Component {
             targetName: settings.target,
             targetValue: newValue
         });
-        this.callbackId = this.props.registerVarListener(this.state.targetName, (key, value) => this.updateState(key, value));
+        this.callbackId = this.props.registerVarListener(settings.target, (key, value) => this.updateState(key, value));
     }
 
     onVarSave() {
@@ -51,7 +51,7 @@ DoubleEditor.Body = class extends React.Component {
 DoubleEditor.Settings = class extends React.Component {
     constructor(props) {
         super(props);
-        //this.props.setSettingsSaveCallback(() => this.settingsData())
+        this.props.setSettingsDataCallback(() => this.settingsData());
         this.state = {
             targetName: this.props.variables.target
         };

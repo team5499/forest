@@ -25,7 +25,7 @@
           "variables": {
             "target": "DEEK"
           },
-          "width": "15rem"
+          "width": "12rem"
         },
         {
           "height": "auto",
@@ -36,7 +36,7 @@
           "variables": {
             "target": "INTEG"
           },
-          "width": "15rem"
+          "width": "12rem"
         },
         {
           "height": "auto",
@@ -47,7 +47,7 @@
           "variables": {
             "target": "DOUBLE"
           },
-          "width": "15rem"
+          "width": "12rem"
         }
       ]
     }
