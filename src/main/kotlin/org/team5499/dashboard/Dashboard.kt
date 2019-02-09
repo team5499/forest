@@ -23,7 +23,8 @@ typealias VariableCallback = (String, Any?) -> Unit
  */
 object Dashboard {
     private var config: Config = Config()
-    private var callbacks: HashMap<String, MutableList<VariableCallback>> = HashMap()
+    public var callbacks: HashMap<String, MutableList<VariableCallback>> = HashMap()
+        private set
     public var variables: JSONObject = JSONObject()
         get() {
             synchronized(field) {
