@@ -19,7 +19,7 @@
           "title": "Test Graph",
           "type": "Graph",
           "variables": {
-            "target": "DEEK"
+            "target": "Mutable"
           },
           "width": "6",
           "xAxis": "Time",

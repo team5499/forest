@@ -10,45 +10,6 @@ class Graph extends React.Component {
         this.callbackId = SocketHandler.addVariableListener(this.state.targetName, (value) => this.updateState(value));
     }
 
-    config = {
-        type: 'line',
-        data: {
-            labels: [],
-            datasets: []
-        },
-        options: {
-            responsive: true,
-            title: {
-                display: true,
-                text: this.props.title
-            },
-            tooltips: {
-                mode: 'index',
-                intersect: false,
-            },
-            hover: {
-                mode: 'nearest',
-                intersect: true
-            },
-            scales: {
-                xAxes: [{
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: this.props.xAxes
-                    }
-                }],
-                yAxes: [{
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: this.props.yAxes
-                    }
-                }]
-            }
-        }
-    };
-
     chartObject = new Chart($('#' + this.props.id + '_canvas'), this.config)
 
     updateState(xValues, datasets) {

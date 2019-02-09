@@ -101,6 +101,33 @@ class PageUtils {
         console.log("AddClass")
     }
 
+    static loadGraphs() {
+        for(i in $('.canvas').length){
+            let ctx = canvas.getContext("2d")
+            let config = config = {
+                type: 'line',
+                data: {labels: [], datasets: []},
+                options: {
+                    responsive: true,
+                    title: {display: true, text: this.props.title},
+                    tooltips: {mode: 'index', intersect: false,},
+                    hover: {mode: 'nearest', intersect: true},
+                    scales: {
+                        xAxes: [{
+                            display: true,
+                            scaleLabel: {display: true, labelString: this.props.xAxes}
+                        }],
+                        yAxes: [{
+                            display: true,
+                            scaleLabel: {display: true, labelString: this.props.yAxes}
+                        }]
+                    }
+                }
+            };
+            let graph = new Chart(ctx, config);
+        };
+    }
+
     static loadPageConfig() {
         var newConfig = {};
         let success = false;
@@ -182,26 +209,6 @@ class PageUtils {
 
     static getWidgetTag(widget) {
         return `${widget.type}`;
-    }
-
-    static loadGraphs(){
-        widgits = PageUtils.getPageWidgets()
-        var ctx = document.getElementById('canvas').getContext('2d');
-            window.myMixedChart = new Chart(ctx, {
-                type: 'bar',
-                data: chartData,
-                options: {
-                    responsive: true,
-                    title: {
-                        display: true,
-                        text: 'Chart.js Combo Bar Line Chart'
-                    },
-                    tooltips: {
-                        mode: 'index',
-                        intersect: true
-                    }
-                }
-            });
     }
 
     static renderWidgets() {
