@@ -10,7 +10,7 @@ StringEditor.Body = class extends React.Component {
             targetName: this.props.variables.target,
             targetValue: this.props.getString(this.props.variables.target)
         };
-        this.callbackId = this.props.addVarListener(this.state.targetName, (key, value) => this.updateState(key, value));
+        this.callbackId = this.props.registerVarListener(this.state.targetName, (key, value) => this.updateState(key, value));
     }
 
     updateState(key, value) {
@@ -24,7 +24,7 @@ StringEditor.Body = class extends React.Component {
             targetName: settings.target,
             targetValue: this.props.getString(settings.target)
         });
-        this.callbackId = this.props.addVarListener(this.state.targetName, (key, value) => this.updateState(key, value));
+        this.callbackId = this.props.registerVarListener(this.state.targetName, (key, value) => this.updateState(key, value));
     }
 
     onVarSave() {

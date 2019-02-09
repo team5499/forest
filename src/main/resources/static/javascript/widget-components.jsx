@@ -34,7 +34,7 @@ export class WidgetContainer extends React.Component {
                             getString: (key) => SocketHandler.getString(key),
                             getBoolean: (key) => SocketHandler.getBoolean(key),
 
-                            setSettingsCallback: (callback) => setSettingsCallback(callback),
+                            setSettingsCallback: (callback) => this.setSettingsCallback(callback),
 
                             title: this.props.widgetConfig.title,
                             id: this.props.widgetConfig.id,
