@@ -4,7 +4,8 @@ export class WidgetContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            settingsCallback: () => console.error("No settings callback set!")
+            settingsCallback: () => console.error("No settings callback set!"),
+            settingsSave: () => console.error("No settings save callback set!")
         }
     }
 
@@ -12,6 +13,16 @@ export class WidgetContainer extends React.Component {
         this.setState({
             settingsCallback: (settings) => callback(settings)
         });
+    }
+
+    setSettingsSaveCallback(callback) {
+        this.setState({
+            settingsSave: () => callback()
+        });
+    }
+
+    onSettingsSave() {
+        this.state.settingsCallback(this.state.settingsSave());
     }
 
     render() {
@@ -43,7 +54,7 @@ export class WidgetContainer extends React.Component {
                             variables: this.props.widgetConfig.variables,
                             kwargs: this.props.widgetConfig.kwargs}, null)}
                 </WidgetBody>
-                <WidgetSettings title={this.props.widgetConfig.title} id={this.props.widgetConfig.id} onSave={() => console.log("save settings!")}>
+                <WidgetSettings title={this.props.widgetConfig.title} id={this.props.widgetConfig.id} onSave={() => this.onSettingsSave()} setSettingsSaveCallback={(callback) => this.setSettingsSaveCallback(callback)}>
                     {React.createElement(this.props.widgetClass.Settings,
                         {registerVarListener: (variable, callback) => SocketHandler.addVariableListener(variable, callback),
                             removeVarListener: (variable, id) => SocketHandler.removeVariableListener(variable, id),
@@ -56,7 +67,7 @@ export class WidgetContainer extends React.Component {
                             getString: (key) => SocketHandler.getString(key),
                             getBoolean: (key) => SocketHandler.getBoolean(key),
 
-                            settingsCallback: (settings) => this.state.settingsCallback(settings),
+                            setSettingsSaveCallback: (callback) => this.setSettingsSaveCallback(callback),
 
                             title: this.props.widgetConfig.title,
                             id: this.props.widgetConfig.id,

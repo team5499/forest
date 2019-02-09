@@ -50,17 +50,18 @@ StringEditor.Body = class extends React.Component {
 StringEditor.Settings = class extends React.Component {
     constructor(props) {
         super(props);
+        this.props.setSettingsSaveCallback(() => this.settingsData())
         this.state = {
             targetName: this.props.variables.target
         };
     }
 
-    onSettingsSave() {
+    settingsData() {
         console.log("save settings with target: " + this.state.targetName)
         let settings = {
             target: this.state.targetName
         };
-        this.props.settingsCallback(settings);
+        return settings;
     }
 
     onSettingsEdit(e) {

@@ -50,17 +50,18 @@ IntEditor.Body = class extends React.Component {
 IntEditor.Settings = class extends React.Component {
     constructor(props) {
         super(props);
+        this.props.setSettingsSaveCallback(() => this.settingsData())
         this.state = {
             targetName: this.props.variables.target
         };
     }
 
-    onSettingsSave() {
-        console.log('save settings with target: ' + this.state.targetName)
+    settingsData() {
+        console.log("save settings with target: " + this.state.targetName)
         let settings = {
             target: this.state.targetName
         };
-        this.props.settingsCallback(settings);
+        return settings;
     }
 
     onSettingsEdit(e) {
@@ -69,7 +70,7 @@ IntEditor.Settings = class extends React.Component {
 
     render() {
         return (
-            <input className='form-control mb-2' type='text' placeholder='variable' value={this.state.targetName} onChange={(e) => this.onSettingsEdit(e)} />
+            <input className='form-control mb-2' type='text' placeholder="variable" value={this.state.targetName} onChange={(e) => this.onSettingsEdit(e)} />
         );
     }
 }
