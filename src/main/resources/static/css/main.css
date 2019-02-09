@@ -1,5 +1,4 @@
 body{
-  overflow: hidden;
 }
 .navbar {
   background-color: #0b3311;
@@ -154,7 +153,6 @@ body {
   margin: 0px;
   width: 100%;
   display: inline-block;
-  min-width: 1484px;
 }
 
 .grid-stack-item {
