@@ -17,7 +17,7 @@ export class WidgetContainer extends React.Component {
     */
     setSettingsSaveCallback(callback) {
         this.setState({
-            settingsSave: (settings) => callback(settings)
+            settingsSave: (newConfig) => callback(newConfig)
         });
     }
 
@@ -29,7 +29,7 @@ export class WidgetContainer extends React.Component {
     */
     setSettingsDataCallback(callback) {
         this.setState({
-            settingsData: () => callback()
+            settingsData: (config) => callback(config)
         });
     }
 
@@ -38,7 +38,8 @@ export class WidgetContainer extends React.Component {
      * and sends the updated settings to the body of the widget.
      */
     onSettingsSave() {
-        this.state.settingsSave(this.state.settingsData());
+        let currentWidgetConfig = this.props.getWidgetConfig();
+        this.state.settingsSave(this.state.settingsData(currentWidgetConfig));
     }
 
     render() {

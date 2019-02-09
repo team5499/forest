@@ -5,8 +5,8 @@ class StringEditor {}
 StringEditor.Body = class extends React.Component {
     constructor(props) {
         super(props);
-        this.props.setSettingsSaveCallback((settings) => this.settingsSave(settings));
-        let newValue = (this.props.getString(this.props.variables.target) === undefined) ? "" : this.props.getString(this.props.variables.target);
+        this.props.setSettingsSaveCallback((newConfig) => this.settingsSave(newConfig));
+        let newValue = (this.props.getString(this.props.variables.target) === undefined) ? '' : this.props.getString(this.props.variables.target);
         this.state = {
             targetName: this.props.variables.target,
             targetValue: newValue
@@ -18,15 +18,15 @@ StringEditor.Body = class extends React.Component {
         this.setState({targetValue: value});
     }
 
-    settingsSave(settings) {
+    settingsSave(newConfig) {
         this.props.removeVarListener(this.state.targetName);
         // do something with success, and also update event listener for variable changes
-        let newValue = (this.props.getString(settings.target) === undefined) ? "" : this.props.getString(settings.target);
+        let newValue = (this.props.getString(newConfig.variables.target) === undefined) ? '' : this.props.getString(newConfig.variables.target);
         this.setState({
-            targetName: settings.target,
+            targetName: newConfig.variables.target,
             targetValue: newValue
         });
-        this.callbackId = this.props.registerVarListener(settings.target, (key, value) => this.updateState(key, value));
+        this.callbackId = this.props.registerVarListener(newConfig.variables.target, (key, value) => this.updateState(key, value));
     }
 
     onVarSave() {
@@ -40,7 +40,7 @@ StringEditor.Body = class extends React.Component {
     render() {
         return (
             <div>
-                <input className='form-control mb-2' type='text' placeholder="value" value={this.state.targetValue} onChange={(e) => this.onFieldEdit(e)} />
+                <input className='form-control mb-2' type='text' placeholder='value' value={this.state.targetValue} onChange={(e) => this.onFieldEdit(e)} />
                 <button className='btn btn-primary' onClick={() => this.onVarSave()}>Submit</button>
             </div>
         );
@@ -50,18 +50,16 @@ StringEditor.Body = class extends React.Component {
 StringEditor.Settings = class extends React.Component {
     constructor(props) {
         super(props);
-        this.props.setSettingsDataCallback(() => this.settingsData())
+        this.props.setSettingsDataCallback((config) => this.settingsData(config));
         this.state = {
             targetName: this.props.variables.target
         };
     }
 
-    settingsData() {
-        console.log("save settings with target: " + this.state.targetName)
-        let settings = {
-            target: this.state.targetName
-        };
-        return settings;
+    settingsData(config) {
+        let newConfig = config;
+        newConfig.variables.target = this.state.targetName;
+        return newConfig;
     }
 
     onSettingsEdit(e) {
@@ -70,7 +68,7 @@ StringEditor.Settings = class extends React.Component {
 
     render() {
         return (
-            <input className='form-control mb-2' type='text' placeholder="variable" value={this.state.targetName} onChange={(e) => this.onSettingsEdit(e)} />
+            <input className='form-control mb-2' type='text' placeholder='variable' value={this.state.targetName} onChange={(e) => this.onSettingsEdit(e)} />
         );
     }
 }
