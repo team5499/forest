@@ -1,6 +1,5 @@
 export class WidgetContainer extends React.Component {
     render() {
-        console.log(this.props.x);
         return (
             <div className='card m-1 grid-stack-item' style={{display:'inline-block'}} id={this.props.id + '_card'} data-gs-no-resize={this.props.noResize} data-gs-width={this.props.width} data-gs-height={this.props.height} data-gs-x={this.props.x} data-gs-y={0}>
                 <div className='grid-stack-item-content'>

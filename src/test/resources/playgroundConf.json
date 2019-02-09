@@ -11,12 +11,16 @@
       "title": "Drive",
       "widgets": [
         {
-          "dataset": [],
-          "height": "3",
+          "height": "6",
           "id": "testGraphing",
           "kwargs": {
             "data": {
-              "datasets": [],
+              "datasets": [
+                {
+                  "data": [],
+                  "label": "X"
+                }
+              ],
               "labels": []
             },
             "options": {
@@ -62,7 +66,7 @@
           "variables": {
             "target": "Mutable"
           },
-          "width": "6"
+          "width": "18"
         },
         {
           "height": "3",

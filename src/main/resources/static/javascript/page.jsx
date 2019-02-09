@@ -1,7 +1,8 @@
 import PageUtils from "page-utils";
 import SocketHandler from "socket-handler";
 
-function loadGrid(w) {
+function loadGrid() {
+    let w = Math.floor(35 * ($('#gridstack').width()/1484));
     $(".grid-stack").gridstack({
         width: w,
         float: true,
@@ -22,13 +23,11 @@ $(function() { // runs when document finishes loading
             </div>,
             $('#reactapp')[ 0 ]
         );
-
-        loadGrid(35);
-        let maxWidth = $('#gridstack').width()
+        loadGrid();
         $(window).resize(() => {
-            let width = Math.floor(35 * ($('#gridstack').width()/maxWidth));
-            loadGrid(width);
+            loadGrid();
         })
+
     } else {
         let err = textStatus + ', ' + error;
         ReactDOM.render(

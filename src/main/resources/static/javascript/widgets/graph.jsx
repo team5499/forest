@@ -3,7 +3,6 @@ import PageUtils from "page-utils";
 import SocketHandler from "socket-handler";
 
 export default class Graph extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -13,16 +12,17 @@ export default class Graph extends React.Component {
         };
         this.callbackId = SocketHandler.addVariableListener(this.state.targetName, (value) => this.updateState(value));
         this.chartRef = React.createRef();
+        this.chartConfig = this.props.kwargs;
     }
 
+    //runs when componet is renderd into DOM
     componentDidMount(){
         let ctx = this.chartRef.current.getContext("2d");
-        let chart = new Chart(ctx, this.props.kwargs);
-        console.log(chart);
+        let chart = new Chart(ctx, this.chartConfig);
     }
 
-    updateState(xValues, datasets) {
-        config.labels = xValues
+    updateState() {
+        this.labels = xValues
         config.datasets = datasets
         chart.update()
     }
