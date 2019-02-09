@@ -14,6 +14,7 @@
           "height": "3",
           "id": "testVarEditor",
           "kwargs": {},
+          "resize": false,
           "title": "Test Variable",
           "type": "RawVarEditor",
           "variables": {
@@ -25,6 +26,7 @@
           "height": "3",
           "id": "deekVarEditor2",
           "kwargs": {},
+          "resize": true,
           "title": "Deek Variable",
           "type": "RawVarEditor",
           "variables": {
@@ -36,6 +38,7 @@
           "height": "3",
           "id": "deekVarEditor",
           "kwargs": {},
+          "resize": false,
           "title": "Deek Variable",
           "type": "RawVarEditor",
           "variables": {

@@ -153,6 +153,8 @@ body {
 .grid-stack {
   margin: 0px;
   width: 100%;
+  display: inline-block;
+  min-width: 1484px;
 }
 
 .grid-stack-item {
@@ -169,14 +171,11 @@ body {
 .grid-stack-placeholder {
   background: rgba(250, 250, 250, 0);
   box-shadow: none;
-  border-width: 3px;
+  border-width: 2px;
   border-style: dashed;
-  border-color: #149fff;
+  border-color: #d3d3d3;
 }
 
-.grid-stack > .grid-stack-item {
-  min-width: 2%;
-}
 .ui-draggble-handle{
   background: #6666;
   cursor: grab;

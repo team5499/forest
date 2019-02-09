@@ -1917,7 +1917,6 @@ function createElement(type, config, children) {
       }
     }
   }
-
   // Children can be more than one argument, and those are transferred onto
   // the newly allocated props object.
   var childrenLength = arguments.length - 2;
@@ -1935,7 +1934,6 @@ function createElement(type, config, children) {
     }
     props.children = childArray;
   }
-
   // Resolve default props
   if (type && type.defaultProps) {
     var defaultProps = type.defaultProps;
