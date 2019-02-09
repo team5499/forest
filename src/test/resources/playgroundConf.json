@@ -14,16 +14,55 @@
           "dataset": [],
           "height": "3",
           "id": "testGraphing",
-          "kwargs": {},
+          "kwargs": {
+            "data": {
+              "datasets": [],
+              "labels": []
+            },
+            "options": {
+              "hover": {
+                "intersect": true,
+                "mode": "nearest"
+              },
+              "responsive": true,
+              "scales": {
+                "xAxes": [
+                  {
+                    "display": true,
+                    "scaleLabel": {
+                      "display": true,
+                      "labelString": "Time"
+                    }
+                  }
+                ],
+                "yAxes": [
+                  {
+                    "display": true,
+                    "scaleLabel": {
+                      "display": true,
+                      "labelString": "Value"
+                    }
+                  }
+                ]
+              },
+              "title": {
+                "display": true,
+                "text": "Graph"
+              },
+              "tooltips": {
+                "intersect": false,
+                "mode": "index"
+              }
+            },
+            "type": "line"
+          },
           "resize": true,
           "title": "Test Graph",
           "type": "Graph",
           "variables": {
             "target": "Mutable"
           },
-          "width": "6",
-          "xAxis": "Time",
-          "yAxis": "Value"
+          "width": "6"
         },
         {
           "height": "3",

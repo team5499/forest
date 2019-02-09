@@ -1,4 +1,8 @@
-class RawVarEditor extends React.Component {
+import {WidgetContainer, WidgetBody, WidgetSettings} from "widget-components";
+import PageUtils from "page-utils";
+import SocketHandler from "socket-handler";
+
+export default class RawVarEditor extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -6,10 +10,10 @@ class RawVarEditor extends React.Component {
             updateName: this.props.variables.target,
             targetValue: SocketHandler.getVariable(this.props.variables.target) || ""
         };
-        this.callbackId = SocketHandler.addVariableListener(this.state.targetName, (value) => this.updateState(value));
+        this.callbackId = SocketHandler.addVariableListener(this.state.targetName, (key, value) => this.updateState(key, value));
     }
 
-    updateState(value) {
+    updateState(key, value) {
         this.setState({targetValue: value || ""});
     }
 

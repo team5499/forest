@@ -1,4 +1,8 @@
-class Graph extends React.Component {
+import {WidgetContainer, WidgetBody, WidgetSettings} from "widget-components";
+import PageUtils from "page-utils";
+import SocketHandler from "socket-handler";
+
+export default class Graph extends React.Component {
 
     constructor(props) {
         super(props);
@@ -8,9 +12,14 @@ class Graph extends React.Component {
             targetValue: SocketHandler.getVariable(this.props.variables.target) || ""
         };
         this.callbackId = SocketHandler.addVariableListener(this.state.targetName, (value) => this.updateState(value));
+        this.chartRef = React.createRef();
     }
 
-    chartObject = new Chart($('#' + this.props.id + '_canvas'), this.config)
+    componentDidMount(){
+        let ctx = this.chartRef.current.getContext("2d");
+        let chart = new Chart(ctx, this.props.kwargs);
+        console.log(chart);
+    }
 
     updateState(xValues, datasets) {
         config.labels = xValues
@@ -45,7 +54,7 @@ class Graph extends React.Component {
         return ([
             <WidgetContainer key={this.props.id + '_main'} title={this.props.title} width={this.props.width} height={this.props.height} id={this.props.id}>
                 <WidgetBody title={this.props.title} id={this.props.id}>
-                    <canvas id={this.props.id + '_canvas'} className='chart'></canvas>
+                    <canvas id={this.props.id + '_canvas'} ref={this.chartRef} className='chart'></canvas>
                 </WidgetBody>
             </WidgetContainer>,
             <WidgetSettings key={this.props.id + '_settings'} title={this.props.title} id={this.props.id} onSave={() => this.onSettingsSave()}>
