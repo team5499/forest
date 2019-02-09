@@ -1,12 +1,12 @@
 import PageUtils from 'page-utils';
 
-class StringEditor {}
+class IntEditor {}
 
-StringEditor.Body = class extends React.Component {
+IntEditor.Body = class extends React.Component {
     constructor(props) {
         super(props);
         this.props.setSettingsCallback((settings) => this.onSettingsChange(settings));
-        let newValue = (this.props.getString(this.props.variables.target) === undefined) ? "" : this.props.getString(this.props.variables.target);
+        let newValue = (this.props.getInt(this.props.variables.target) === undefined) ? "" : this.props.getInt(this.props.variables.target);
         this.state = {
             targetName: this.props.variables.target,
             targetValue: newValue
@@ -20,8 +20,7 @@ StringEditor.Body = class extends React.Component {
 
     onSettingsChange(settings) {
         this.props.removeVarListener(this.state.targetName);
-        // do something with success, and also update event listener for variable changes
-        let newValue = (this.props.getString(settings.target) === undefined) ? "" : this.props.getString(settings.target);
+        let newValue = (this.props.getInt(settings.target) === undefined) ? "" : this.props.getInt(settings.target);
         this.setState({
             targetName: settings.target,
             targetValue: newValue
@@ -30,24 +29,25 @@ StringEditor.Body = class extends React.Component {
     }
 
     onVarSave() {
-        this.props.setString(this.state.targetName, this.state.targetValue);
+        this.props.setInt(this.state.targetName, this.state.targetValue);
     }
 
     onFieldEdit(e) {
-        this.updateState(this.state.targetName, e.target.value);
+        let newValue = (e.target.value === "") ? "" : parseInt(e.target.value);
+        this.updateState(this.state.targetName, newValue);
     }
 
     render() {
         return (
             <div>
-                <input className='form-control mb-2' type='text' placeholder="value" value={this.state.targetValue} onChange={(e) => this.onFieldEdit(e)} />
+                <input className='form-control mb-2' type='number' step='1' placeholder='value' value={this.state.targetValue} onChange={(e) => this.onFieldEdit(e)} />
                 <button className='btn btn-primary' onClick={() => this.onVarSave()}>Submit</button>
             </div>
         );
     }
 }
 
-StringEditor.Settings = class extends React.Component {
+IntEditor.Settings = class extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -56,7 +56,7 @@ StringEditor.Settings = class extends React.Component {
     }
 
     onSettingsSave() {
-        console.log("save settings with target: " + this.state.targetName)
+        console.log('save settings with target: ' + this.state.targetName)
         let settings = {
             target: this.state.targetName
         };
@@ -69,12 +69,12 @@ StringEditor.Settings = class extends React.Component {
 
     render() {
         return (
-            <input className='form-control mb-2' type='text' placeholder="variable" value={this.state.targetName} onChange={(e) => this.onSettingsEdit(e)} />
+            <input className='form-control mb-2' type='text' placeholder='variable' value={this.state.targetName} onChange={(e) => this.onSettingsEdit(e)} />
         );
     }
 }
 
-export default StringEditor;
+export default IntEditor;
 
 // make sure to do this for every widget
-PageUtils.addWidgetClass('StringEditor', StringEditor);
+PageUtils.addWidgetClass('IntEditor', IntEditor);

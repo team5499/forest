@@ -112,18 +112,34 @@ export default class SocketHandler {
     }
 
     static getInt(key) {
-        return parseInt(SocketHandler._getVariable(key));
+        let value = SocketHandler._getVariable(key);
+        if(value === undefined) {
+            return undefined;
+        }
+        return parseInt(value);
     }
 
     static getDouble(key) {
-        return parseFloat(SocketHandler._getVariable(key));
+        let value = SocketHandler._getVariable(key);
+        if(value === undefined) {
+            return undefined;
+        }
+        return parseFloat(value);
     }
 
     static getString(key) {
-        return String(SocketHandler._getVariable(key));
+        let value = SocketHandler._getVariable(key);
+        if(value === undefined) {
+            return undefined;
+        }
+        return String(value);
     }
 
     static getBoolean(key) {
-        return Boolean(SocketHandler._getVariable(key));
+        let value = SocketHandler._getVariable(key);
+        if(value === undefined) {
+            return undefined;
+        }
+        return Boolean(value);
     }
 }

@@ -26,6 +26,17 @@
             "target": "DEEK"
           },
           "width": "15rem"
+        },
+        {
+          "height": "auto",
+          "id": "intVarEditor",
+          "kwargs": {},
+          "title": "Int Variable",
+          "type": "IntEditor",
+          "variables": {
+            "target": "INTEG"
+          },
+          "width": "15rem"
         }
       ]
     }
