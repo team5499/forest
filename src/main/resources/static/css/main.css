@@ -161,11 +161,11 @@ body {
 }
 
 .grid-stack-item-content {
+  left: 0px !important;
+  right: 0px !important;
 }
 
 .grid-stack-item-content .fa {
-  font-size: 64px;
-  display: block;
 }
 
 .grid-stack-placeholder {
