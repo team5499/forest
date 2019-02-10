@@ -19,6 +19,7 @@ import java.io.File
  *
  * Handles starting the server
  */
+@Suppress("TooManyFunctions")
 object Dashboard {
 
     private var config: Config = Config()
@@ -129,17 +130,59 @@ object Dashboard {
         SocketHandler.startBroadcastThread() // start broadcasting data
     }
 
-    fun setVariable(key: String, value: Any) {
+    fun setString(key: String, value: String) {
         variableUpdates.put(key, value)
     }
 
-    fun <T> getVariable(key: String): T {
+    fun setInt(key: String, value: Int) {
+        variableUpdates.put(key, value)
+    }
+
+    fun setBool(key: String, value: Boolean) {
+        variableUpdates.put(key, value)
+    }
+
+    fun setDouble(key: String, value: Double) {
+        variableUpdates.put(key, value)
+    }
+
+    fun getString(key: String): String {
         if ((!variables.has(key)) && (!variableUpdates.has(key))) {
             throw DashboardException("The variable with name " + key + " was not found.")
         } else if (variableUpdates.has(key)) {
-            return variableUpdates.get(key) as T
+            return variableUpdates.getString(key)
         } else {
-            return variables.get(key) as T
+            return variables.getString(key)
+        }
+    }
+
+    fun getInt(key: String): Int {
+        if ((!variables.has(key)) && (!variableUpdates.has(key))) {
+            throw DashboardException("The variable with name " + key + " was not found.")
+        } else if (variableUpdates.has(key)) {
+            return variableUpdates.getInt(key)
+        } else {
+            return variables.getInt(key)
+        }
+    }
+
+    fun getBool(key: String): Boolean {
+        if ((!variables.has(key)) && (!variableUpdates.has(key))) {
+            throw DashboardException("The variable with name " + key + " was not found.")
+        } else if (variableUpdates.has(key)) {
+            return variableUpdates.getBoolean(key)
+        } else {
+            return variables.getBoolean(key)
+        }
+    }
+
+    fun getDouble(key: String): Double {
+        if ((!variables.has(key)) && (!variableUpdates.has(key))) {
+            throw DashboardException("The variable with name " + key + " was not found.")
+        } else if (variableUpdates.has(key)) {
+            return variableUpdates.getDouble(key)
+        } else {
+            return variables.getDouble(key)
         }
     }
 
