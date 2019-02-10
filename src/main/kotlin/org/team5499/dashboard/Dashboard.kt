@@ -129,6 +129,18 @@ object Dashboard {
         SocketHandler.startBroadcastThread() // start broadcasting data
     }
 
+    fun stop() {
+        Spark.stop()
+    }
+
+    fun awaitInitialization() {
+        Spark.awaitInitialization()
+    }
+
+    fun awaitStop() {
+        Spark.awaitStop()
+    }
+
     fun setVariable(key: String, value: Any) {
         variableUpdates.put(key, value)
     }
