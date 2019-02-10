@@ -25,9 +25,11 @@ class WebdriverTest {
         @JvmStatic
         fun init() {
             System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver")
+            System.setProperty("webdriver.firefox.marionette", "src/test/resources/geckodriver")
             Dashboard.start(this, "webdriverConfig.json")
             Dashboard.awaitInitialization()
             driver = ChromeDriver()
+            println("done")
             actions = Actions(driver)
         }
 
