@@ -1,12 +1,98 @@
+import SocketHandler from 'socket-handler';
+
 export class WidgetContainer extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            settingsSave: () => console.error("No settings save callback set!"),
+            settingsData: () => console.error("No settings data callback set!")
+        }
+    }
+
+    /**
+    * This sets the callback that will get called with the current settings
+    * when the settings are updated.
+    *
+    * @param {function} callback the callback to call
+    */
+    setSettingsSaveCallback(callback) {
+        this.setState({
+            settingsSave: (newConfig) => callback(newConfig)
+        });
+    }
+
+    /**
+    * This sets the callback that will get the current
+    * settings data when the save settings button is pressed.
+    *
+    * @param {function} callback the callback to call
+    */
+    setSettingsDataCallback(callback) {
+        this.setState({
+            settingsData: (config) => callback(config)
+        });
+    }
+
+    /**
+     * This function gets called when the settings save button is pressed,
+     * and sends the updated settings to the body of the widget.
+     */
+    onSettingsSave() {
+        let currentWidgetConfig = this.props.getWidgetConfig();
+        this.state.settingsSave(this.state.settingsData(currentWidgetConfig));
+    }
+
     render() {
         return (
-            <div className='card m-1' style={{width: this.props.width, height: this.props.height, display:'inline-block'}} id={this.props.id + '_card'}>
+            <div className='card m-1' style={{width: this.props.widgetConfig.width, height: this.props.widgetConfig.height, display:'inline-block'}} id={this.props.widgetConfig.id + '_card'}>
                 <div className='card-header p-1'>
-                    <h4 className='m-0 d-inline'>{this.props.title}</h4>
-                    <button className='btn btn-light float-right d-inline p-0 m-1' type='button' data-toggle='modal' data-target={'#' + this.props.id + '_modal'}><h5 className='fas fa-cog m-0'></h5></button>
+                    <h4 className='m-0 d-inline'>{this.props.widgetConfig.title}</h4>
+                    <button className='btn btn-light float-right d-inline p-0 m-1' type='button' data-toggle='modal' data-target={'#' + this.props.widgetConfig.id + '_modal'}><h5 className='fas fa-cog m-0'></h5></button>
                 </div>
-                {this.props.children}
+                <WidgetBody title={this.props.widgetConfig.title} id={this.props.widgetConfig.id}>
+                    {React.createElement(this.props.widgetClass.Body,
+                        {registerVarListener: (variable, callback) => SocketHandler.addVariableListener(variable, callback),
+                            removeVarListener: (variable, id) => SocketHandler.removeVariableListener(variable, id),
+                            setInt: (key, value) => SocketHandler.setInt(key, value),
+                            setDouble: (key, value) => SocketHandler.setDouble(key, value),
+                            setString: (key, value) => SocketHandler.setString(key, value),
+                            setBoolean: (key, value) => SocketHandler.setBoolean(key, value),
+                            getInt: (key) => SocketHandler.getInt(key),
+                            getDouble: (key) => SocketHandler.getDouble(key),
+                            getString: (key) => SocketHandler.getString(key),
+                            getBoolean: (key) => SocketHandler.getBoolean(key),
+
+                            setSettingsSaveCallback: (callback) => this.setSettingsSaveCallback(callback),
+
+                            title: this.props.widgetConfig.title,
+                            id: this.props.widgetConfig.id,
+                            width: this.props.widgetConfig.width,
+                            height: this.props.widgetConfig.height,
+                            variables: this.props.widgetConfig.variables,
+                            kwargs: this.props.widgetConfig.kwargs}, null)}
+                </WidgetBody>
+                <WidgetSettings title={this.props.widgetConfig.title} id={this.props.widgetConfig.id} onSave={() => this.onSettingsSave()}>
+                    {React.createElement(this.props.widgetClass.Settings,
+                        {registerVarListener: (variable, callback) => SocketHandler.addVariableListener(variable, callback),
+                            removeVarListener: (variable, id) => SocketHandler.removeVariableListener(variable, id),
+                            setInt: (key, value) => SocketHandler.setInt(key, value),
+                            setDouble: (key, value) => SocketHandler.setDouble(key, value),
+                            setString: (key, value) => SocketHandler.setString(key, value),
+                            setBoolean: (key, value) => SocketHandler.setBoolean(key, value),
+                            getInt: (key) => SocketHandler.getInt(key),
+                            getDouble: (key) => SocketHandler.getDouble(key),
+                            getString: (key) => SocketHandler.getString(key),
+                            getBoolean: (key) => SocketHandler.getBoolean(key),
+
+                            setSettingsDataCallback: (callback) => this.setSettingsDataCallback(callback),
+
+                            title: this.props.widgetConfig.title,
+                            id: this.props.widgetConfig.id,
+                            width: this.props.widgetConfig.width,
+                            height: this.props.widgetConfig.height,
+                            variables: this.props.widgetConfig.variables,
+                            kwargs: this.props.widgetConfig.kwargs}, null)}
+                </WidgetSettings>
             </div>
         );
     }
