@@ -5,9 +5,9 @@ class DoubleEditor {}
 
 DoubleEditor.Body = class extends Widget.Body {
     init() {
-        let newValue = (this.getDouble(this.props.variables.target) === undefined) ? '' : this.getDouble(this.props.variables.target);
+        let newValue = (this.getDouble(this.widgetConfig.variables.target) === undefined) ? '' : this.getDouble(this.widgetConfig.variables.target);
         this.state = {
-            targetName: this.props.variables.target,
+            targetName: this.widgetConfig.variables.target,
             targetValue: newValue
         };
         this.callbackId = this.registerVarListener(this.state.targetName, (key, value) => this.updateState(key, value));
@@ -50,7 +50,7 @@ DoubleEditor.Body = class extends Widget.Body {
 DoubleEditor.Settings = class extends Widget.Settings {
     init() {
         this.state = {
-            targetName: this.props.variables.target
+            targetName: this.widgetConfig.variables.target
         };
     }
 

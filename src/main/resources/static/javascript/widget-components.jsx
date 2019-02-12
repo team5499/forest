@@ -64,12 +64,7 @@ export class WidgetContainer extends React.Component {
 
                             setSettingsSaveCallback: (callback) => this.setSettingsSaveCallback(callback),
 
-                            title: this.props.widgetConfig.title,
-                            id: this.props.widgetConfig.id,
-                            width: this.props.widgetConfig.width,
-                            height: this.props.widgetConfig.height,
-                            variables: this.props.widgetConfig.variables,
-                            kwargs: this.props.widgetConfig.kwargs}, null)}
+                            widgetConfig: this.props.widgetConfig}, null)}
                 </WidgetBody>
                 <WidgetSettings title={this.props.widgetConfig.title} id={this.props.widgetConfig.id} onSave={() => this.onSettingsSave()}>
                     {React.createElement(this.props.widgetClass.Settings,
@@ -86,12 +81,7 @@ export class WidgetContainer extends React.Component {
 
                             setSettingsDataCallback: (callback) => this.setSettingsDataCallback(callback),
 
-                            title: this.props.widgetConfig.title,
-                            id: this.props.widgetConfig.id,
-                            width: this.props.widgetConfig.width,
-                            height: this.props.widgetConfig.height,
-                            variables: this.props.widgetConfig.variables,
-                            kwargs: this.props.widgetConfig.kwargs}, null)}
+                            widgetConfig: this.props.widgetConfig}, null)}
                 </WidgetSettings>
             </div>
         );

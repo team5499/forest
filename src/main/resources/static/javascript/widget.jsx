@@ -10,8 +10,14 @@ var Widget = {};
 Widget.Body = class extends React.Component {
     constructor(props) {
         super(props);
-        this.props.setSettingsSaveCallback((newConfig) => this.settingsSave(newConfig));
+        this.props.setSettingsSaveCallback((newConfig) => this._settingsSave(newConfig));
+        this.widgetConfig = this.props.widgetConfig
         this.init(); // extended class should define this
+    }
+
+    _settingsSave(newConfig) {
+        this.widgetConfig = newConfig;
+        return this.settingsSave(newConfig);
     }
 
     getInt(key) {
@@ -66,8 +72,14 @@ Widget.Body = class extends React.Component {
 Widget.Settings = class extends React.Component {
     constructor(props) {
         super(props);
-        this.props.setSettingsDataCallback((config) => this.settingsData(config));
+        this.props.setSettingsDataCallback((config) => this._settingsData(config));
+        this.widgetConfig = this.props.widgetConfig
         this.init(); // extended class should define this
+    }
+
+    _settingsData(config) {
+        this.widgetConfig = this.settingsData(config)
+        return this.widgetConfig
     }
 
     getInt(key) {

@@ -5,9 +5,9 @@ class IntEditor {}
 
 IntEditor.Body = class extends Widget.Body {
     init() {
-        let newValue = (this.getInt(this.props.variables.target) === undefined) ? "" : this.getInt(this.props.variables.target);
+        let newValue = (this.getInt(this.widgetConfig.variables.target) === undefined) ? "" : this.getInt(this.widgetConfig.variables.target);
         this.state = {
-            targetName: this.props.variables.target,
+            targetName: this.widgetConfig.variables.target,
             targetValue: newValue
         };
         this.callbackId = this.registerVarListener(this.state.targetName, (key, value) => this.updateState(key, value));
@@ -49,7 +49,7 @@ IntEditor.Body = class extends Widget.Body {
 IntEditor.Settings = class extends Widget.Settings {
     init() {
         this.state = {
-            targetName: this.props.variables.target
+            targetName: this.widgetConfig.variables.target
         };
     }
 
