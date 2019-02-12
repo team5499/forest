@@ -9,6 +9,7 @@ import org.team5499.dashboard.Dashboard
 class PlaygroundTest {
 
     @Test
+    @Suppress("LongMethod")
     fun runServer() {
         println("starting server...")
         println("go to http://localhost:5800/")
@@ -34,6 +35,49 @@ class PlaygroundTest {
             key: String, value: Any? ->
             println("$key : $value")
         })
+
+        Dashboard.setVariable("KP", 0.0)
+        Dashboard.setVariable("KI", 0.0)
+        Dashboard.setVariable("KD", 0.0)
+        Dashboard.setVariable("KF", 0.0)
+        Dashboard.addVarListener("KP", {
+            key: String, value: Any? ->
+            println("$key : $value")
+        })
+        Dashboard.addVarListener("KI", {
+            key: String, value: Any? ->
+            println("$key : $value")
+        })
+        Dashboard.addVarListener("KD", {
+            key: String, value: Any? ->
+            println("$key : $value")
+        })
+        Dashboard.addVarListener("KF", {
+            key: String, value: Any? ->
+            println("$key : $value")
+        })
+
+        Dashboard.setVariable("KP2", 0.1)
+        Dashboard.setVariable("KI2", 0.1)
+        Dashboard.setVariable("KD2", 0.1)
+        Dashboard.setVariable("KF2", 0.1)
+        Dashboard.addVarListener("KP2", {
+            key: String, value: Any? ->
+            println("$key : $value")
+        })
+        Dashboard.addVarListener("KI2", {
+            key: String, value: Any? ->
+            println("$key : $value")
+        })
+        Dashboard.addVarListener("KD2", {
+            key: String, value: Any? ->
+            println("$key : $value")
+        })
+        Dashboard.addVarListener("KF2", {
+            key: String, value: Any? ->
+            println("$key : $value")
+        })
+
         println("server started")
         while (true) { // find a better way to wait?
             @Suppress("MagicNumber")

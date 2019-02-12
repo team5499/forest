@@ -48,6 +48,33 @@
             "target": "DOUBLE"
           },
           "width": "12rem"
+        },
+        {
+          "height": "auto",
+          "id": "pidfEditor",
+          "kwargs": {},
+          "title": "PIDF Variable",
+          "type": "PIDFWidget",
+          "variables": {
+            "dtarget": "KD",
+            "ftarget": "KF",
+            "itarget": "KI",
+            "ptarget": "KP"
+          },
+          "width": "12rem"
+        },
+        {
+          "height": "auto",
+          "id": "pidEditor",
+          "kwargs": {},
+          "title": "PID Variable",
+          "type": "PIDWidget",
+          "variables": {
+            "dtarget": "KD2",
+            "itarget": "KI2",
+            "ptarget": "KP2"
+          },
+          "width": "12rem"
         }
       ]
     }
