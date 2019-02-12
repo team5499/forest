@@ -48,6 +48,20 @@
             "target": "DOUBLE"
           },
           "width": "12rem"
+        },
+        {
+          "height": "auto",
+          "id": "pidfEditor",
+          "kwargs": {},
+          "title": "PIDF Variable",
+          "type": "PIDFWidget",
+          "variables": {
+            "dtarget": "KD",
+            "ftarget": "KF",
+            "itarget": "KI",
+            "ptarget": "KP"
+          },
+          "width": "12rem"
         }
       ]
     }

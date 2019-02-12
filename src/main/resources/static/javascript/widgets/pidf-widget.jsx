@@ -20,16 +20,20 @@ PIDFWidget.Body = class extends Widget.Body {
             fTargetValue: newFValue
 
         };
-        this.pCallbackId = SocketHandler.addVariableListener(this.state.pTargetName, (key, value) => this.updateState(key, value));
-        this.iCallbackId = SocketHandler.addVariableListener(this.state.iTargetName, (key, value) => this.updateState(key, value));
-        this.dCallbackId = SocketHandler.addVariableListener(this.state.dTargetName, (key, value) => this.updateState(key, value));
-        this.fCallbackId = SocketHandler.addVariableListener(this.state.fTargetName, (key, value) => this.updateState(key, value));
+        this.pCallbackId = this.registerVarListener(this.state.pTargetName, (key, value) => this.updateState(key, value));
+        this.iCallbackId = this.registerVarListener(this.state.iTargetName, (key, value) => this.updateState(key, value));
+        this.dCallbackId = this.registerVarListener(this.state.dTargetName, (key, value) => this.updateState(key, value));
+        this.fCallbackId = this.registerVarListener(this.state.fTargetName, (key, value) => this.updateState(key, value));
     }
 
     updateState(key, value) {
-        let prefix = key.substring(0, 1);
         let newState = {};
-        newState[prefix + 'TargetValue'] = value;
+        for(var i in this.state) {
+            if(this.state[i] === key) {
+                newState[i.substring(0, 1) + 'TargetValue'] = value;
+                break;
+            }
+        }
         this.setState(newState);
     }
 
@@ -52,22 +56,24 @@ PIDFWidget.Body = class extends Widget.Body {
             dTargetValue: newDValue,
             fTargetValue: newFValue
         });
-        this.pCallbackId = SocketHandler.addVariableListener(newConfig.variables.ptarget, (key, value) => this.updateState(key, value));
-        this.iCallbackId = SocketHandler.addVariableListener(newConfig.variables.itarget, (key, value) => this.updateState(key, value));
-        this.dCallbackId = SocketHandler.addVariableListener(newConfig.variables.dtarget, (key, value) => this.updateState(key, value));
-        this.fCallbackId = SocketHandler.addVariableListener(newConfig.variables.ftarget, (key, value) => this.updateState(key, value));
+        this.pCallbackId = this.registerVarListener(newConfig.variables.ptarget, (key, value) => this.updateState(key, value));
+        this.iCallbackId = this.registerVarListener(newConfig.variables.itarget, (key, value) => this.updateState(key, value));
+        this.dCallbackId = this.registerVarListener(newConfig.variables.dtarget, (key, value) => this.updateState(key, value));
+        this.fCallbackId = this.registerVarListener(newConfig.variables.ftarget, (key, value) => this.updateState(key, value));
     }
 
     onVarSave() {
-        this.setString(this.state.pTargetName, this.state.pTargetValue);
-        this.setString(this.state.iTargetName, this.state.iTargetValue);
-        this.setString(this.state.dTargetName, this.state.dTargetValue);
-        this.setString(this.state.fTargetName, this.state.fTargetValue);
+        this.setDouble(this.state.pTargetName, this.state.pTargetValue);
+        this.setDouble(this.state.iTargetName, this.state.iTargetValue);
+        this.setDouble(this.state.dTargetName, this.state.dTargetValue);
+        this.setDouble(this.state.fTargetName, this.state.fTargetValue);
     }
 
     onFieldEdit(e) {
         let newValue = (e.target.value === "") ? "" : parseFloat(e.target.value);
-        this.updateState(e.target.name, newValue);
+        let newState = {};
+        newState[e.target.name + 'TargetValue'] = newValue;
+        this.setState(newState);
     }
 
     render() {
@@ -109,12 +115,12 @@ PIDFWidget.Settings = class extends Widget.Settings {
     }
 
     render() {
-        return (
-            <input className='form-control mb-2' type='text' name='p' placeholder='variable' value={this.state.pTargetName} onChange={(e) => this.onSettingsEdit(e)} />
-            <input className='form-control mb-2' type='text' name='i' placeholder='variable' value={this.state.iTargetName} onChange={(e) => this.onSettingsEdit(e)} />
-            <input className='form-control mb-2' type='text' name='d' placeholder='variable' value={this.state.dTargetName} onChange={(e) => this.onSettingsEdit(e)} />
-            <input className='form-control mb-2' type='text' name='f' placeholder='variable' value={this.state.fTargetName} onChange={(e) => this.onSettingsEdit(e)} />
-        );
+        return [
+            <input className='form-control mb-2' key='p' type='text' name='p' placeholder='variable' value={this.state.pTargetName} onChange={(e) => this.onSettingsEdit(e)} />,
+            <input className='form-control mb-2' key='i' type='text' name='i' placeholder='variable' value={this.state.iTargetName} onChange={(e) => this.onSettingsEdit(e)} />,
+            <input className='form-control mb-2' key='d' type='text' name='d' placeholder='variable' value={this.state.dTargetName} onChange={(e) => this.onSettingsEdit(e)} />,
+            <input className='form-control mb-2' key='f' type='text' name='f' placeholder='variable' value={this.state.fTargetName} onChange={(e) => this.onSettingsEdit(e)} />
+        ];
     }
 }
 
