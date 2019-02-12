@@ -49,7 +49,7 @@ export class WidgetContainer extends React.Component {
                     <h4 className='m-0 d-inline'>{this.props.widgetConfig.title}</h4>
                     <button className='btn btn-light float-right d-inline p-0 m-1' type='button' data-toggle='modal' data-target={'#' + this.props.widgetConfig.id + '_modal'}><h5 className='fas fa-cog m-0'></h5></button>
                 </div>
-                <WidgetBody title={this.props.widgetConfig.title}>
+                <WidgetBody title={this.props.widgetConfig.title} id={this.props.widgetConfig.id}>
                     {React.createElement(this.props.widgetClass.Body,
                         {registerVarListener: (variable, callback) => SocketHandler.addVariableListener(variable, callback),
                             removeVarListener: (variable, id) => SocketHandler.removeVariableListener(variable, id),
@@ -66,7 +66,7 @@ export class WidgetContainer extends React.Component {
 
                             widgetConfig: this.props.widgetConfig}, null)}
                 </WidgetBody>
-                <WidgetSettings title={this.props.widgetConfig.title} onSave={() => this.onSettingsSave()}>
+                <WidgetSettings title={this.props.widgetConfig.title} id={this.props.widgetConfig.id} onSave={() => this.onSettingsSave()}>
                     {React.createElement(this.props.widgetClass.Settings,
                         {registerVarListener: (variable, callback) => SocketHandler.addVariableListener(variable, callback),
                             removeVarListener: (variable, id) => SocketHandler.removeVariableListener(variable, id),
