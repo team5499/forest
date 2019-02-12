@@ -14,15 +14,17 @@ import org.json.JSONObject
 
 import java.io.File
 
+typealias VariableCallback = (String, Any?) -> Unit
+
 /**
  * The main Dashboard object
  *
  * Handles starting the server
  */
 object Dashboard {
-
     private var config: Config = Config()
-    private val pageSource: String = Utils.readResourceAsString(this, "page.html")
+    public var callbacks: HashMap<String, MutableList<VariableCallback>> = HashMap()
+        private set
     public var variables: JSONObject = JSONObject()
         get() {
             synchronized(field) {
@@ -153,6 +155,28 @@ object Dashboard {
         } else {
             return variables.get(key) as T
         }
+    }
+
+    fun addVarListener(key: String, callback: (String, Any?) -> Unit): Int {
+        if (callbacks.contains(key)) {
+            val tmp = callbacks.get(key)
+            tmp!!.add(callback)
+            return callbacks.put(key, tmp)!!.size
+        } else {
+            callbacks.put(key, mutableListOf(callback))
+            return 0
+        }
+    }
+
+    fun removeVarListener(key: String, callbackId: Int): Boolean {
+        if (callbacks.contains(key)) {
+            val tmp = callbacks.get(key)
+            if (tmp!!.size > callbackId) {
+                tmp!!.removeAt(callbackId)
+                return true
+            }
+        }
+        return false
     }
 
     fun mergeVariableUpdates() {

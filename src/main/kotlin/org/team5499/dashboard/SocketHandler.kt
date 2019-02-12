@@ -75,6 +75,13 @@ class SocketHandler {
     @OnWebSocketMessage
     fun onMessage(session: Session, message: String) {
         val updates = JSONObject(message)
+        for (k in updates.keySet()) {
+            if (Dashboard.callbacks.contains(k)) {
+                for (c in Dashboard.callbacks.get(k)!!) {
+                    c(k, updates.get(k))
+                }
+            }
+        }
         broadcastJSONMinusSession(updates, session)
         Dashboard.mergeVariableUpdates(updates)
     }
