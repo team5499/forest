@@ -5,6 +5,8 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError
+import org.eclipse.jetty.websocket.api.WebSocketException
 import java.util.Queue
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.lang.Thread
@@ -46,7 +48,12 @@ class SocketHandler {
         public fun broadcastJSONMinusSession(json: JSONObject, session: Session) {
             for (s in sessions) {
                 if (!s.equals(session)) {
-                    sendJSON(s, json, "updates")
+                    try {
+                        sendJSON(s, json, "updates")
+                    } catch (e: WebSocketException) {
+                        session.close()
+                        continue
+                    }
                 }
             }
         }
@@ -59,15 +66,28 @@ class SocketHandler {
     }
 
     @OnWebSocketClose
-    fun onClose(session: Session, statusCode: Int, reason: String) {
-        sessions.remove(session)
+    fun onClose(session: Session?, statusCode: Int, reason: String?) {
+        if (session != null) {
+            sessions.remove(session)
+        }
     }
 
     @OnWebSocketMessage
     fun onMessage(session: Session, message: String) {
         val updates = JSONObject(message)
+        for (k in updates.keySet()) {
+            if (Dashboard.callbacks.contains(k)) {
+                for (c in Dashboard.callbacks.get(k)!!) {
+                    c(k, updates.get(k))
+                }
+            }
+        }
         broadcastJSONMinusSession(updates, session)
         Dashboard.mergeVariableUpdates(updates)
+    }
+
+    @OnWebSocketError
+    fun onError(t: Throwable) {
     }
 
     @Suppress("EmptyDefaultConstructor")

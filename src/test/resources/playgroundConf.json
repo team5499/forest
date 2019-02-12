@@ -4,54 +4,52 @@
     "dev": {
       "navbarOrder": 0,
       "title": "Development",
-      "widgets": []
-    },
-    "drive": {
-      "navbarOrder": 1,
-      "title": "Drive",
       "widgets": [
         {
           "height": "auto",
           "id": "testVarEditor",
           "kwargs": {},
           "title": "Test Variable",
-          "type": "RawVarEditor",
+          "type": "StringEditor",
           "variables": {
             "target": "TEST"
           },
           "width": "12rem"
         },
         {
-          "height": "15rem",
+          "height": "auto",
           "id": "deekVarEditor",
           "kwargs": {},
           "title": "Deek Variable",
-          "type": "RawVarEditor",
+          "type": "StringEditor",
           "variables": {
             "target": "DEEK"
           },
-          "width": "15rem"
+          "width": "12rem"
         },
         {
-          "height": "17rem",
-          "id": "pidWidget",
+          "height": "auto",
+          "id": "intVarEditor",
           "kwargs": {},
-          "title": "PID Editor",
-          "type": "PIDWidget",
+          "title": "Int Variable",
+          "type": "IntEditor",
           "variables": {
-            "dtarget": "D",
-            "ftarget": "F",
-            "itarget": "I",
-            "ptarget": "P"
+            "target": "INTEG"
           },
-          "width": "15rem"
+          "width": "12rem"
+        },
+        {
+          "height": "auto",
+          "id": "doubleVarEditor",
+          "kwargs": {},
+          "title": "Double Variable",
+          "type": "DoubleEditor",
+          "variables": {
+            "target": "DOUBLE"
+          },
+          "width": "12rem"
         }
       ]
-    },
-    "test": {
-      "navbarOrder": 2,
-      "title": "Test",
-      "widgets": []
     }
   }
 }
