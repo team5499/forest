@@ -21,6 +21,7 @@ typealias VariableCallback = (String, Any?) -> Unit
  *
  * Handles starting the server
  */
+@SuppressWarnings("ReturnCount", "TooManyFunctions")
 object Dashboard {
     private var config: Config = Config()
     public var callbacks: HashMap<String, MutableList<VariableCallback>> = HashMap()
@@ -143,6 +144,44 @@ object Dashboard {
         } else {
             return variables.get(key) as T
         }
+    }
+
+    fun getInt(key: String): Int {
+        val rawValue = getVariable<Any>(key)
+        if (rawValue is Double) {
+            return (rawValue as Double).toInt()
+        } else if (rawValue is String) {
+            return (rawValue as String).toInt()
+        } else {
+            return rawValue as Int
+        }
+    }
+
+    fun getDouble(key: String): Double {
+        val rawValue = getVariable<Any>(key)
+        if (rawValue is Int) {
+            return (rawValue as Int).toDouble()
+        } else if (rawValue is String) {
+            return (rawValue as String).toDouble()
+        } else {
+            return rawValue as Double
+        }
+    }
+
+    fun getString(key: String): String {
+        val rawValue = getVariable<Any>(key)
+        if (rawValue is Int) {
+            return (rawValue as Int).toString()
+        } else if (rawValue is String) {
+            return (rawValue as Double).toString()
+        } else {
+            return rawValue as String
+        }
+    }
+
+    fun getBoolean(key: String): Boolean {
+        val rawValue = getVariable<Any>(key)
+        return rawValue as Boolean
     }
 
     fun addVarListener(key: String, callback: (String, Any?) -> Unit): Int {
