@@ -1,17 +1,16 @@
 import PageUtils from 'page-utils';
+import Widget from 'widget';
 
 class IntEditor {}
 
-IntEditor.Body = class extends React.Component {
-    constructor(props) {
-        super(props);
-        this.props.setSettingsSaveCallback((newConfig) => this.settingsSave(newConfig));
-        let newValue = (this.props.getInt(this.props.variables.target) === undefined) ? "" : this.props.getInt(this.props.variables.target);
+IntEditor.Body = class extends Widget.Body {
+    init() {
+        let newValue = (this.getInt(this.props.variables.target) === undefined) ? "" : this.getInt(this.props.variables.target);
         this.state = {
             targetName: this.props.variables.target,
             targetValue: newValue
         };
-        this.callbackId = this.props.registerVarListener(this.state.targetName, (key, value) => this.updateState(key, value));
+        this.callbackId = this.registerVarListener(this.state.targetName, (key, value) => this.updateState(key, value));
     }
 
     updateState(key, value) {
@@ -19,17 +18,17 @@ IntEditor.Body = class extends React.Component {
     }
 
     settingsSave(newConfig) {
-        this.props.removeVarListener(this.state.targetName);
-        let newValue = (this.props.getInt(newConfig.variables.target) === undefined) ? "" : this.props.getInt(newConfig.variables.target);
+        this.removeVarListener(this.state.targetName);
+        let newValue = (this.getInt(newConfig.variables.target) === undefined) ? "" : this.getInt(newConfig.variables.target);
         this.setState({
             targetName: newConfig.variables.target,
             targetValue: newValue
         });
-        this.callbackId = this.props.registerVarListener(newConfig.variables.target, (key, value) => this.updateState(key, value));
+        this.callbackId = this.registerVarListener(newConfig.variables.target, (key, value) => this.updateState(key, value));
     }
 
     onVarSave() {
-        this.props.setInt(this.state.targetName, this.state.targetValue);
+        this.setInt(this.state.targetName, this.state.targetValue);
     }
 
     onFieldEdit(e) {
@@ -47,10 +46,8 @@ IntEditor.Body = class extends React.Component {
     }
 }
 
-IntEditor.Settings = class extends React.Component {
-    constructor(props) {
-        super(props);
-        this.props.setSettingsDataCallback((config) => this.settingsData(config))
+IntEditor.Settings = class extends Widget.Settings {
+    init() {
         this.state = {
             targetName: this.props.variables.target
         };
@@ -72,8 +69,6 @@ IntEditor.Settings = class extends React.Component {
         );
     }
 }
-
-export default IntEditor;
 
 // make sure to do this for every widget
 PageUtils.addWidgetClass('IntEditor', IntEditor);

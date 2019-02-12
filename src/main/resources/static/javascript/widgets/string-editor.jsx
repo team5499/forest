@@ -1,17 +1,17 @@
 import PageUtils from 'page-utils';
+import Widget from 'widget';
 
 class StringEditor {}
 
-StringEditor.Body = class extends React.Component {
-    constructor(props) {
-        super(props);
-        this.props.setSettingsSaveCallback((newConfig) => this.settingsSave(newConfig));
-        let newValue = (this.props.getString(this.props.variables.target) === undefined) ? '' : this.props.getString(this.props.variables.target);
+StringEditor.Body = class extends Widget.Body {
+    init() {
+        console.log(this.constructor.name)
+        let newValue = (this.getString(this.props.variables.target) === undefined) ? '' : this.getString(this.props.variables.target);
         this.state = {
             targetName: this.props.variables.target,
             targetValue: newValue
         };
-        this.callbackId = this.props.registerVarListener(this.state.targetName, (key, value) => this.updateState(key, value));
+        this.callbackId = this.registerVarListener(this.state.targetName, (key, value) => this.updateState(key, value));
     }
 
     updateState(key, value) {
@@ -19,18 +19,18 @@ StringEditor.Body = class extends React.Component {
     }
 
     settingsSave(newConfig) {
-        this.props.removeVarListener(this.state.targetName);
+        this.removeVarListener(this.state.targetName);
         // do something with success, and also update event listener for variable changes
-        let newValue = (this.props.getString(newConfig.variables.target) === undefined) ? '' : this.props.getString(newConfig.variables.target);
+        let newValue = (this.getString(newConfig.variables.target) === undefined) ? '' : this.getString(newConfig.variables.target);
         this.setState({
             targetName: newConfig.variables.target,
             targetValue: newValue
         });
-        this.callbackId = this.props.registerVarListener(newConfig.variables.target, (key, value) => this.updateState(key, value));
+        this.callbackId = this.registerVarListener(newConfig.variables.target, (key, value) => this.updateState(key, value));
     }
 
     onVarSave() {
-        this.props.setString(this.state.targetName, this.state.targetValue);
+        this.setString(this.state.targetName, this.state.targetValue);
     }
 
     onFieldEdit(e) {
@@ -47,10 +47,8 @@ StringEditor.Body = class extends React.Component {
     }
 }
 
-StringEditor.Settings = class extends React.Component {
-    constructor(props) {
-        super(props);
-        this.props.setSettingsDataCallback((config) => this.settingsData(config));
+StringEditor.Settings = class extends Widget.Settings {
+    init() {
         this.state = {
             targetName: this.props.variables.target
         };

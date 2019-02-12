@@ -1,17 +1,16 @@
 import PageUtils from 'page-utils';
+import Widget from 'widget';
 
 class DoubleEditor {}
 
-DoubleEditor.Body = class extends React.Component {
-    constructor(props) {
-        super(props);
-        this.props.setSettingsSaveCallback((newConfig) => this.settingsSave(newConfig));
-        let newValue = (this.props.getDouble(this.props.variables.target) === undefined) ? '' : this.props.getDouble(this.props.variables.target);
+DoubleEditor.Body = class extends Widget.Body {
+    init() {
+        let newValue = (this.getDouble(this.props.variables.target) === undefined) ? '' : this.getDouble(this.props.variables.target);
         this.state = {
             targetName: this.props.variables.target,
             targetValue: newValue
         };
-        this.callbackId = this.props.registerVarListener(this.state.targetName, (key, value) => this.updateState(key, value));
+        this.callbackId = this.registerVarListener(this.state.targetName, (key, value) => this.updateState(key, value));
     }
 
     updateState(key, value) {
@@ -19,18 +18,18 @@ DoubleEditor.Body = class extends React.Component {
     }
 
     settingsSave(newConfig) {
-        this.props.removeVarListener(this.state.targetName);
+        this.removeVarListener(this.state.targetName);
         // do something with success, and also update event listener for variable changes
-        let newValue = (this.props.getDouble(newConfig.variables.target) === undefined) ? '' : this.props.getDouble(newConfig.variables.target);
+        let newValue = (this.getDouble(newConfig.variables.target) === undefined) ? '' : this.getDouble(newConfig.variables.target);
         this.setState({
             targetName: newConfig.variables.target,
             targetValue: newValue
         });
-        this.callbackId = this.props.registerVarListener(newConfig.variables.target, (key, value) => this.updateState(key, value));
+        this.callbackId = this.registerVarListener(newConfig.variables.target, (key, value) => this.updateState(key, value));
     }
 
     onVarSave() {
-        this.props.setString(this.state.targetName, this.state.targetValue);
+        this.setString(this.state.targetName, this.state.targetValue);
     }
 
     onFieldEdit(e) {
@@ -48,10 +47,8 @@ DoubleEditor.Body = class extends React.Component {
     }
 }
 
-DoubleEditor.Settings = class extends React.Component {
-    constructor(props) {
-        super(props);
-        this.props.setSettingsDataCallback((config) => this.settingsData(config));
+DoubleEditor.Settings = class extends Widget.Settings {
+    init() {
         this.state = {
             targetName: this.props.variables.target
         };
