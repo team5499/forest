@@ -12,6 +12,7 @@ import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.By
 
 import org.team5499.dashboard.Dashboard
+import org.team5499.dashboard.Utils
 
 class WebdriverTest {
     lateinit var driver: WebDriver
@@ -24,8 +25,13 @@ class WebdriverTest {
         @BeforeAll
         @JvmStatic
         fun init() {
-            System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver")
-            System.setProperty("webdriver.firefox.marionette", "src/test/resources/geckodriver")
+            if (Utils.isWindows()) {
+                System.setProperty("webdriver.chrome.driver", "src\\test\\resources\\webdrivers\\windows\\chromedriver.exe")
+            } else if (Utils.isMac()) {
+                System.setProperty("webdriver.chrome.driver", "src/test/resources/webdrivers/mac/chromedriver")
+            } else {
+                System.setProperty("webdriver.chrome.driver", "src/test/resources/webdrivers/linux/chromedriver")
+            }
             Dashboard.start(this, "webdriverConfig.json")
             Dashboard.awaitInitialization()
             driver = ChromeDriver()
