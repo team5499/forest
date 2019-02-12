@@ -57,6 +57,27 @@ class PlaygroundTest {
             println("$key : $value")
         })
 
+        Dashboard.setVariable("KP2", 0.1)
+        Dashboard.setVariable("KI2", 0.1)
+        Dashboard.setVariable("KD2", 0.1)
+        Dashboard.setVariable("KF2", 0.1)
+        Dashboard.addVarListener("KP2", {
+            key: String, value: Any? ->
+            println("$key : $value")
+        })
+        Dashboard.addVarListener("KI2", {
+            key: String, value: Any? ->
+            println("$key : $value")
+        })
+        Dashboard.addVarListener("KD2", {
+            key: String, value: Any? ->
+            println("$key : $value")
+        })
+        Dashboard.addVarListener("KF2", {
+            key: String, value: Any? ->
+            println("$key : $value")
+        })
+
         println("server started")
         while (true) { // find a better way to wait?
             @Suppress("MagicNumber")
