@@ -29,7 +29,6 @@ class WebdriverTest {
             Dashboard.start(this, "webdriverConfig.json")
             Dashboard.awaitInitialization()
             driver = ChromeDriver()
-            println("done")
             actions = Actions(driver)
         }
 

@@ -21,6 +21,7 @@ typealias VariableCallback = (String, Any?) -> Unit
  *
  * Handles starting the server
  */
+@SuppressWarnings("TooManyFunctions")
 object Dashboard {
     private var config: Config = Config()
     public var callbacks: HashMap<String, MutableList<VariableCallback>> = HashMap()

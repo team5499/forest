@@ -25,7 +25,7 @@
           "id": "widgetTest",
           "kwargs": {},
           "title": "Test",
-          "type": "RawVarEditor",
+          "type": "StringEditor",
           "variables": {
             "target": "TEST"
           },
