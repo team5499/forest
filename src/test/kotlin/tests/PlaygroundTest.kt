@@ -15,9 +15,29 @@ class PlaygroundTest {
         Dashboard.start(this, "playgroundConf.json")
         Dashboard.setVariable("TEST", "testvalue")
         Dashboard.setVariable("DEEK", "anothervalue")
+        Dashboard.setVariable("SWITCH", "thirdvalue")
+        Dashboard.setVariable("INTEG", 3)
+        Dashboard.setVariable("DOUBLE", 5.6)
+        Dashboard.addVarListener("TEST", {
+            key: String, value: Any? ->
+            println("$key : $value")
+        })
+        Dashboard.addVarListener("DEEK", {
+            key: String, value: Any? ->
+            println("$key : $value")
+        })
+        Dashboard.addVarListener("INTEG", {
+            key: String, value: Any? ->
+            println("$key : $value")
+        })
+        Dashboard.addVarListener("DOUBLE", {
+            key: String, value: Any? ->
+            println("$key : $value")
+        })
         println("server started")
         while (true) { // find a better way to wait?
             @Suppress("MagicNumber")
+            // println(Dashboard.getVariable<String>("DEEK"))
             Thread.sleep(1000)
         }
     }

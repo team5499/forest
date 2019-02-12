@@ -13,7 +13,7 @@ repositories {
 
 dependencies {
     compile 'org.jetbrains.kotlin:kotlin-stdlib:1.3.0'
-    // compile 'org.jetbrains.kotlin:kotlin-reflection'
+    compile 'org.jetbrains.kotlin:kotlin-reflect:1.3.0'
     compile 'com.sparkjava:spark-core:2.8.0'
     compile 'org.slf4j:slf4j-simple:1.7.21'
     compile 'org.json:json:20180813'
@@ -25,7 +25,7 @@ dependencies {
 }
 
 group = 'org.team5499'
-version = '0.2.2' /* Change this when deploying a new version */
+version = '0.3.0' /* Change this when deploying a new version */
 
 task sourcesJar(type: Jar) {
     from sourceSets.main.allJava
