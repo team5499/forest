@@ -33,7 +33,7 @@ class PlaygroundTest {
         })
         Dashboard.addVarListener("DOUBLE", {
             key: String, value: Any? ->
-            println("$key : $value")
+            println("$key : ${Dashboard.getDouble("DOUBLE")}")
         })
 
         Dashboard.setVariable("KP", 0.0)

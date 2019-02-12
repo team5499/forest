@@ -29,7 +29,7 @@ DoubleEditor.Body = class extends Widget.Body {
     }
 
     onVarSave() {
-        this.setString(this.state.targetName, this.state.targetValue);
+        this.setDouble(this.state.targetName, this.state.targetValue);
     }
 
     onFieldEdit(e) {
