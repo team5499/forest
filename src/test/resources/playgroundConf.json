@@ -17,8 +17,10 @@
             "data": {
               "datasets": [
                 {
+                  "autoSkip": true,
                   "data": [],
-                  "label": "X"
+                  "label": "X",
+                  "maxticks": 15
                 }
               ],
               "labels": []
@@ -28,14 +30,26 @@
                 "intersect": true,
                 "mode": "nearest"
               },
+              "legend": {
+                "display": "false"
+              },
               "responsive": true,
               "scales": {
                 "xAxes": [
                   {
                     "display": true,
+                    "gridLines": {
+                      "display": false
+                    },
+                    "maxTicksLimit": 15,
                     "scaleLabel": {
                       "display": true,
                       "labelString": "Time"
+                    },
+                    "ticks": {
+                      "maxTicksLimit": 15,
+                      "min": 0,
+                      "suggestedMax": 10
                     }
                   }
                 ],
@@ -50,8 +64,7 @@
                 ]
               },
               "title": {
-                "display": true,
-                "text": "Graph"
+                "display": false
               },
               "tooltips": {
                 "intersect": false,
@@ -64,7 +77,10 @@
           "title": "Test Graph",
           "type": "Graph",
           "variables": {
-            "target": "Mutable"
+            "deps": [
+              "mutable"
+            ],
+            "inDep": "time"
           },
           "width": "18"
         },

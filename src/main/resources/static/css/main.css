@@ -190,3 +190,7 @@ body {
 .ui-draggable-handle:active{
   cursor: grabbing;
 }
+
+.canvas{
+  position: absolute;
+}
