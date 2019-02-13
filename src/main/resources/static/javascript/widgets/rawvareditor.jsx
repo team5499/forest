@@ -53,13 +53,6 @@ class RawVarEditor extends React.Component {
                         <a class="dropdown-item" href="#">False</a>
                     </div>;
         }
-        var vars = ["PID", "DEEK", "TEST"];
-
-        $('#' + this.props.id + '_settings_variable').autocomplete({
-            nameProperty: 'name',
-            valueField: "#hidden-field",
-            dataSource: vars
-        });
         return (
             <WidgetContainer title={this.props.title} width={this.props.width} height={this.props.height} id={this.props.id}>
                 <WidgetBody title={this.props.title} id={this.props.id}>
@@ -67,8 +60,7 @@ class RawVarEditor extends React.Component {
                     <button className='btn btn-primary' id={this.props.id + '_body_submit'} onClick={() => this.onVarSave()} >Submit</button>
                 </WidgetBody>
                 <WidgetSettings title={this.props.title} id={this.props.id} onSave={() => this.onSettingsSave()}>
-                    <input className='form-control mb-2' type='text' id={this.props.id + '_settings_variable'} placeholder="variable" value={this.state.updateName} onChange={(e) => this.onSettingsEdit(e)} />
-                    <input type="hidden" id="hidden-field"></input>
+                    <VariableAutofill />
                 </WidgetSettings>
             </WidgetContainer>
         );

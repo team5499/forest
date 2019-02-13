@@ -48,6 +48,37 @@ class WidgetSettings extends React.Component {
     }
 }
 
+class VariableAutofill extends React.Component {
+    constructor(props) {
+        super(props)
+        this.inputRef = React.createRef();
+        this.state = {
+            variable: ""
+        };
+    }
+
+    onEdit(e) {
+        this.setState({variable: e.target.value});
+    }
+
+    componentDidMount() {
+        var availableTags = [
+            "PID",
+            "DEEK",
+            "TEST"
+        ];
+        console.log("called");
+        console.log($(this.inputRef.current));
+        $(this.inputRef.current).autocomplete({
+            source: availableTags
+        });
+    }
+    render() {
+        return <div id="ui-widget"><input className='' type='text' ref={this.inputRef} placeholder="variable" value={this.state.variable} onChange={(e) => this.onEdit(e)} /></div>;
+
+    }
+}
+
 $(function() { // runs when document finishes loading
     if(PageUtils.loadPageConfig()) {
         SocketHandler.connect(PageUtils.getWebSocketPageAddress());
