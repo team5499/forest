@@ -5,7 +5,8 @@ export class WidgetContainer extends React.Component {
         super(props);
         this.state = {
             settingsSave: () => console.error("No settings save callback set!"),
-            settingsData: () => console.error("No settings data callback set!")
+            settingsData: () => console.error("No settings data callback set!"),
+            title: this.props.widgetConfig.title
         }
     }
 
@@ -39,6 +40,12 @@ export class WidgetContainer extends React.Component {
      */
     onSettingsSave() {
         let currentWidgetConfig = this.props.getWidgetConfig();
+        let newConfig = this.state.settingsData(currentWidgetConfig);
+
+        this.setState({
+            title: newConfig.variables.target
+        });
+
         this.state.settingsSave(this.state.settingsData(currentWidgetConfig));
     }
 
@@ -46,7 +53,7 @@ export class WidgetContainer extends React.Component {
         return (
             <div className='card m-1' style={{width: this.props.widgetConfig.width, height: this.props.widgetConfig.height, display:'inline-block'}} id={this.props.widgetConfig.id + '_card'}>
                 <div className='card-header p-1'>
-                    <h4 className='m-0 d-inline'>{this.props.widgetConfig.title}</h4>
+                    <h4 className='m-0 d-inline'>{this.state.title}</h4>
                     <button className='btn btn-light float-right d-inline p-0 m-1' type='button' data-toggle='modal' data-target={'#' + this.props.widgetConfig.id + '_modal'}><h5 className='fas fa-cog m-0'></h5></button>
                 </div>
                 <WidgetBody title={this.props.widgetConfig.title} id={this.props.widgetConfig.id}>
