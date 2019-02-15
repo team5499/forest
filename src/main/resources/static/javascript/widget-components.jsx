@@ -50,15 +50,13 @@ export class WidgetContainer extends React.Component {
      * @param {event} newTitle
      */
     setTitle(e) {
-        var currentConfig = this.props.getWidgetConfig();
-        currentConfig.title = this.state.title;
-        this.props.setWidgetConfig(currentConfig.id, currentConfig);
-    }
-
-    onTitleEdit(e) {
         this.setState({
             title: $(e.target).html()
         });
+
+        var currentConfig = this.props.getWidgetConfig();
+        currentConfig.title = $(e.target).html();
+        this.props.setWidgetConfig(currentConfig.id, currentConfig);
     }
 
 
@@ -66,7 +64,7 @@ export class WidgetContainer extends React.Component {
         return (
             <div className='card m-1' style={{width: this.props.widgetConfig.width, height: this.props.widgetConfig.height, display:'inline-block'}} id={this.props.widgetConfig.id + '_card'}>
                 <div className='card-header p-1'>
-                    <h4 className='m-0 d-inline' contentEditable="true" onBlur={(e) => this.setTitle(e)} onInput={(e) => this.onTitleEdit(e)}>{this.state.title}</h4>
+                    <h4 className='m-0 d-inline' contentEditable="true" onBlur={(e) => this.setTitle(e)}>{this.state.title}</h4>
                     <button className='btn btn-light float-right d-inline p-0 m-1' type='button' data-toggle='modal' data-target={'#' + this.props.widgetConfig.id + '_modal'}><h5 className='fas fa-cog m-0'></h5></button>
                 </div>
                 <WidgetBody title={this.props.widgetConfig.title} id={this.props.widgetConfig.id}>
