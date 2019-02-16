@@ -67,15 +67,22 @@ class VariableAutofill extends React.Component {
             "DEEK",
             "TEST"
         ];
-        console.log("called");
-        console.log($(this.inputRef.current));
-        $(this.inputRef.current).autocomplete({
-            source: availableTags
-        });
     }
     render() {
-        return <div id="ui-widget"><input className='' type='text' ref={this.inputRef} placeholder="variable" value={this.state.variable} onChange={(e) => this.onEdit(e)} /></div>;
-
+        //return <input className='' type='text' ref={this.inputRef} placeholder="variable" value={this.state.value} onChange={(e) => this.onEdit(e)} />
+        return (<ReactAutocomplete 
+            ref={this.inputRef}
+            value={this.state.variable} 
+            onChange={(e) => this.setState({variable: e.target.value})} 
+            items={[{id: "pid", label: "PID"}, {id: "deek", label: "DEEK"}]} 
+            shouldItemRender={(item, value) => item.label.toLowerCase().indexOf(value.toLowerCase()) > -1}
+            renderItem={(item, isHighlighted) =>
+                <div key={item.id} style={{ background: isHighlighted ? '#eee' : 'transparent' }}>
+                    {item.label}
+                </div>}
+            getItemValue={(item) => item.label}
+            onSelect={(variable) => this.setState({variable})}
+        />)
     }
 }
 
