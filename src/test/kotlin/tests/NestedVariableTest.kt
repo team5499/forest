@@ -11,6 +11,7 @@ import org.team5499.dashboard.DashboardVar
 import org.team5499.dashboard.DashboardException
 
 class NestedVariableTest {
+
     companion object {
         @BeforeAll
         @JvmStatic
@@ -32,6 +33,42 @@ class NestedVariableTest {
             assertEquals(Dashboard.getDouble("Constants.PROP"), 1.0)
         } catch (de: DashboardException) {
             fail<Any>("Constants.PROP not found")
+        }
+    }
+
+    @Test
+    fun checkForFirstVar() {
+        try {
+            assertEquals(Dashboard.getDouble("Constants.First.PROP"), 2.0)
+        } catch (de: DashboardException) {
+            fail<Any>("Constants.First.PROP not found")
+        }
+    }
+
+    @Test
+    fun checkForSecondVar() {
+        try {
+            assertEquals(Dashboard.getDouble("Constants.Second.PROP"), 3.0)
+        } catch (de: DashboardException) {
+            fail<Any>("Constants.Second.PROP not found")
+        }
+    }
+
+    @Test
+    fun checkForOuterNestVar() {
+        try {
+            assertEquals(Dashboard.getDouble("Constants.Nest.PROP"), 4.0)
+        } catch (de: DashboardException) {
+            fail<Any>("Constants.Nest.PROP not found")
+        }
+    }
+
+    @Test
+    fun checkForInnerNestVar() {
+        try {
+            assertEquals(Dashboard.getDouble("Constants.Nest.Inner.PROP"), 5.0)
+        } catch (de: DashboardException) {
+            fail<Any>("Constants.Nest.Inner.PROP not found")
         }
     }
 }

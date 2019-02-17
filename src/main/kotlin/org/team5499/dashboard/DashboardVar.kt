@@ -27,17 +27,23 @@ class DashboardVar<T>(var initValue: T) {
 
     var isInit = false
 
+    fun getDashName(thisRef: Any?, property: KProperty<*>): String {
+        val packageLength = thisRef!!::class.java.getPackage().name.length
+        return "${thisRef::class.qualifiedName!!.substring(packageLength + 1)}.${property.name}"
+    }
+
     operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
         if (!isInit) {
-            Dashboard.setVariable(property.name, initValue as Any)
+            Dashboard.setVariable(getDashName(thisRef, property), initValue as Any)
             isInit = true
+            println(getDashName(thisRef, property))
             return initValue
         }
-        return Dashboard.getVariable(property.name)
+        return Dashboard.getVariable(getDashName(thisRef, property))
     }
 
     operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
         isInit = true
-        Dashboard.setVariable(property.name, value as Any)
+        Dashboard.setVariable(getDashName(thisRef, property), value as Any)
     }
 }
