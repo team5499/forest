@@ -13,9 +13,8 @@ repositories {
 
 dependencies {
     compile 'org.jetbrains.kotlin:kotlin-stdlib:1.3.0'
-    // compile 'org.jetbrains.kotlin:kotlin-reflection'
-    compile 'com.sparkjava:spark-kotlin:1.0.0-alpha'
-    compile 'com.sparkjava:spark-template-jinjava:2.7.1'
+    compile 'org.jetbrains.kotlin:kotlin-reflect:1.3.0'
+    compile 'com.sparkjava:spark-core:2.8.0'
     compile 'org.slf4j:slf4j-simple:1.7.21'
     compile 'org.json:json:20180813'
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
@@ -26,7 +25,7 @@ dependencies {
 }
 
 group = 'org.team5499'
-version = '0.1.0' /* Change this when deploying a new version */
+version = '0.6.0' /* Change this when deploying a new version */
 
 task sourcesJar(type: Jar) {
     from sourceSets.main.allJava
@@ -34,19 +33,19 @@ task sourcesJar(type: Jar) {
 }
 
 task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
-    outputFormat = 'html'
-    outputDirectory = javadoc.destinationDir
+    outputFormat = 'javadoc'
+    outputDirectory = "$buildDir/javadoc"
     inputs.dir 'src/main/kotlin'
 }
 
 task javadocJar(type: Jar, dependsOn: dokkaJavadoc) {
     classifier = 'javadoc'
-    from javadoc.destinationDir
+    from "$buildDir/javadoc"
 }
 
 dokka {
     outputFormat = 'html'
-    outputDirectory = "$buildDir/javadoc"
+    outputDirectory = "$buildDir/htmldoc"
 }
 
 test {

@@ -4,11 +4,6 @@
     "dev": {
       "navbarOrder": 0,
       "title": "Development",
-      "widgets": []
-    },
-    "drive": {
-      "navbarOrder": 1,
-      "title": "Drive",
       "widgets": [
         {
           "height": "3",
@@ -16,42 +11,29 @@
           "kwargs": {},
           "resize": false,
           "title": "Test Variable",
-          "type": "RawVarEditor",
+          "type": "StringEditor",
           "variables": {
             "target": "TEST"
           },
-          "width": "6"
-        },
-        {
-          "height": "3",
-          "id": "deekVarEditor2",
-          "kwargs": {},
-          "resize": true,
-          "title": "Deek Variable",
-          "type": "RawVarEditor",
-          "variables": {
-            "target": "DEEK"
-          },
-          "width": "6"
+          "width": "6",
+          "x": "0",
+          "y": "0"
         },
         {
           "height": "3",
           "id": "deekVarEditor",
           "kwargs": {},
-          "resize": false,
+          "resize": true,
           "title": "Deek Variable",
-          "type": "RawVarEditor",
+          "type": "StringEditor",
           "variables": {
             "target": "DEEK"
           },
-          "width": "6"
+          "width": "6",
+          "x": "7",
+          "y": "0"
         }
       ]
-    },
-    "test": {
-      "navbarOrder": 2,
-      "title": "Test",
-      "widgets": []
     }
   }
 }
