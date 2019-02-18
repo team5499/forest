@@ -11,6 +11,24 @@ function loadGrid(w) {
         placeholderClass: "grid-stack-placeholder",
         draggable: {handle: '.ui-draggable-handle' }
     });
+    $('.grid-stack').on('change', (event, items) => {
+        for(var i in items) {
+            let newX = items[i].x;
+            let newY = items[i].y;
+            let newWidth = items[i].width;
+            let newHeight = items[i].height;
+            console.log(items[i]);
+            console.log(newWidth + ';' + newHeight);
+            let id = $(items[i].el).data('widget-id');
+            let newConfig = PageUtils.getPageWidget(id);
+            newConfig.x = newX.toString();
+            newConfig.y = newY.toString();
+            newConfig.width = newWidth.toString();
+            newConfig.height = newHeight.toString();
+            console.log(newConfig);
+            PageUtils.setPageWidget(id, newConfig);
+        }
+    });
 }
 $(function() { // runs when document finishes loading
     if(PageUtils.loadPageConfig()) {
