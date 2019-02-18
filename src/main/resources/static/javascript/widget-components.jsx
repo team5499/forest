@@ -44,7 +44,7 @@ export class WidgetContainer extends React.Component {
 
     render() {
         return (
-            <div className='card m-1' style={{width: this.props.widgetConfig.width, height: this.props.widgetConfig.height, display:'inline-block'}} id={this.props.widgetConfig.id + '_card'}>
+            <div className='card m-1' style={{width: this.props.widgetConfig.width, height: this.props.widgetConfig.height, display:'inline-block'}}>
                 <div className='card-header p-1'>
                     <h4 className='m-0 d-inline'>{this.props.widgetConfig.title}</h4>
                     <button className='btn btn-light float-right d-inline p-0 m-1' type='button' data-toggle='modal' data-target={'#' + this.props.widgetConfig.id + '_modal'}><h5 className='fas fa-cog m-0'></h5></button>
@@ -91,7 +91,7 @@ export class WidgetContainer extends React.Component {
 export class WidgetBody extends React.Component {
     render() {
         return (
-            <div className={'card-body p-2 show'} id={this.props.id + '_widget'}>
+            <div className={'card-body p-2 show'}>
                 {this.props.children}
             </div>
         );
@@ -105,7 +105,7 @@ export class WidgetSettings extends React.Component {
                 <div className='modal-dialog modal-dialog-centered' role='document'>
                     <div className='modal-content'>
                         <div className='modal-header'>
-                            <h5 className='modal-title' id={this.props.id + '_modal_title'}>{this.props.title} Settings</h5>
+                            <h5 className='modal-title'>{this.props.title} Settings</h5>
                             <button type='button' className='close' data-dismiss='modal' aria-label='Close'>
                                 <span aria-hidden='true'>&times;</span>
                             </button>
