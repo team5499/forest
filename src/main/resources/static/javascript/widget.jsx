@@ -1,3 +1,5 @@
+import PageUtils from 'page-utils';
+
 var Widget = {};
 
 /**
@@ -16,6 +18,7 @@ Widget.Body = class extends React.Component {
     }
 
     _settingsSave(newConfig) {
+        PageUtils.setPageWidget(newConfig.id, newConfig);
         this.widgetConfig = newConfig;
         return this.settingsSave(newConfig);
     }

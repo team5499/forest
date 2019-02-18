@@ -45,6 +45,15 @@ class SocketHandler {
         public fun startBroadcastThread() {
             broadcastThread.start()
         }
+
+        public fun stopBroadcastThread() {
+            broadcastThread.stop()
+        }
+
+        public fun awaitStop() {
+            broadcastThread.join()
+        }
+
         public fun broadcastJSONMinusSession(json: JSONObject, session: Session) {
             for (s in sessions) {
                 if (!s.equals(session)) {
