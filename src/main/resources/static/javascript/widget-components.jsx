@@ -5,8 +5,7 @@ export class WidgetContainer extends React.Component {
         super(props);
         this.state = {
             settingsSave: () => console.error("No settings save callback set!"),
-            settingsData: () => console.error("No settings data callback set!"),
-            title: this.props.widgetConfig.title
+            settingsData: () => console.error("No settings data callback set!")
         }
     }
 
@@ -40,31 +39,14 @@ export class WidgetContainer extends React.Component {
      */
     onSettingsSave() {
         let currentWidgetConfig = this.props.getWidgetConfig();
-        let newConfig = this.state.settingsData(currentWidgetConfig);
-
         this.state.settingsSave(this.state.settingsData(currentWidgetConfig));
     }
-
-    /**
-     * Set the title of this widget
-     * @param {event} newTitle
-     */
-    setTitle(e) {
-        this.setState({
-            title: $(e.target).html()
-        });
-
-        var currentConfig = this.props.getWidgetConfig();
-        currentConfig.title = $(e.target).html();
-        this.props.setWidgetConfig(currentConfig.id, currentConfig);
-    }
-
 
     render() {
         return (
             <div className='card m-1' style={{width: this.props.widgetConfig.width, height: this.props.widgetConfig.height, display:'inline-block'}} id={this.props.widgetConfig.id + '_card'}>
                 <div className='card-header p-1'>
-                    <h4 className='m-0 d-inline' contentEditable="true" onBlur={(e) => this.setTitle(e)}>{this.state.title}</h4>
+                    <WidgetTitle getWidgetConfig={() => this.props.getWidgetConfig(this.props.widgetConfig.id)} setWidgetConfig={(json) => this.props.setWidgetConfig(this.props.widgetConfig.id, json)} />
                     <button className='btn btn-light float-right d-inline p-0 m-1' type='button' data-toggle='modal' data-target={'#' + this.props.widgetConfig.id + '_modal'}><h5 className='fas fa-cog m-0'></h5></button>
                 </div>
                 <WidgetBody title={this.props.widgetConfig.title} id={this.props.widgetConfig.id}>
@@ -139,5 +121,45 @@ export class WidgetSettings extends React.Component {
                 </div>
             </div>
         );
+    }
+}
+
+export class WidgetTitle extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            title: this.props.getWidgetConfig().title,
+            isEditing: false
+        };
+    }
+
+    updateTitle(e) {
+        this.setState({title: e.target.value});
+    }
+
+    setTitle(e) {
+        let newconfig = this.props.getWidgetConfig();
+        newconfig.title = this.state.title;
+        this.props.setWidgetConfig(newconfig);
+        this.setState({isEditing: false});
+    }
+
+    edit(e) {
+        this.setState({isEditing: true});
+    }
+
+    componentDidUpdate() {
+        console.log(this.state.isEditing);
+        if(this.state.isEditing) {
+            this.titleInput.focus();
+        }
+    }
+
+    render() {
+        if(this.state.isEditing) {
+            return <input placeholder='title' ref={(input) => { this.titleInput = input }} type='text' className='form-control d-inline m-0' onChange={(e) => this.updateTitle(e)} onBlur={(e) => this.setTitle(e)} value={this.state.title} />;
+        } else {
+            return <h4 className='m-0 d-inline' onClick={(e) => this.edit(e)}>{this.state.title}</h4>;
+        }
     }
 }
