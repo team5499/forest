@@ -44,7 +44,7 @@ export class WidgetContainer extends React.Component {
 
     render() {
         return [
-            <div key='body' className='card m-1 grid-stack-item' data-widget-id={this.props.widgetConfig.id} style={{width: this.props.widgetConfig.width, height: this.props.widgetConfig.height, display:'inline-block'}} data-gs-no-resize={(this.props.widgetConfig.resize) ? 'no' : 'yes'} data-gs-width={this.props.widgetConfig.width} data-gs-height={this.props.widgetConfig.height} data-gs-x={this.props.widgetConfig.x} data-gs-y={this.props.widgetConfig.y}>
+            <div key='body' className='card m-1 grid-stack-item' data-widget-id={this.props.widgetConfig.id} style={{display:'inline-block'}} data-gs-no-resize={(this.props.widgetConfig.resize) ? 'no' : 'yes'} data-gs-width={this.props.widgetConfig.width} data-gs-height={this.props.widgetConfig.height} data-gs-x={this.props.widgetConfig.x} data-gs-y={this.props.widgetConfig.y}>
                 <div className='grid-stack-item-content'>
                     <div className='card-header p-1 grid-stack-item-content ui-draggable-handle'>
                         <WidgetTitle getWidgetConfig={() => this.props.getWidgetConfig(this.props.widgetConfig.id)} setWidgetConfig={(json) => this.props.setWidgetConfig(this.props.widgetConfig.id, json)} />

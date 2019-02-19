@@ -1,45 +1,91 @@
 import PageUtils from "page-utils";
 import SocketHandler from "socket-handler";
 
-function loadGrid(w) {
-    $(".grid-stack").gridstack({
-        width: w,
-        float: true,
-        resizable: { autoHide: true, handles: "se" },
-        animate: true,
-        horizontalMargin: 1,
-        placeholderClass: "grid-stack-placeholder",
-        draggable: {handle: '.ui-draggable-handle' }
-    });
-    $('.grid-stack').on('change', (event, items) => {
-        for(var i in items) {
-            let newX = items[i].x;
-            let newY = items[i].y;
-            let newWidth = items[i].width;
-            let newHeight = items[i].height;
-            console.log(items[i]);
-            console.log(newWidth + ';' + newHeight);
-            let id = $(items[i].el).data('widget-id');
-            let newConfig = PageUtils.getPageWidget(id);
-            newConfig.x = newX.toString();
-            newConfig.y = newY.toString();
-            newConfig.width = newWidth.toString();
-            newConfig.height = newHeight.toString();
-            console.log(newConfig);
-            PageUtils.setPageWidget(id, newConfig);
+class Grid extends React.Component {
+    constructor(props) {
+        super(props);
+        this.PIXELS_PER_UNIT = 10.0;
+        this.state = {
+            gridWidth: this.getGridWidth(),
+            gridHeight: this.getGridHeight()
         }
-    });
+
+        $(window).on('resize', () => {
+            this.setState({
+                gridWidth: this.getGridWidth(),
+                gridHeight: this.getGridHeight()
+            });
+        });
+    }
+
+    getGridWidth() {
+        return Math.floor($(window).width() / this.PIXELS_PER_UNIT);
+    }
+
+    getGridHeight() {
+        return Math.floor($(window).height() / this.PIXELS_PER_UNIT);
+    }
+
+    loadGrid() {
+        $(".grid-stack").gridstack({
+            width: this.getGridWidth(),
+            height: this.getGridHeight(),
+            cellWidth: this.PIXELS_PER_UNIT,
+            cellHeight: this.PIXELS_PER_UNIT,
+            float: true,
+            resizable: { autoHide: true, handles: "se" },
+            animate: true,
+            horizontalMargin: 1,
+            placeholderClass: "grid-stack-placeholder",
+            draggable: {handle: '.ui-draggable-handle' }
+        });
+        $('.grid-stack').on('change', (event, items) => {
+            console.log('change');
+            for(var i in items) {
+                let newX = items[i].x;
+                let newY = items[i].y;
+                let newWidth = items[i].width;
+                let newHeight = items[i].height;
+                let id = $(items[i].el).data('widget-id');
+                console.log(id);
+                let newConfig = PageUtils.getPageWidget(id);
+                newConfig.x = newX.toString();
+                newConfig.y = newY.toString();
+                newConfig.width = newWidth.toString();
+                newConfig.height = newHeight.toString();
+                PageUtils.setPageWidget(id, newConfig);
+            }
+        });
+    }
+
+    componentDidMount() {
+        console.log('mount');
+        console.log(`${this.getGridWidth()} : ${this.getGridHeight()}`);
+        this.loadGrid();
+    }
+
+    componentDidUpdate() {
+        console.log('update');
+        this.loadGrid();
+    }
+
+    render() {
+        console.log(`render:${this.state.gridWidth} : ${this.state.gridHeight}`);
+        return (
+            <div className="grid-stack" id="gridstack" data-gs-width={`${this.state.gridWidth}`} data-gs-height={`${this.state.gridHeight}`}>
+                {PageUtils.renderWidgets()}
+            </div>
+        );
+    }
 }
+
 $(function() { // runs when document finishes loading
     if(PageUtils.loadPageConfig()) {
         SocketHandler.connect(PageUtils.getWebSocketPageAddress());
         ReactDOM.render(
-            <div className="grid-stack" id="gridstack" data-gs-width="35">
-                {PageUtils.renderWidgets()}
-            </div>,
+            <Grid />,
             $('#reactapp')[ 0 ]
         );
-        loadGrid(35);
         // let maxWidth = $('#gridstack').width()
         // $(window).resize(() => {
         //     let width = Math.floor(35 * ($('#gridstack').width()/maxWidth));
