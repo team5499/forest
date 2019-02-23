@@ -4,7 +4,7 @@ import SocketHandler from "socket-handler";
 class Grid extends React.Component {
     constructor(props) {
         super(props);
-        this.PIXELS_PER_UNIT = 10.0;
+        this.PIXELS_PER_UNIT = 35.0;
         this.state = {
             gridWidth: this.getGridWidth(),
             gridHeight: this.getGridHeight()
@@ -16,6 +16,25 @@ class Grid extends React.Component {
                 gridHeight: this.getGridHeight()
             });
         });
+    }
+
+    updateCss() {
+        console.log("update css");
+        let width = this.getGridWidth();
+        let percent = 100.0 / parseFloat(width);
+        let rules = $('#gridheights')[0].cssRules || $('#gridheights')[0].rules;
+        console.log(document.styleSheets);
+
+        for(let i = 0; i < width + 1; i++) {
+            $('.grid-stack > .grid-stack-item[data-gs-width=\'' + i + '\']').css({width: (percent * i) + '%'});
+            $('.grid-stack > .grid-stack-item[data-gs-x=\'' + i + '\']').css({left: (percent * i) + '%'});
+            $('.grid-stack > .grid-stack-item[data-gs-min-width=\'' + i + '\']').css({minWidth: (percent * i) + '%'});
+            $('.grid-stack > .grid-stack-item[data-gs-max-width=\'' + i + '\']').css({maxWidth: (percent * i) + '%'});
+        }
+
+        for(let i = 1; i < width + 1; i++) {
+            console.log('width: ' + $('.grid-stack > .grid-stack-item[data-gs-width=\'' + i + '\']').css('width'));
+        }
     }
 
     getGridWidth() {
@@ -32,6 +51,7 @@ class Grid extends React.Component {
             height: this.getGridHeight(),
             cellWidth: this.PIXELS_PER_UNIT,
             cellHeight: this.PIXELS_PER_UNIT,
+            auto: true,
             float: true,
             resizable: { autoHide: true, handles: "se" },
             animate: true,
@@ -62,17 +82,20 @@ class Grid extends React.Component {
         console.log('mount');
         console.log(`${this.getGridWidth()} : ${this.getGridHeight()}`);
         this.loadGrid();
+        // this.updateCss();
     }
 
     componentDidUpdate() {
         console.log('update');
-        this.loadGrid();
+        // this.loadGrid();
+        // this.updateCss();
+        console.log($(this.grid).data('gridstack'));
     }
 
     render() {
         console.log(`render:${this.state.gridWidth} : ${this.state.gridHeight}`);
         return (
-            <div className="grid-stack" id="gridstack" data-gs-width={`${this.state.gridWidth}`} data-gs-height={`${this.state.gridHeight}`}>
+            <div className="grid-stack" ref={(item) => {this.grid = item}} data-gs-width={`${this.state.gridWidth}`} data-gs-height={`${this.state.gridHeight}`}>
                 {PageUtils.renderWidgets()}
             </div>
         );
