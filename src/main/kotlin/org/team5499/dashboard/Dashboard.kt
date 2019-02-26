@@ -194,9 +194,14 @@ object Dashboard {
 
     fun addVarListener(key: String, callback: (String, Any?) -> Unit): Int {
         if (callbacks.contains(key)) {
-            val tmp = callbacks.get(key)
-            tmp!!.add(callback)
-            return callbacks.put(key, tmp)!!.size
+            if (!callbacks.get(key)!!.contains(callback)) {
+                println("put stuff! $key")
+                val tmp = callbacks.get(key)
+                tmp!!.add(callback)
+                return callbacks.put(key, tmp)!!.size - 1
+            } else {
+                return callbacks.get(key)!!.indexOf(callback)
+            }
         } else {
             callbacks.put(key, mutableListOf(callback))
             return 0
