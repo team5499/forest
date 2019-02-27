@@ -95,7 +95,7 @@ export default class PageUtils {
         let widgets = [];
         for(var i in widgetsJson) {
             let widget = widgetsJson[i];
-            widgets.push(<WidgetContainer key={widget.id} widgetConfig={widget} widgetClass={widgetClasses[widget.type]} getWidgetConfig={() => PageUtils.getPageWidget(widget.id)} />);
+            widgets.push(<WidgetContainer key={widget.id} widgetConfig={widget} widgetClass={widgetClasses[widget.type]} getWidgetConfig={() => PageUtils.getPageWidget(widget.id)} setWidgetConfig={(id, conf) => PageUtils.setPageWidget(id, conf)} />);
         }
         return widgets;
     }

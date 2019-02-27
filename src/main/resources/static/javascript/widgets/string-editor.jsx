@@ -6,9 +6,9 @@ class StringEditor {}
 StringEditor.Body = class extends Widget.Body {
     init() {
         console.log(this.constructor.name)
-        let newValue = (this.getString(this.props.variables.target) === undefined) ? '' : this.getString(this.props.variables.target);
+        let newValue = (this.getString(this.widgetConfig.variables.target) === undefined) ? '' : this.getString(this.widgetConfig.variables.target);
         this.state = {
-            targetName: this.props.variables.target,
+            targetName: this.widgetConfig.variables.target,
             targetValue: newValue
         };
         this.callbackId = this.registerVarListener(this.state.targetName, (key, value) => this.updateState(key, value));
@@ -50,7 +50,7 @@ StringEditor.Body = class extends Widget.Body {
 StringEditor.Settings = class extends Widget.Settings {
     init() {
         this.state = {
-            targetName: this.props.variables.target
+            targetName: this.widgetConfig.variables.target
         };
     }
 

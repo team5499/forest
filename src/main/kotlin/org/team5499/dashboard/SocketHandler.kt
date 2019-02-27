@@ -45,6 +45,15 @@ class SocketHandler {
         public fun startBroadcastThread() {
             broadcastThread.start()
         }
+
+        public fun stopBroadcastThread() {
+            broadcastThread.stop()
+        }
+
+        public fun awaitStop() {
+            broadcastThread.join()
+        }
+
         public fun broadcastJSONMinusSession(json: JSONObject, session: Session) {
             for (s in sessions) {
                 if (!s.equals(session)) {
@@ -75,6 +84,7 @@ class SocketHandler {
     @OnWebSocketMessage
     fun onMessage(session: Session, message: String) {
         val updates = JSONObject(message)
+        Dashboard.mergeVariableUpdates(updates)
         for (k in updates.keySet()) {
             if (Dashboard.callbacks.contains(k)) {
                 for (c in Dashboard.callbacks.get(k)!!) {
@@ -83,7 +93,6 @@ class SocketHandler {
             }
         }
         broadcastJSONMinusSession(updates, session)
-        Dashboard.mergeVariableUpdates(updates)
     }
 
     @OnWebSocketError
