@@ -12,6 +12,8 @@ import com.hubspot.jinjava.JinjavaConfig
 
 import org.json.JSONObject
 
+import java.util.concurrent.ConcurrentHashMap
+
 import java.io.File
 
 typealias VariableCallback = (String, Any?) -> Unit
@@ -24,8 +26,10 @@ typealias VariableCallback = (String, Any?) -> Unit
 @SuppressWarnings("ReturnCount", "TooManyFunctions")
 object Dashboard {
     private var config: Config = Config()
-    public var callbacks: HashMap<String, MutableList<VariableCallback>> = HashMap()
-        private set
+    public val concurrentCallbacks: ConcurrentHashMap<String, MutableList<VariableCallback>> = ConcurrentHashMap()
+    public val inlineCallbacks: ConcurrentHashMap<String,
+                                                    ConcurrentHashMap<VariableCallback,
+                                                                        Boolean>> = ConcurrentHashMap()
     public var variables: JSONObject = JSONObject()
         get() {
             synchronized(field) {
@@ -193,23 +197,59 @@ object Dashboard {
     }
 
     fun addVarListener(key: String, callback: (String, Any?) -> Unit): Int {
-        if (callbacks.contains(key)) {
-            if (!callbacks.get(key)!!.contains(callback)) {
-                val tmp = callbacks.get(key)
+        if (concurrentCallbacks.containsKey(key)) {
+            if (!concurrentCallbacks.get(key)!!.contains(callback)) {
+                val tmp = concurrentCallbacks.get(key)
                 tmp!!.add(callback)
-                return callbacks.put(key, tmp)!!.size - 1
+                return concurrentCallbacks.put(key, tmp)!!.size - 1
             } else {
-                return callbacks.get(key)!!.indexOf(callback)
+                return concurrentCallbacks.get(key)!!.indexOf(callback)
             }
         } else {
-            callbacks.put(key, mutableListOf(callback))
+            concurrentCallbacks.put(key, mutableListOf(callback))
             return 0
         }
     }
 
+    /**
+     * Only run the lambda if the specified key has been updated since the last time this function was
+     * called *WITH THIS LAMBDA*
+     * NOTE: Will call the lambda the first time this function is called with that particular lambda
+     *
+     * @param key The key of the variable to set the lambda for
+     * @param callback The lambda to call if that variable has been updated
+     *
+     * @return Whether the lambda was called or not
+     */
+    fun runIfUpdate(key: String, callback: (String, Any?) -> Unit): Boolean {
+        var shouldUpdate = true
+        synchronized(inlineCallbacks) {
+            var tmp = ConcurrentHashMap<VariableCallback, Boolean>()
+            if (inlineCallbacks.containsKey(key)) {
+                tmp = inlineCallbacks.get(key)!!
+                if (!inlineCallbacks.get(key)!!.containsKey(callback)) {
+                    tmp!!.put(callback, false)
+                    inlineCallbacks.put(key, tmp)
+                } else {
+                    shouldUpdate = tmp!!.get(callback)!!
+                    tmp.put(callback, false)
+                    inlineCallbacks.put(key, tmp)
+                }
+            } else {
+                tmp.put(callback, false)
+                inlineCallbacks.put(key, tmp)
+            }
+        }
+
+        if (shouldUpdate) {
+            callback(key, Dashboard.getVariable(key))
+        }
+        return shouldUpdate
+    }
+
     fun removeVarListener(key: String, callbackId: Int): Boolean {
-        if (callbacks.contains(key)) {
-            val tmp = callbacks.get(key)
+        if (concurrentCallbacks.contains(key)) {
+            val tmp = concurrentCallbacks.get(key)
             if (tmp!!.size > callbackId) {
                 tmp!!.removeAt(callbackId)
                 return true

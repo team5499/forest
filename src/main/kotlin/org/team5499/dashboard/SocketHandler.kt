@@ -86,12 +86,25 @@ class SocketHandler {
         val updates = JSONObject(message)
         Dashboard.mergeVariableUpdates(updates)
         for (k in updates.keySet()) {
-            if (Dashboard.callbacks.contains(k)) {
-                for (c in Dashboard.callbacks.get(k)!!) {
+            if (Dashboard.concurrentCallbacks.containsKey(k)) {
+                for (c in Dashboard.concurrentCallbacks.get(k)!!) {
                     c(k, updates.get(k))
                 }
             }
         }
+
+        synchronized(Dashboard.inlineCallbacks) {
+            for (k in updates.keySet()) {
+                if (Dashboard.inlineCallbacks.containsKey(k)) {
+                    val tmp = Dashboard.inlineCallbacks.get(k)!!
+                    for (c in tmp.keys()) {
+                        tmp.put(c, true)
+                    }
+                    Dashboard.inlineCallbacks.put(k, tmp)
+                }
+            }
+        }
+
         broadcastJSONMinusSession(updates, session)
     }
 

@@ -74,32 +74,15 @@ class PlaygroundTest {
             println("$key : $value")
         })
 
-        var first = true
-
         println("server started")
         while (true) { // find a better way to wait?
             @Suppress("MagicNumber")
-            if (first) {
-                val beforeFirst = System.nanoTime()
-                Dashboard.addVarListener("KP", {
-                    key: String, value: Any? ->
-                    println("$key : $value")
-                })
-                val afterFirst = System.nanoTime()
-                Dashboard.addVarListener("KP", {
-                    key: String, value: Any? ->
-                    println("DEEK")
-                })
-                val afterSecond = System.nanoTime()
-                val afterThird = System.nanoTime()
-                val error = afterThird - afterSecond
-                println("first time: ${afterFirst - beforeFirst - error}")
-                println("second time: ${afterSecond - afterFirst - error}")
-                println("error: $error")
-                first = false
-            }
+            Dashboard.addVarListener("KP", {
+                key: String, value: Any? ->
+                println("$key : $value")
+            })
             // println(Dashboard.getVariable<String>("DEEK"))
-            // Thread.sleep(1000)
+            Thread.sleep(1000)
         }
     }
 }
