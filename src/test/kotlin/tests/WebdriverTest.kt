@@ -34,10 +34,10 @@ class WebdriverTest {
             Dashboard.start(this, "webdriverConfig.json")
             Dashboard.awaitInitialization()
             if (System.getenv("TRAVIS") == "true") {
-                addr = "http://host.docker.internal:5800"
+                addr = "http://127.0.0.1:5800"
 
                 val capabilities = DesiredCapabilities.chrome()
-                driver = RemoteWebDriver(URL("http://host.docker.internal:4444/wd/hub"), capabilities)
+                driver = RemoteWebDriver(URL("http://127.0.0.1:4444/wd/hub"), capabilities)
             } else {
                 addr = "localhost:5800"
                 if (Utils.isWindows()) {
