@@ -3,7 +3,7 @@ services:
 - docker
 script:
 - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
-- docker run -d -p 4444:4444 --shm-size=2g selenium/standalone-chrome:3.141.59-gold; docker run -t -d -v $(pwd):/code:rw --name frc-testing-image team5499/frc-testing-image:frc2019; docker exec frc-testing-image /code/gradlew -p /code test jacocoTestReport
+- docker run -d -p 4444:4444 --shm-size=2g selenium/standalone-chrome:3.141.59-gold; docker run -t -d -e TRAVIS='true' -v $(pwd):/code:rw --name frc-testing-image team5499/frc-testing-image:frc2019; docker exec frc-testing-image /code/gradlew -p /code test jacocoTestReport
 after_success:
 - if [ "$BRANCH" == "master" ]; then docker run -t -d -v $(pwd):/code:rw --name frc-testing-image-java8 team5499/frc-testing-image; docker exec frc-testing-image-java8 /code/gradlew -p /code dokkaJavadoc; fi
 - if [ "$BRANCH" == "master" ]; then docker exec frc-testing-image /code/gradlew -p /code publishToTeamRepo --username=$USERNAME --password=$PASSWORD --url=$URL; fi
