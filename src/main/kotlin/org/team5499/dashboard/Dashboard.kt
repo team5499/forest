@@ -154,7 +154,6 @@ object Dashboard {
         }
     }
 
-
     fun getInt(key: String): Int {
         val rawValue = getVariable<Any>(key)
         if (rawValue is Double) {

@@ -63,7 +63,7 @@ export class WidgetContainer extends React.Component {
                             getBoolean: (key) => SocketHandler.getBoolean(key),
 
                             setSettingsSaveCallback: (callback) => this.setSettingsSaveCallback(callback),
-                         
+
                             widgetConfig: this.props.widgetConfig}, null)}
                 </WidgetBody>
                 <WidgetSettings title={this.props.widgetConfig.title} id={this.props.widgetConfig.id} onSave={() => this.onSettingsSave()}>
