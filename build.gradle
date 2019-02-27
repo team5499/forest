@@ -54,7 +54,7 @@ test {
     dependsOn 'cleanTest'
 
     useJUnitPlatform {
-        excludeTags 'integration'
+        excludeTags 'webdriver'
         excludeTags 'playground'
     }
 
@@ -74,9 +74,9 @@ test {
     }
 }
 
-task integrationTest(type: Test) {
+task webdriverTest(type: Test) {
     useJUnitPlatform {
-        includeTags 'integration'
+        includeTags 'webdriver'
     }
 
     testLogging {

@@ -1,6 +1,7 @@
 package tests
 
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.AfterEach
@@ -12,6 +13,7 @@ import org.openqa.selenium.By
 
 import org.team5499.dashboard.Dashboard
 
+@Tag("webdriver")
 class WebdriverTest {
     lateinit var driver: WebDriver
     lateinit var actions: Actions
