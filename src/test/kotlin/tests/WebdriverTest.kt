@@ -37,7 +37,7 @@ class WebdriverTest {
                 addr = "http://host.docker.internal:5800"
 
                 val capabilities = DesiredCapabilities.chrome()
-                driver = RemoteWebDriver(URL("http://localhost:4444/wd/hub"), capabilities)
+                driver = RemoteWebDriver(URL("$addr/wd/hub"), capabilities)
             } else {
                 addr = "localhost:5800"
                 if (Utils.isWindows()) {
