@@ -14,6 +14,8 @@ import org.json.JSONObject
 
 import java.util.concurrent.ConcurrentHashMap
 
+import java.util.concurrent.locks.ReentrantLock
+
 import java.io.File
 
 typealias VariableCallback = (String, Any?) -> Unit
@@ -27,9 +29,9 @@ typealias VariableCallback = (String, Any?) -> Unit
 object Dashboard {
     private var config: Config = Config()
     public val concurrentCallbacks: ConcurrentHashMap<String, MutableList<VariableCallback>> = ConcurrentHashMap()
-    public val inlineCallbacks: ConcurrentHashMap<String,
-                                                    ConcurrentHashMap<VariableCallback,
-                                                                        Boolean>> = ConcurrentHashMap()
+    public var inlineCallbacks: List<String> = listOf()
+    public var inlineCallbackUpdates: MutableList<String> = mutableListOf()
+    public var inlineLock = ReentrantLock()
     public var variables: JSONObject = JSONObject()
         get() {
             synchronized(field) {
@@ -222,36 +224,33 @@ object Dashboard {
      * @return Whether the lambda was called or not
      */
     fun runIfUpdate(key: String, callback: (String, Any?) -> Unit): Boolean {
-        var shouldUpdate = true
-        synchronized(inlineCallbacks) {
-            var tmp = ConcurrentHashMap<VariableCallback, Boolean>()
-            if (inlineCallbacks.containsKey(key)) {
-                tmp = inlineCallbacks.get(key)!!
-                if (!inlineCallbacks.get(key)!!.containsKey(callback)) {
-                    tmp!!.put(callback, false)
-                    inlineCallbacks.put(key, tmp)
-                } else {
-                    shouldUpdate = tmp!!.get(callback)!!
-                    tmp.put(callback, false)
-                    inlineCallbacks.put(key, tmp)
-                }
-            } else {
-                tmp.put(callback, false)
-                inlineCallbacks.put(key, tmp)
-            }
+        var shouldUpdate = false
+        if (inlineCallbacks.contains(key)) {
+            shouldUpdate = true
         }
 
         if (shouldUpdate) {
-            callback(key, Dashboard.getVariable(key))
+            callback(key, getVariable(key))
         }
+
         return shouldUpdate
+    }
+
+    fun update() {
+        inlineLock.lock()
+        try {
+            inlineCallbacks = inlineCallbackUpdates.toList()
+            inlineCallbackUpdates = mutableListOf<String>()
+        } finally {
+            inlineLock.unlock()
+        }
     }
 
     fun removeVarListener(key: String, callbackId: Int): Boolean {
         if (concurrentCallbacks.contains(key)) {
             val tmp = concurrentCallbacks.get(key)
             if (tmp!!.size > callbackId) {
-                tmp!!.removeAt(callbackId)
+                tmp.removeAt(callbackId)
                 return true
             }
         }

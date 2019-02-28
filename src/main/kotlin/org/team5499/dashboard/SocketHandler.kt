@@ -93,16 +93,15 @@ class SocketHandler {
             }
         }
 
-        synchronized(Dashboard.inlineCallbacks) {
+        Dashboard.inlineLock.lock()
+        try {
             for (k in updates.keySet()) {
-                if (Dashboard.inlineCallbacks.containsKey(k)) {
-                    val tmp = Dashboard.inlineCallbacks.get(k)!!
-                    for (c in tmp.keys()) {
-                        tmp.put(c, true)
-                    }
-                    Dashboard.inlineCallbacks.put(k, tmp)
+                if (!Dashboard.inlineCallbackUpdates.contains(k)) {
+                    Dashboard.inlineCallbackUpdates.add(k)
                 }
             }
+        } finally {
+            Dashboard.inlineLock.unlock()
         }
 
         broadcastJSONMinusSession(updates, session)
