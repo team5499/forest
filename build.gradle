@@ -1,5 +1,5 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.3.0'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.20'
     id 'java-library'
     id 'maven-publish'
     id 'jacoco'
@@ -12,8 +12,8 @@ repositories {
 }
 
 dependencies {
-    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.3.0'
-    compile 'org.jetbrains.kotlin:kotlin-reflect:1.3.0'
+    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.3.20'
+    compile 'org.jetbrains.kotlin:kotlin-reflect:1.3.20'
     compile 'com.sparkjava:spark-core:2.8.0'
     compile 'org.slf4j:slf4j-simple:1.7.21'
     compile 'org.json:json:20180813'
@@ -27,7 +27,7 @@ dependencies {
 }
 
 group = 'org.team5499'
-version = '0.7.0' /* Change this when deploying a new version */
+version = '0.8.0' /* Change this when deploying a new version */
 
 task sourcesJar(type: Jar) {
     from sourceSets.main.allJava

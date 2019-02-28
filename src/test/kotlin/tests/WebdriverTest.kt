@@ -1,6 +1,8 @@
 package tests
 
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.RepeatedTest
+import org.junit.jupiter.api.RepetitionInfo
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.BeforeAll
@@ -101,6 +103,43 @@ class WebdriverTest {
         submit.click()
         println(driver.title)
         assert(driver.title == "Dashboard - New Page")
+    }
+
+    @RepeatedTest(10)
+    fun inlineCallbackTest(repInfo: RepetitionInfo) {
+        if (repInfo.currentRepetition == 1) {
+            // First repetition - setup
+            driver.get("localhost:5800/page/widgettest")
+            Thread.sleep(1000)
+        }
+        Dashboard.setVariable("TEST", "testbefore${repInfo.currentRepetition}")
+        Thread.sleep(50)
+        val widgets = driver.findElements(By.className("card-body"))
+        val input = widgets.get(0).findElement(By.className("form-control"))
+        val submit = widgets.get(0).findElement(By.className("btn"))
+        var callCount = 0
+        val pollThread = Thread({
+            Thread.sleep(50)
+            actions.doubleClick(input).perform()
+            input.sendKeys("testafter${repInfo.currentRepetition}")
+            submit.click()
+        })
+        pollThread.start()
+        val startTime = System.currentTimeMillis()
+        while (true) {
+            Dashboard.update()
+            Dashboard.runIfUpdate("TEST", {
+                key: String, value: Any? ->
+                assert(value == "testafter${repInfo.currentRepetition}")
+                callCount++
+            })
+            if (System.currentTimeMillis() - startTime > 1000) {
+                break
+            }
+        }
+        pollThread.stop()
+        println(callCount)
+        assert(callCount == 1)
     }
 
     @AfterEach
