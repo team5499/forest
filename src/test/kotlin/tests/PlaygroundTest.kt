@@ -40,10 +40,6 @@ class PlaygroundTest {
         Dashboard.setVariable("KI", 0.0)
         Dashboard.setVariable("KD", 0.0)
         Dashboard.setVariable("KF", 0.0)
-        Dashboard.addVarListener("KP", {
-            key: String, value: Any? ->
-            println("$key : $value")
-        })
         Dashboard.addVarListener("KI", {
             key: String, value: Any? ->
             println("$key : $value")
@@ -81,6 +77,10 @@ class PlaygroundTest {
         println("server started")
         while (true) { // find a better way to wait?
             @Suppress("MagicNumber")
+            Dashboard.addVarListener("KP", {
+                key: String, value: Any? ->
+                println("$key : $value")
+            })
             // println(Dashboard.getVariable<String>("DEEK"))
             Thread.sleep(1000)
         }
