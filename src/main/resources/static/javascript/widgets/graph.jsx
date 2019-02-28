@@ -26,7 +26,6 @@ export default class Graph extends React.Component {
     //runs when componet is renderd into DOM
     componentDidMount(){
         let ctx = this.chartRef.current.getContext("2d");
-        console.log(this.chartConfig);
         this.chart = new Chart(ctx, this.chartConfig);
         let chart = this.chart
         let chartConfig = this.chartConfig;
@@ -42,9 +41,7 @@ export default class Graph extends React.Component {
             slide: function( event, ui ) {
                 chartConfig.options.scales.xAxes[0].ticks.max = ui.values[1];
                 chartConfig.options.scales.xAxes[0].ticks.min = ui.values[0];
-                console.log(ui.values[1]-ui.values[0]);
                 if(ui.values[1]-ui.values[0]<15){
-                    console.log(true)
                     chartConfig.options.scales.xAxes[0].ticks.maxTicksLimit = ui.values[1]-ui.values[0]
                 } else{
                     chartConfig.options.scales.xAxes[0].ticks.maxTicksLimit = 15
@@ -61,7 +58,6 @@ export default class Graph extends React.Component {
         for(let i=0;i<=150;i+=0.025){
             i=parseFloat(i.toFixed(3));
             times.push(parseFloat(i.toFixed(0)));
-            console.log(i);
         }
         this.chartConfig.data.labels = times;
         this.chart.update();
