@@ -42,6 +42,13 @@ export default class Graph extends React.Component {
             slide: function( event, ui ) {
                 chartConfig.options.scales.xAxes[0].ticks.max = ui.values[1];
                 chartConfig.options.scales.xAxes[0].ticks.min = ui.values[0];
+                console.log(ui.values[1]-ui.values[0]);
+                if(ui.values[1]-ui.values[0]<15){
+                    console.log(true)
+                    chartConfig.options.scales.xAxes[0].ticks.maxTicksLimit = ui.values[1]-ui.values[0]
+                } else{
+                    chartConfig.options.scales.xAxes[0].ticks.maxTicksLimit = 15
+                }
                 label1.text(ui.values[0]);
                 label1.css("margin-left", (ui.values[0])/(150)*100+"%");
                 label1.css("left", "-50px");
@@ -51,8 +58,9 @@ export default class Graph extends React.Component {
                 chart.update();
             }
           });
-        for(let i=0;i<=150;i+=1){
-            times.push(Math.round(Math.round(i*10)*10)/100);
+        for(let i=0;i<=150;i+=0.025){
+            i=parseFloat(i.toFixed(3));
+            times.push(parseFloat(i.toFixed(0)));
             console.log(i);
         }
         this.chartConfig.data.labels = times;

@@ -46,7 +46,8 @@
                     "ticks": {
                       "max": 150,
                       "maxTicksLimit": 15,
-                      "min": 0
+                      "min": 0,
+                      "precision": 2
                     }
                   }
                 ],
@@ -79,18 +80,6 @@
             "inDep": "time"
           },
           "width": "16"
-        },
-        {
-          "height": "3",
-          "id": "deekVarEditor2",
-          "kwargs": {},
-          "resize": false,
-          "title": "Deek Variable",
-          "type": "RawVarEditor",
-          "variables": {
-            "target": "DEEK"
-          },
-          "width": "6"
         }
       ]
     },
