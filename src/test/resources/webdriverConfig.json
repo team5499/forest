@@ -1,0 +1,37 @@
+{
+  "devMode": true,
+  "pages": {
+    "first": {
+      "navbarOrder": 0,
+      "title": "First",
+      "widgets": []
+    },
+    "second": {
+      "navbarOrder": 1,
+      "title": "Second",
+      "widgets": []
+    },
+    "third": {
+      "navbarOrder": 2,
+      "title": "Third",
+      "widgets": []
+    },
+    "widgettest": {
+      "navbarOrder": 3,
+      "title": "Widget Test",
+      "widgets": [
+        {
+          "height": "auto",
+          "id": "widgetTest",
+          "kwargs": {},
+          "title": "Test",
+          "type": "StringEditor",
+          "variables": {
+            "target": "TEST"
+          },
+          "width": "12rem"
+        }
+      ]
+    }
+  }
+}

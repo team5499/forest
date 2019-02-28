@@ -4,18 +4,13 @@
     "dev": {
       "navbarOrder": 0,
       "title": "Development",
-      "widgets": []
-    },
-    "drive": {
-      "navbarOrder": 1,
-      "title": "Drive",
       "widgets": [
         {
           "height": "auto",
           "id": "testVarEditor",
           "kwargs": {},
           "title": "Test Variable",
-          "type": "RawVarEditor",
+          "type": "StringEditor",
           "variables": {
             "target": "TEST"
           },
@@ -30,33 +25,66 @@
           "width": "338px"
         },
         {
-          "height": "15rem",
+          "height": "auto",
           "id": "deekVarEditor",
           "kwargs": {},
           "title": "Deek Variable",
-          "type": "RawVarEditor",
+          "type": "StringEditor",
           "variables": {
             "target": "DEEK"
           },
-          "width": "15rem"
+          "width": "12rem"
         },
         {
           "height": "auto",
-          "id": "testSelectorWidget",
+          "id": "intVarEditor",
           "kwargs": {},
-          "title": "Test Variable",
-          "type": "SelectorWidget",
+          "title": "Int Variable",
+          "type": "IntEditor",
           "variables": {
-            "target": "TEST"
+            "target": "INTEG"
+          },
+          "width": "12rem"
+        },
+        {
+          "height": "auto",
+          "id": "doubleVarEditor",
+          "kwargs": {},
+          "title": "Double Variable",
+          "type": "DoubleEditor",
+          "variables": {
+            "target": "DOUBLE"
+          },
+          "width": "12rem"
+        },
+        {
+          "height": "auto",
+          "id": "pidfEditor",
+          "kwargs": {},
+          "title": "PIDF Variable",
+          "type": "PIDFWidget",
+          "variables": {
+            "dtarget": "KD",
+            "ftarget": "KF",
+            "itarget": "KI",
+            "ptarget": "KP"
+          },
+          "width": "12rem"
+        },
+        {
+          "height": "auto",
+          "id": "pidEditor",
+          "kwargs": {},
+          "title": "PID Variable",
+          "type": "PIDWidget",
+          "variables": {
+            "dtarget": "KD2",
+            "itarget": "KI2",
+            "ptarget": "KP2"
           },
           "width": "12rem"
         }
       ]
-    },
-    "test": {
-      "navbarOrder": 2,
-      "title": "Test",
-      "widgets": []
     }
   }
 }

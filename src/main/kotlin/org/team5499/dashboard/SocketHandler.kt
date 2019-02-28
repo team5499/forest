@@ -5,6 +5,8 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError
+import org.eclipse.jetty.websocket.api.WebSocketException
 import java.util.Queue
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.lang.Thread
@@ -43,10 +45,24 @@ class SocketHandler {
         public fun startBroadcastThread() {
             broadcastThread.start()
         }
+
+        public fun stopBroadcastThread() {
+            broadcastThread.stop()
+        }
+
+        public fun awaitStop() {
+            broadcastThread.join()
+        }
+
         public fun broadcastJSONMinusSession(json: JSONObject, session: Session) {
             for (s in sessions) {
                 if (!s.equals(session)) {
-                    sendJSON(s, json, "updates")
+                    try {
+                        sendJSON(s, json, "updates")
+                    } catch (e: WebSocketException) {
+                        session.close()
+                        continue
+                    }
                 }
             }
         }
@@ -59,15 +75,40 @@ class SocketHandler {
     }
 
     @OnWebSocketClose
-    fun onClose(session: Session, statusCode: Int, reason: String) {
-        sessions.remove(session)
+    fun onClose(session: Session?, statusCode: Int, reason: String?) {
+        if (session != null) {
+            sessions.remove(session)
+        }
     }
 
     @OnWebSocketMessage
     fun onMessage(session: Session, message: String) {
         val updates = JSONObject(message)
-        broadcastJSONMinusSession(updates, session)
         Dashboard.mergeVariableUpdates(updates)
+        for (k in updates.keySet()) {
+            if (Dashboard.concurrentCallbacks.containsKey(k)) {
+                for (c in Dashboard.concurrentCallbacks.get(k)!!) {
+                    c(k, updates.get(k))
+                }
+            }
+        }
+
+        Dashboard.inlineLock.lock()
+        try {
+            for (k in updates.keySet()) {
+                if (!Dashboard.inlineCallbackUpdates.contains(k)) {
+                    Dashboard.inlineCallbackUpdates.add(k)
+                }
+            }
+        } finally {
+            Dashboard.inlineLock.unlock()
+        }
+
+        broadcastJSONMinusSession(updates, session)
+    }
+
+    @OnWebSocketError
+    fun onError(t: Throwable) {
     }
 
     @Suppress("EmptyDefaultConstructor")
