@@ -149,32 +149,27 @@ body{
 body {
   background-color: #f4f5fa;
 }
-
 .grid-stack {
   margin: 10px;
   width: 100%;
   display: inline-block;
   min-width: 1484px;
 }
-
 .grid-stack-item {
   box-shadow: 5px 5px 9px #a0a0a0;
   background: white;
   min-width: 251.988px !important;
 }
-
 .grid-stack-item-content {
   background: white;
   color: #2c3e50;
   text-align: center;
   font-size: 20px;
 }
-
 .grid-stack-item-content .fa {
   font-size: 64px;
   display: block;
 }
-
 .grid-stack-placeholder {
   background: rgba(250, 250, 250, 0);
   box-shadow: none;
@@ -182,7 +177,6 @@ body {
   border-style: dashed;
   border-color: #d3d3d3;
 }
-
 .ui-draggble-handle{
   background: #6666;
   cursor: grab;
@@ -190,7 +184,33 @@ body {
 .ui-draggable-handle:active{
   cursor: grabbing;
 }
-
 .canvas{
   position: absolute;
+}
+.graphForm{
+  display: inline-block !important;
+  width: 100%;
+}
+.sliderWrapper{
+  display: inline-block;
+  width: 50%;
+  vertical-align: middle;
+}
+
+.labelWrapper{
+  position: relative !important;
+  height: fit-content;
+  vertical-align: bottom;
+  font-size: 16px;
+  color: #737373;
+  height: 28px;
+}
+
+.label{
+  margin-top: 5px;
+  width: 100px;
+  height: 20px;
+  line-height: 20px;
+  position: absolute;
+  text-align: center;
 }

@@ -31,25 +31,22 @@
                 "mode": "nearest"
               },
               "legend": {
-                "display": "false"
+                "display": false
               },
               "responsive": true,
               "scales": {
                 "xAxes": [
                   {
-                    "display": true,
                     "gridLines": {
                       "display": false
                     },
-                    "maxTicksLimit": 15,
                     "scaleLabel": {
-                      "display": true,
-                      "labelString": "Time"
+                      "display": false
                     },
                     "ticks": {
+                      "max": 150,
                       "maxTicksLimit": 15,
-                      "min": 0,
-                      "suggestedMax": 10
+                      "min": 0
                     }
                   }
                 ],
@@ -57,8 +54,7 @@
                   {
                     "display": true,
                     "scaleLabel": {
-                      "display": true,
-                      "labelString": "Value"
+                      "display": false
                     }
                   }
                 ]
@@ -82,7 +78,7 @@
             ],
             "inDep": "time"
           },
-          "width": "18"
+          "width": "16"
         },
         {
           "height": "3",
