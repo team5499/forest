@@ -56,7 +56,7 @@ object Dashboard {
         }
 
     /**
-     * Start the dashboard server with a custom port and specified config file
+     * Start the dashboard server with a custom port and specified config file, and wait for it to finish initializing
      *
      * Open ports on the FMS are 5800 - 5810
      *
@@ -139,6 +139,9 @@ object Dashboard {
         SocketHandler.startBroadcastThread() // start broadcasting data
     }
 
+    /**
+     * Stop the dashboard and wait for it to shutdown
+     */
     fun stop() {
         SocketHandler.stopBroadcastThread()
         SocketHandler.awaitStop()
@@ -146,10 +149,22 @@ object Dashboard {
         Spark.awaitStop()
     }
 
+    /**
+     * Set the value of a variable in the dashboard
+     *
+     * @param key The name of the variable
+     * @param value The new value for the variable
+     */
     fun setVariable(key: String, value: Any) {
         variableUpdates.put(key, value)
     }
 
+    /**
+     * Get the value of the specified variable
+     *
+     * @param key The name of the variable to get
+     * @return The value of the specified variable
+     */
     fun <T> getVariable(key: String): T {
         if ((!variables.has(key)) && (!variableUpdates.has(key))) {
             throw DashboardException("The variable with name " + key + " was not found.")
@@ -160,6 +175,12 @@ object Dashboard {
         }
     }
 
+    /**
+     * Get the value of the specified variable as an Integer
+     *
+     * @param key The name of the requested variable
+     * @return The value of the desired variable
+     */
     fun getInt(key: String): Int {
         val rawValue = getVariable<Any>(key)
         if (rawValue is Double) {
@@ -171,6 +192,12 @@ object Dashboard {
         }
     }
 
+    /**
+     * Get the value of the specified variable as a Double
+     *
+     * @param key The name of the requested variable
+     * @return The value of the desired variable
+     */
     fun getDouble(key: String): Double {
         val rawValue = getVariable<Any>(key)
         if (rawValue is Int) {
@@ -182,6 +209,12 @@ object Dashboard {
         }
     }
 
+    /**
+     * Get the value of the specified variable as a String
+     *
+     * @param key The name of the requested variable
+     * @return The value of the desired variable
+     */
     fun getString(key: String): String {
         val rawValue = getVariable<Any>(key)
         if (rawValue is Int) {
@@ -193,11 +226,27 @@ object Dashboard {
         }
     }
 
+    /**
+     * Get the value of the specified variable as a Boolean
+     *
+     * @param key The name of the requested variable
+     * @return The value of the desired variable
+     */
     fun getBoolean(key: String): Boolean {
         val rawValue = getVariable<Any>(key)
         return rawValue as Boolean
     }
 
+    /**
+     * Add a lambda function to be called when the specified variable's value changes.
+     * The lambda is called from a separate thread, so it should be thread-safe.
+     * If the robot program updates the variable, the lambda is not called.
+     * The lambda is only called if the frontend changes the value
+     *
+     * @param key The name of the variable to listen to
+     * @param callback The lambda to call when the specified variable is updated
+     * @return The ID of the listener, which can be used later to remove the listener (See [removeVarListener])
+     */
     fun addVarListener(key: String, callback: (String, Any?) -> Unit): Int {
         if (concurrentCallbacks.containsKey(key)) {
             if (!concurrentCallbacks.get(key)!!.contains(callback)) {
@@ -214,11 +263,10 @@ object Dashboard {
     }
 
     /**
-     * Only run the lambda if the specified key has been updated since the last time this function was
-     * called *WITH THIS LAMBDA*
-     * NOTE: Will call the lambda the first time this function is called with that particular lambda
+     * Only run the lambda if the specified key has been updated since the last time [update] was called.
+     * Call this function continuously inside the same loop as [update].
      *
-     * @param key The key of the variable to set the lambda for
+     * @param key The key of the variable to listen for
      * @param callback The lambda to call if that variable has been updated
      *
      * @return Whether the lambda was called or not
@@ -236,6 +284,10 @@ object Dashboard {
         return shouldUpdate
     }
 
+    /**
+     * Should be called if [inline callbacks][runIfUpdate] are used.
+     * Put this function at the beginning of `robotPeriodic`.
+     */
     fun update() {
         inlineLock.lock()
         try {
@@ -246,6 +298,14 @@ object Dashboard {
         }
     }
 
+    /**
+     * Remove a lambda from the list of lambdas that listen for variable changes.
+     *
+     * @param key The key of the variable that the lambda is listening to
+     * @param callbackId The Int returned by the [addVarListener] function
+     *
+     * @return Whether the lambda was successfully removed
+     */
     fun removeVarListener(key: String, callbackId: Int): Boolean {
         if (concurrentCallbacks.contains(key)) {
             val tmp = concurrentCallbacks.get(key)
