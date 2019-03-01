@@ -31,6 +31,7 @@ object Dashboard {
     public val concurrentCallbacks: ConcurrentHashMap<String, MutableList<VariableCallback>> = ConcurrentHashMap()
     public var inlineCallbacks: List<String> = listOf()
     public var inlineCallbackUpdates: MutableList<String> = mutableListOf()
+    public var inlineCallbackLambdas: ConcurrentHashMap<String, MutableList<VariableCallback>> = ConcurrentHashMap()
     public var inlineLock = ReentrantLock()
     public var variables: JSONObject = JSONObject()
         get() {
@@ -247,7 +248,7 @@ object Dashboard {
      * @param callback The lambda to call when the specified variable is updated
      * @return The ID of the listener, which can be used later to remove the listener (See [removeVarListener])
      */
-    fun addVarListener(key: String, callback: (String, Any?) -> Unit): Int {
+    fun addVarListener(key: String, callback: VariableCallback): Int {
         if (concurrentCallbacks.containsKey(key)) {
             if (!concurrentCallbacks.get(key)!!.contains(callback)) {
                 val tmp = concurrentCallbacks.get(key)
@@ -271,7 +272,7 @@ object Dashboard {
      *
      * @return Whether the lambda was called or not
      */
-    fun runIfUpdate(key: String, callback: (String, Any?) -> Unit): Boolean {
+    fun runIfUpdate(key: String, callback: VariableCallback): Boolean {
         var shouldUpdate = false
         if (inlineCallbacks.contains(key)) {
             shouldUpdate = true
@@ -282,6 +283,38 @@ object Dashboard {
         }
 
         return shouldUpdate
+    }
+
+    /**
+     * Add a lambda to run if the specified variable has been updated. Gets called when the update function is called
+     *
+     * @param key The variable to listen for
+     * @param callback The lambda to call if the variable is updated
+     */
+    fun addInlineListener(key: String, callback: VariableCallback): Int {
+        var tmpList = mutableListOf<VariableCallback>()
+        if (inlineCallbackLambdas.containsKey(key)) {
+            tmpList = inlineCallbackLambdas.get(key)!!
+        }
+        tmpList.add(callback)
+        inlineCallbackLambdas.put(key, tmpList)
+        return tmpList.size - 1
+    }
+
+    /**
+     * Remove an inline listener with the specified key and ID
+     *
+     * @param key The variable that the lambda is attached to
+     * @param id The callback id returned by [addInlineListener]
+     */
+    fun removeInlineListener(key: String, id: Int): Boolean {
+        if (inlineCallbackLambdas.containsKey(key)) {
+            val tmpList = inlineCallbackLambdas.get(key)!!
+            tmpList.removeAt(id)
+            inlineCallbackLambdas.put(key, tmpList)
+            return true
+        }
+        return false
     }
 
     /**
@@ -296,6 +329,16 @@ object Dashboard {
         } finally {
             inlineLock.unlock()
         }
+        inlineCallbacks.forEach({
+            if (inlineCallbackLambdas.containsKey(it)) {
+                println("Contains!")
+                val tmpList = inlineCallbackLambdas.get(it)!!
+                val key = it
+                tmpList.forEach({
+                    it(key, Dashboard.getVariable(key))
+                })
+            }
+        })
     }
 
     /**

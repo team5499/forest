@@ -142,6 +142,44 @@ class WebdriverTest {
         assert(callCount == 1)
     }
 
+    @RepeatedTest(10)
+    fun onetimeInlineCallbackTest(repInfo: RepetitionInfo) {
+        if (repInfo.currentRepetition == 1) {
+            // First repetition - setup
+            driver.get("localhost:5800/page/widgettest")
+            Thread.sleep(1000)
+        }
+        Dashboard.setVariable("TEST", "onetimebefore${repInfo.currentRepetition}")
+        Thread.sleep(50)
+        val widgets = driver.findElements(By.className("card-body"))
+        val input = widgets.get(0).findElement(By.className("form-control"))
+        val submit = widgets.get(0).findElement(By.className("btn"))
+        var callCount = 0
+        val pollThread = Thread({
+            actions.doubleClick(input).perform()
+            input.sendKeys("onetimeafter${repInfo.currentRepetition}")
+            submit.click()
+        })
+        pollThread.start()
+        val callbackId = Dashboard.addInlineListener("TEST") {
+            key: String, value: Any? ->
+            println(value)
+            assert(value == "onetimeafter${repInfo.currentRepetition}")
+            callCount++
+        }
+        val startTime = System.currentTimeMillis()
+        while (true) {
+            Dashboard.update()
+            if (System.currentTimeMillis() - startTime > 1000) {
+                break
+            }
+        }
+        pollThread.interrupt()
+        println(callCount)
+        assert(callCount == 1)
+        Dashboard.removeInlineListener("TEST", callbackId)
+    }
+
     @AfterEach
     fun cleanup() {
     }
