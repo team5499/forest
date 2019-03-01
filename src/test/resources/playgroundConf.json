@@ -17,18 +17,19 @@
             "data": {
               "datasets": [
                 {
-                  "autoSkip": true,
                   "data": [],
-                  "label": "X",
-                  "maxticks": 15
+                  "fill": false,
+                  "pointBackgroundColor": "black",
+                  "showLine": true
                 }
               ],
               "labels": []
             },
             "options": {
-              "hover": {
-                "intersect": true,
-                "mode": "nearest"
+              "elements": {
+                "line": {
+                  "tension": 0
+                }
               },
               "legend": {
                 "display": false
@@ -44,10 +45,10 @@
                       "display": false
                     },
                     "ticks": {
+                      "autoSkip": false,
                       "max": 150,
                       "maxTicksLimit": 15,
-                      "min": 0,
-                      "precision": 2
+                      "min": 0
                     }
                   }
                 ],
@@ -68,7 +69,7 @@
                 "mode": "index"
               }
             },
-            "type": "line"
+            "type": "scatter"
           },
           "resize": true,
           "title": "Test Graph",
@@ -80,6 +81,18 @@
             "inDep": "time"
           },
           "width": "16"
+        },
+        {
+          "height": "3",
+          "id": "deekVarEditor2",
+          "kwargs": {},
+          "resize": false,
+          "title": "Deek Variable",
+          "type": "RawVarEditor",
+          "variables": {
+            "target": "DEEK"
+          },
+          "width": "6"
         }
       ]
     },

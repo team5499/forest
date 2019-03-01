@@ -26,9 +26,10 @@
               "labels": []
             },
             "options": {
-              "hover": {
-                "intersect": true,
-                "mode": "nearest"
+              "elements": {
+                "line": {
+                  "tension": 0
+                }
               },
               "legend": {
                 "display": false
@@ -42,11 +43,6 @@
                     },
                     "scaleLabel": {
                       "display": false
-                    },
-                    "ticks": {
-                      "max": 150,
-                      "maxTicksLimit": 15,
-                      "min": 0
                     }
                   }
                 ],
@@ -67,7 +63,7 @@
                 "mode": "index"
               }
             },
-            "type": "line"
+            "type": "scatter"
           },
           "resize": true,
           "title": "Test Graph",

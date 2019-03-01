@@ -20,20 +20,17 @@ export default class Graph extends React.Component {
         this.chartConfig = this.props.kwargs;
         this.time = 0;
         this.chart;
-        this.range;
     }
 
     //runs when componet is renderd into DOM
     componentDidMount(){
         let ctx = this.chartRef.current.getContext("2d");
-        console.log(this.chartConfig);
         this.chart = new Chart(ctx, this.chartConfig);
         let chart = this.chart
         let chartConfig = this.chartConfig;
         let label1 = $("#" + this.props.id + "_label1");
         let label2 = $("#" + this.props.id + "_label2");
         let isPaused = true;
-        let times = [];
         this.range = $( "#" + this.props.id + "_range" ).slider({
             range: true,
             animate: "fast",
@@ -43,13 +40,6 @@ export default class Graph extends React.Component {
             slide: function( event, ui ) {
                 chartConfig.options.scales.xAxes[0].ticks.max = ui.values[1];
                 chartConfig.options.scales.xAxes[0].ticks.min = ui.values[0];
-                console.log(ui.values[1]-ui.values[0]);
-                if(ui.values[1]-ui.values[0]<15){
-                    console.log(true)
-                    chartConfig.options.scales.xAxes[0].ticks.maxTicksLimit = ui.values[1]-ui.values[0]
-                } else{
-                    chartConfig.options.scales.xAxes[0].ticks.maxTicksLimit = 15
-                }
                 label1.text(ui.values[0]);
                 label1.css("margin-left", (ui.values[0])/(150)*100+"%");
                 label1.css("left", "-50px");
@@ -59,12 +49,11 @@ export default class Graph extends React.Component {
                 chart.update();
             }
           });
-        for(let i=0;i<=150;i+=0.025){
-            i=parseFloat(i.toFixed(3));
-            times.push(parseFloat(i.toFixed(0)));
-            console.log(i);
+        for(let i=0;i<=150;i+=10){
+            console.log(i)
+            this.chartConfig.data.labels.push(i);
         }
-        this.chartConfig.data.labels = times;
+        console.log(this.chartConfig)
         this.chart.update();
         $('#' + this.props.id + '_reset').click(() => {
             time = 0;
@@ -79,9 +68,17 @@ export default class Graph extends React.Component {
         });
         let timer = setInterval(() => {
             if(!isPaused){
-                this.time = parseFloat((this.time + 0.0025).toFixed(3));
+                this.chartConfig.data.datasets[0].data.push({
+                    x: this.time,
+                    y: 50
+                });
+                this.time = parseFloat((this.time + 10).toFixed(3));
+                // if(this.time > this.chartConfig.data.datasets[0].data[-1].x){
+                //     this.chartConfig.data.labels.push(this.chartConfig.data.datasets[0].data[-1].x + 10);
+                // }
+                this.chart.update()
             }
-        }, 0.025)
+        }, 1000)
     }
 
     updateState(value) {
@@ -89,6 +86,9 @@ export default class Graph extends React.Component {
             x: this.time,
             y: value
         });
+        if(this.time > this.chartConfig.data.datasets[0].data[-1].x){
+            this.chartConfig.data.labels.push(this.chartConfig.data.datasets[0].data[-1].x + 10);
+        }
         this.chart.update()
     }
 
@@ -132,7 +132,7 @@ export default class Graph extends React.Component {
             </WidgetContainer>,
             <WidgetSettings key={this.props.id + '_settings'} title={this.props.title} id={this.props.id} onSave={() => this.onSettingsSave()}>
                 <input className='form-control mb-2' type='text' id={this.props.id + '_settings_variable'} placeholder="variable" value={this.state.updateName} onChange={(e) => this.onSettingsEdit(e)} />
-                <button className='btn btn-light form-control mb-2' id={this.props.id + '_reset'}>Reset X-Axes</button>
+                <button className='btn btn-light form-control mb-2' id={this.props.id + '_reset'}>Clear data</button>
                 <button id={this.props.id + '_play'} className='btn btn-light form-control mb-2 fas fa-play'></button>
                 <input className='form-control mb-2'></input>
             </WidgetSettings>
