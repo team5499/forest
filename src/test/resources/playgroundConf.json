@@ -18,10 +18,20 @@
         },
         {
           "height": "300px",
-          "id": "limeLightVideo",
-          "kwargs": {},
+          "id": "cameraFeed",
+          "kwargs": {
+            "imgSize": [
+              960,
+              540
+            ],
+            "imgStart": [
+              480,
+              270
+            ],
+            "src": "http://localhost:5800/imgs/Calibration.001.jpeg"
+          },
           "title": "Live Video Feed",
-          "type": "LimeLightVideoFeed",
+          "type": "CameraWidget",
           "width": "338px"
         },
         {
