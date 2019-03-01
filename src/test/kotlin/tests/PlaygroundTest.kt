@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Tag
 
 import org.team5499.dashboard.Dashboard
+import org.team5499.dashboard.StringChooser
 
 @Tag("playground")
 class PlaygroundTest {
@@ -17,6 +18,17 @@ class PlaygroundTest {
         Dashboard.setVariable("TEST", "testvalue")
         Dashboard.setVariable("DEEK", "anothervalue")
         Dashboard.setVariable("SWITCH", "thirdvalue")
+        val autoSelector = StringChooser("AUTO_MODE", "First Option", "First Option",
+                                                                        "Second Option",
+                                                                        "Third Option")
+        autoSelector.addVarListener({
+            key: String, value: Any? ->
+            println("$key : $value")
+        })
+        autoSelector.addInlineListener({
+            key: String, value: Any? ->
+            println("onetime inline : $value")
+        })
         Dashboard.setVariable("INTEG", 3)
         Dashboard.setVariable("DOUBLE", 5.6)
         Dashboard.addVarListener("TEST", {
@@ -81,7 +93,13 @@ class PlaygroundTest {
                 key: String, value: Any? ->
                 println("$key : $value")
             })
+            Dashboard.update()
+            autoSelector.runIfUpdate() {
+                key: String, value: Any? ->
+                println("inline repeated: $value")
+            }
             // println(Dashboard.getVariable<String>("DEEK"))
+            // println(autoSelector.selected)
             Thread.sleep(1000)
         }
     }
