@@ -3,6 +3,8 @@ package tests
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Tag
 
+import javax.imageio.ImageIO
+
 import org.team5499.dashboard.Dashboard
 import org.team5499.dashboard.StringChooser
 
@@ -13,6 +15,10 @@ class PlaygroundTest {
     @Suppress("LongMethod")
     fun runServer() {
         println("starting server...")
+        val img = ImageIO.read(this::class.java.getResource("/Calibration.001.jpeg"))
+        val server = ImageServer(img)
+        val imgThread = Thread(server)
+        imgThread.start()
         println("go to http://localhost:5800/")
         Dashboard.start(this, "playgroundConf.json")
         Dashboard.setVariable("TEST", "testvalue")
