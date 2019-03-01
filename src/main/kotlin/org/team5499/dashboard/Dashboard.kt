@@ -25,7 +25,7 @@ typealias VariableCallback = (String, Any?) -> Unit
  *
  * Handles starting the server
  */
-@SuppressWarnings("ReturnCount", "TooManyFunctions")
+@SuppressWarnings("ReturnCount", "TooManyFunctions", "LargeClass")
 object Dashboard {
     private var config: Config = Config()
     public val concurrentCallbacks: ConcurrentHashMap<String, MutableList<VariableCallback>> = ConcurrentHashMap()
@@ -33,6 +33,7 @@ object Dashboard {
     public var inlineCallbackUpdates: MutableList<String> = mutableListOf()
     public var inlineCallbackLambdas: ConcurrentHashMap<String, MutableList<VariableCallback>> = ConcurrentHashMap()
     public var inlineLock = ReentrantLock()
+    public var variableLock = ReentrantLock()
     public var variables: JSONObject = JSONObject()
         get() {
             synchronized(field) {
@@ -125,7 +126,6 @@ object Dashboard {
             request: Request, response: Response ->
             val pagename: String = request.queryParams("pagename")
             val pagetitle: String = request.queryParams("pagetitle")
-            println("Attempting to create page with name: $pagename")
             if (config.hasPageWithName(pagename)) {
                 response.redirect("/utils/newpage?pageexists=true")
             } else {
@@ -157,7 +157,12 @@ object Dashboard {
      * @param value The new value for the variable
      */
     fun setVariable(key: String, value: Any) {
-        variableUpdates.put(key, value)
+        variableLock.lock()
+        try {
+            variableUpdates.put(key, value)
+        } finally {
+            variableLock.unlock()
+        }
     }
 
     /**
@@ -167,12 +172,17 @@ object Dashboard {
      * @return The value of the specified variable
      */
     fun <T> getVariable(key: String): T {
-        if ((!variables.has(key)) && (!variableUpdates.has(key))) {
-            throw DashboardException("The variable with name " + key + " was not found.")
-        } else if (variableUpdates.has(key)) {
-            return variableUpdates.get(key) as T
-        } else {
-            return variables.get(key) as T
+        variableLock.lock()
+        try {
+            if ((!variables.has(key)) && (!variableUpdates.has(key))) {
+                throw DashboardException("The variable with name " + key + " was not found.")
+            } else if (variableUpdates.has(key)) {
+                return variableUpdates.get(key) as T
+            } else {
+                return variables.get(key) as T
+            }
+        } finally {
+            variableLock.unlock()
         }
     }
 
@@ -331,7 +341,6 @@ object Dashboard {
         }
         inlineCallbacks.forEach({
             if (inlineCallbackLambdas.containsKey(it)) {
-                println("Contains!")
                 val tmpList = inlineCallbackLambdas.get(it)!!
                 val key = it
                 tmpList.forEach({
@@ -361,15 +370,25 @@ object Dashboard {
     }
 
     fun mergeVariableUpdates() {
-        for (u in variableUpdates.keys()) {
-            variables.put(u, variableUpdates.get(u))
+        variableLock.lock()
+        try {
+            for (u in variableUpdates.keys()) {
+                variables.put(u, variableUpdates.get(u))
+            }
+            variableUpdates = JSONObject()
+        } finally {
+            variableLock.unlock()
         }
-        variableUpdates = JSONObject()
     }
 
     fun mergeVariableUpdates(json: JSONObject) {
-        for (u in json.keys()) {
-            variables.put(u, json.get(u))
+        variableLock.lock()
+        try {
+            for (u in json.keys()) {
+                variables.put(u, json.get(u))
+            }
+        } finally {
+            variableLock.unlock()
         }
     }
 
