@@ -11,26 +11,82 @@
       "title": "Drive",
       "widgets": [
         {
-          "height": "auto",
-          "id": "testVarEditor",
-          "kwargs": {},
-          "title": "Test Variable",
-          "type": "RawVarEditor",
-          "variables": {
-            "target": "TEST"
+          "height": "6",
+          "id": "testGraphing",
+          "kwargs": {
+            "data": {
+              "datasets": [
+                {
+                  "autoSkip": true,
+                  "data": [],
+                  "label": "X",
+                  "maxticks": 15
+                }
+              ],
+              "labels": []
+            },
+            "options": {
+              "elements": {
+                "line": {
+                  "tension": 0
+                }
+              },
+              "legend": {
+                "display": false
+              },
+              "responsive": true,
+              "scales": {
+                "xAxes": [
+                  {
+                    "gridLines": {
+                      "display": false
+                    },
+                    "scaleLabel": {
+                      "display": false
+                    }
+                  }
+                ],
+                "yAxes": [
+                  {
+                    "display": true,
+                    "scaleLabel": {
+                      "display": false
+                    }
+                  }
+                ]
+              },
+              "title": {
+                "display": false
+              },
+              "tooltips": {
+                "intersect": false,
+                "mode": "index"
+              }
+            },
+            "type": "scatter"
           },
-          "width": "12rem"
+          "resize": true,
+          "title": "Test Graph",
+          "type": "Graph",
+          "variables": {
+            "deps": [
+              "mutable"
+            ],
+            "inDep": "time"
+          },
+          "width": "16"
         },
         {
-          "height": "15rem",
-          "id": "deekVarEditor",
+          "height": "3",
+          "id": "deekVarEditor2",
           "kwargs": {},
+          "resize": false,
           "title": "Deek Variable",
           "type": "RawVarEditor",
           "variables": {
             "target": "DEEK"
           },
-          "width": "15rem"
+          "width": "6"
         }
       ]
     },

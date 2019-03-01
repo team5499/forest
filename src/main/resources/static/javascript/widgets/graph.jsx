@@ -18,7 +18,7 @@ export default class Graph extends React.Component {
         this.varCallbackID = SocketHandler.addVariableListener(this.state.depVar, (value) => this.updateState(value));
         this.chartRef = React.createRef();
         this.chartConfig = this.props.kwargs;
-        this.timer;
+        this.time = 0;
         this.chart;
         this.range;
     }
@@ -31,7 +31,7 @@ export default class Graph extends React.Component {
         let chartConfig = this.chartConfig;
         let label1 = $("#" + this.props.id + "_label1");
         let label2 = $("#" + this.props.id + "_label2");
-        let times = [];
+        let isPaused = true;
         this.range = $( "#" + this.props.id + "_range" ).slider({
             range: true,
             animate: "fast",
@@ -41,11 +41,6 @@ export default class Graph extends React.Component {
             slide: function( event, ui ) {
                 chartConfig.options.scales.xAxes[0].ticks.max = ui.values[1];
                 chartConfig.options.scales.xAxes[0].ticks.min = ui.values[0];
-                if(ui.values[1]-ui.values[0]<15){
-                    chartConfig.options.scales.xAxes[0].ticks.maxTicksLimit = ui.values[1]-ui.values[0]
-                } else{
-                    chartConfig.options.scales.xAxes[0].ticks.maxTicksLimit = 15
-                }
                 label1.text(ui.values[0]);
                 label1.css("margin-left", (ui.values[0])/(150)*100+"%");
                 label1.css("left", "-50px");
@@ -55,21 +50,38 @@ export default class Graph extends React.Component {
                 chart.update();
             }
           });
-        for(let i=0;i<=150;i+=0.025){
-            i=parseFloat(i.toFixed(3));
-            times.push(parseFloat(i.toFixed(0)));
+        for(let i=0;i<=150;i++){
+            this.chartConfig.data.labels.push(i);
         }
-        this.chartConfig.data.labels = times;
+        console.log(this.chartConfig)
         this.chart.update();
         $('#' + this.props.id + '_reset').click(() => {
-            time = 0;
-            this.chartConfig.data.labels = [];
+            this.chartConfig.data.datasets[0].data = [];
+            this.time = 0
             this.chart.update();
         });
+        $('#' + this.props.id + '_play').click(() => {
+            console.log('pause')
+            isPaused = !isPaused;
+            $('#' + this.props.id + '_play').toggleClass('fa-play')
+            $('#' + this.props.id + '_play').toggleClass('fa-pause')
+        });
+        let timer = setInterval(() => {
+            if(!isPaused){
+                this.updateState(Math.random()*50);
+                this.time = parseFloat((this.time + 1).toFixed(3));
+              }
+        }, 1000)
     }
 
     updateState(value) {
-        this.chartConfig.data.datasets.push(value);
+        this.chartConfig.data.datasets[0].data.push({
+            x: this.time,
+            y: value
+        });
+        if(this.time > this.chartConfig.data.labels[this.chartConfig.data.labels.length-1]){
+            this.setMax(this.chartConfig.data.labels[this.chartConfig.data.labels.length-1] + 10)
+        }
         this.chart.update()
     }
 
@@ -97,6 +109,19 @@ export default class Graph extends React.Component {
         this.chart.update()
     }
 
+    setMax(max){
+        let oldMax = this.chartConfig.data.labels[this.chartConfig.data.labels.length-1]
+        for(let i=oldMax+1;i<=max;i++){
+            console.log(i)
+            this.chartConfig.data.labels.push(i);
+        }
+        this.range.slider("option", "max", max);
+        if (this.range.slider("values", 1) == oldMax){
+            this.range.slider("values", 1, max);
+            this.chartConfig.options.scales.xAxes[0].ticks.max = max
+        }
+    }
+
     render() {
         return ([
             <WidgetContainer key={this.props.id + '_main'} title={this.props.title} width={this.props.width} height={this.props.height} id={this.props.id}>
@@ -113,8 +138,9 @@ export default class Graph extends React.Component {
             </WidgetContainer>,
             <WidgetSettings key={this.props.id + '_settings'} title={this.props.title} id={this.props.id} onSave={() => this.onSettingsSave()}>
                 <input className='form-control mb-2' type='text' id={this.props.id + '_settings_variable'} placeholder="variable" value={this.state.updateName} onChange={(e) => this.onSettingsEdit(e)} />
-                <button className='btn btn-light form-control mb-2' id={this.props.id + '_reset'}>Reset X-Axes</button>
-                <input className='form-control mb-2'></input>
+                <input className='form-control mb-2' type='number' id={this.props.id + '_max'} placeholder='max' onChange={(e) => this.setMax(e.target.value)}></input>
+                <button className='btn btn-light form-control mb-2' id={this.props.id + '_reset'}>Clear data</button>
+                <button id={this.props.id + '_play'} className='btn btn-light form-control mb-2 fas fa-play'></button>
             </WidgetSettings>
         ]);
     }
