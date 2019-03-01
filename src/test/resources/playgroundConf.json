@@ -6,75 +6,32 @@
       "title": "Development",
       "widgets": [
         {
-          "height": "auto",
+          "height": "3",
           "id": "testVarEditor",
           "kwargs": {},
+          "resize": false,
           "title": "Test Variable",
           "type": "StringEditor",
           "variables": {
             "target": "TEST"
           },
-          "width": "12rem"
+          "width": "6",
+          "x": "0",
+          "y": "0"
         },
         {
-          "height": "auto",
+          "height": "3",
           "id": "deekVarEditor",
           "kwargs": {},
+          "resize": true,
           "title": "Deek Variable",
           "type": "StringEditor",
           "variables": {
             "target": "DEEK"
           },
-          "width": "12rem"
-        },
-        {
-          "height": "auto",
-          "id": "intVarEditor",
-          "kwargs": {},
-          "title": "Int Variable",
-          "type": "IntEditor",
-          "variables": {
-            "target": "INTEG"
-          },
-          "width": "12rem"
-        },
-        {
-          "height": "auto",
-          "id": "doubleVarEditor",
-          "kwargs": {},
-          "title": "Double Variable",
-          "type": "DoubleEditor",
-          "variables": {
-            "target": "DOUBLE"
-          },
-          "width": "12rem"
-        },
-        {
-          "height": "auto",
-          "id": "pidfEditor",
-          "kwargs": {},
-          "title": "PIDF Variable",
-          "type": "PIDFWidget",
-          "variables": {
-            "dtarget": "KD",
-            "ftarget": "KF",
-            "itarget": "KI",
-            "ptarget": "KP"
-          },
-          "width": "12rem"
-        },
-        {
-          "height": "auto",
-          "id": "pidEditor",
-          "kwargs": {},
-          "title": "PID Variable",
-          "type": "PIDWidget",
-          "variables": {
-            "dtarget": "KD2",
-            "itarget": "KI2",
-            "ptarget": "KP2"
-          },
-          "width": "12rem"
+          "width": "6",
+          "x": "7",
+          "y": "0"
         }
       ]
     }

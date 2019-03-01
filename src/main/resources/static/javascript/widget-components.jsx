@@ -43,48 +43,50 @@ export class WidgetContainer extends React.Component {
     }
 
     render() {
-        return (
-            <div className='card m-1' style={{width: this.props.widgetConfig.width, height: this.props.widgetConfig.height, display:'inline-block'}}>
-                <div className='card-header p-1'>
-                    <WidgetTitle getWidgetConfig={() => this.props.getWidgetConfig(this.props.widgetConfig.id)} setWidgetConfig={(json) => this.props.setWidgetConfig(this.props.widgetConfig.id, json)} />
-                    <button className='btn btn-light float-right d-inline p-0 m-1' type='button' data-toggle='modal' data-target={'#' + this.props.widgetConfig.id + '_modal'}><h5 className='fas fa-cog m-0'></h5></button>
+        return [
+            <div key='body' className='card m-1 grid-stack-item' data-widget-id={this.props.widgetConfig.id} data-gs-no-resize={(this.props.widgetConfig.resize) ? 'no' : 'yes'} data-gs-width={this.props.widgetConfig.width} data-gs-height={this.props.widgetConfig.height} data-gs-x={this.props.widgetConfig.x} data-gs-y={this.props.widgetConfig.y}>
+                <div className='grid-stack-item-content'>
+                    <div className='card-header p-1 grid-stack-item-content ui-draggable-handle'>
+                        <WidgetTitle getWidgetConfig={() => this.props.getWidgetConfig(this.props.widgetConfig.id)} setWidgetConfig={(json) => this.props.setWidgetConfig(this.props.widgetConfig.id, json)} />
+                        <button className='btn btn-light float-right d-inline p-0 m-1' type='button' data-toggle='modal' data-target={'#' + this.props.widgetConfig.id + '_modal'}><h5 className='fas fa-cog m-0'></h5></button>
+                    </div>
+                    <WidgetBody title={this.props.widgetConfig.title} id={this.props.widgetConfig.id}>
+                        {React.createElement(this.props.widgetClass.Body,
+                            {registerVarListener: (variable, callback) => SocketHandler.addVariableListener(variable, callback),
+                                removeVarListener: (variable, id) => SocketHandler.removeVariableListener(variable, id),
+                                setInt: (key, value) => SocketHandler.setInt(key, value),
+                                setDouble: (key, value) => SocketHandler.setDouble(key, value),
+                                setString: (key, value) => SocketHandler.setString(key, value),
+                                setBoolean: (key, value) => SocketHandler.setBoolean(key, value),
+                                getInt: (key) => SocketHandler.getInt(key),
+                                getDouble: (key) => SocketHandler.getDouble(key),
+                                getString: (key) => SocketHandler.getString(key),
+                                getBoolean: (key) => SocketHandler.getBoolean(key),
+
+                                setSettingsSaveCallback: (callback) => this.setSettingsSaveCallback(callback),
+
+                                widgetConfig: this.props.widgetConfig}, null)}
+                    </WidgetBody>
                 </div>
-                <WidgetBody title={this.props.widgetConfig.title} id={this.props.widgetConfig.id}>
-                    {React.createElement(this.props.widgetClass.Body,
-                        {registerVarListener: (variable, callback) => SocketHandler.addVariableListener(variable, callback),
-                            removeVarListener: (variable, id) => SocketHandler.removeVariableListener(variable, id),
-                            setInt: (key, value) => SocketHandler.setInt(key, value),
-                            setDouble: (key, value) => SocketHandler.setDouble(key, value),
-                            setString: (key, value) => SocketHandler.setString(key, value),
-                            setBoolean: (key, value) => SocketHandler.setBoolean(key, value),
-                            getInt: (key) => SocketHandler.getInt(key),
-                            getDouble: (key) => SocketHandler.getDouble(key),
-                            getString: (key) => SocketHandler.getString(key),
-                            getBoolean: (key) => SocketHandler.getBoolean(key),
+            </div>,
+            <WidgetSettings key='settings' title={this.props.widgetConfig.title} id={this.props.widgetConfig.id} onSave={() => this.onSettingsSave()}>
+            {React.createElement(this.props.widgetClass.Settings,
+                {registerVarListener: (variable, callback) => SocketHandler.addVariableListener(variable, callback),
+                    removeVarListener: (variable, id) => SocketHandler.removeVariableListener(variable, id),
+                    setInt: (key, value) => SocketHandler.setInt(key, value),
+                    setDouble: (key, value) => SocketHandler.setDouble(key, value),
+                    setString: (key, value) => SocketHandler.setString(key, value),
+                    setBoolean: (key, value) => SocketHandler.setBoolean(key, value),
+                    getInt: (key) => SocketHandler.getInt(key),
+                    getDouble: (key) => SocketHandler.getDouble(key),
+                    getString: (key) => SocketHandler.getString(key),
+                    getBoolean: (key) => SocketHandler.getBoolean(key),
 
-                            setSettingsSaveCallback: (callback) => this.setSettingsSaveCallback(callback),
+                    setSettingsDataCallback: (callback) => this.setSettingsDataCallback(callback),
 
-                            widgetConfig: this.props.widgetConfig}, null)}
-                </WidgetBody>
-                <WidgetSettings title={this.props.widgetConfig.title} id={this.props.widgetConfig.id} onSave={() => this.onSettingsSave()}>
-                    {React.createElement(this.props.widgetClass.Settings,
-                        {registerVarListener: (variable, callback) => SocketHandler.addVariableListener(variable, callback),
-                            removeVarListener: (variable, id) => SocketHandler.removeVariableListener(variable, id),
-                            setInt: (key, value) => SocketHandler.setInt(key, value),
-                            setDouble: (key, value) => SocketHandler.setDouble(key, value),
-                            setString: (key, value) => SocketHandler.setString(key, value),
-                            setBoolean: (key, value) => SocketHandler.setBoolean(key, value),
-                            getInt: (key) => SocketHandler.getInt(key),
-                            getDouble: (key) => SocketHandler.getDouble(key),
-                            getString: (key) => SocketHandler.getString(key),
-                            getBoolean: (key) => SocketHandler.getBoolean(key),
-
-                            setSettingsDataCallback: (callback) => this.setSettingsDataCallback(callback),
-
-                            widgetConfig: this.props.widgetConfig}, null)}
-                </WidgetSettings>
-            </div>
-        );
+                    widgetConfig: this.props.widgetConfig}, null)}
+            </WidgetSettings>
+        ];
     }
 }
 
