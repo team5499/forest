@@ -17,6 +17,24 @@
           "width": "12rem"
         },
         {
+          "height": "300px",
+          "id": "cameraFeed",
+          "kwargs": {
+            "imgSize": {
+              "x": 960,
+              "y": 540
+            },
+            "imgStart": {
+              "x": 480,
+              "y": 270
+            },
+            "src": "http://localhost:5801/"
+          },
+          "title": "Live Video Feed",
+          "type": "CameraWidget",
+          "width": "338px"
+        },
+        {
           "height": "auto",
           "id": "deekVarEditor",
           "kwargs": {},
