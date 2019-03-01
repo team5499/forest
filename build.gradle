@@ -27,7 +27,7 @@ dependencies {
 }
 
 group = 'org.team5499'
-version = '0.9.0' /* Change this when deploying a new version */
+version = '0.10.0' /* Change this when deploying a new version */
 
 task sourcesJar(type: Jar) {
     from sourceSets.main.allJava
