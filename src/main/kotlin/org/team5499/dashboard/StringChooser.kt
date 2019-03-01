@@ -3,6 +3,7 @@ package org.team5499.dashboard
 import org.json.JSONObject
 import org.json.JSONArray
 
+@Suppress("SpreadOperator")
 class StringChooser(val dashboardName: String, val default: String, vararg initialOptions: String) : DashboardType {
     public var options: MutableList<String>
     public var selected: String
@@ -13,7 +14,6 @@ class StringChooser(val dashboardName: String, val default: String, vararg initi
             Dashboard.setVariable(dashboardName, getBroadcastObject(value))
         }
 
-    @Suppress("SpreadOperator")
     init {
         options = mutableListOf(*initialOptions)
         selected = default
