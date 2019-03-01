@@ -20,15 +20,15 @@
           "height": "300px",
           "id": "cameraFeed",
           "kwargs": {
-            "imgSize": [
-              960,
-              540
-            ],
-            "imgStart": [
-              480,
-              270
-            ],
-            "src": "http://localhost:5800/imgs/Calibration.001.jpeg"
+            "imgSize": {
+              "x": 960,
+              "y": 540
+            },
+            "imgStart": {
+              "x": 480,
+              "y": 270
+            },
+            "src": "http://localhost:5801/"
           },
           "title": "Live Video Feed",
           "type": "CameraWidget",
