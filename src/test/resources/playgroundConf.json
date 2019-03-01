@@ -4,11 +4,6 @@
     "dev": {
       "navbarOrder": 0,
       "title": "Development",
-      "widgets": []
-    },
-    "drive": {
-      "navbarOrder": 1,
-      "title": "Drive",
       "widgets": [
         {
           "height": "6",
@@ -85,23 +80,67 @@
           "width": "16"
         },
         {
-          "height": "3",
-          "id": "deekVarEditor2",
+          "height": "auto",
+          "id": "deekVarEditor",
           "kwargs": {},
           "resize": false,
           "title": "Deek Variable",
-          "type": "RawVarEditor",
+          "type": "StringEditor",
           "variables": {
             "target": "DEEK"
           },
-          "width": "6"
+          "width": "12rem"
+        },
+        {
+          "height": "auto",
+          "id": "intVarEditor",
+          "kwargs": {},
+          "title": "Int Variable",
+          "type": "IntEditor",
+          "variables": {
+            "target": "INTEG"
+          },
+          "width": "12rem"
+        },
+        {
+          "height": "auto",
+          "id": "doubleVarEditor",
+          "kwargs": {},
+          "title": "Double Variable",
+          "type": "DoubleEditor",
+          "variables": {
+            "target": "DOUBLE"
+          },
+          "width": "12rem"
+        },
+        {
+          "height": "auto",
+          "id": "pidfEditor",
+          "kwargs": {},
+          "title": "PIDF Variable",
+          "type": "PIDFWidget",
+          "variables": {
+            "dtarget": "KD",
+            "ftarget": "KF",
+            "itarget": "KI",
+            "ptarget": "KP"
+          },
+          "width": "12rem"
+        },
+        {
+          "height": "auto",
+          "id": "pidEditor",
+          "kwargs": {},
+          "title": "PID Variable",
+          "type": "PIDWidget",
+          "variables": {
+            "dtarget": "KD2",
+            "itarget": "KI2",
+            "ptarget": "KP2"
+          },
+          "width": "12rem"
         }
       ]
-    },
-    "test": {
-      "navbarOrder": 2,
-      "title": "Test",
-      "widgets": []
     }
   }
 }

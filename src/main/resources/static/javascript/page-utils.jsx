@@ -12,7 +12,7 @@ export default class PageUtils {
 
     static loadPageConfig() {
         var newconfig = {};
-        let success = false;
+        var success = false;
         $.getJSON({
             url: '/config',
             async: false
@@ -25,22 +25,20 @@ export default class PageUtils {
     }
 
     static sendPageConfig() {
-        let success = false;
         $.ajax({
-            async: false,
+            async: true,
             method: 'POST',
             url: '/config',
             contentType: 'application/json',
             data: JSON.stringify(PageUtils.getPageConfig()),
             success: function () {
-                success = true;
             },
             error: function (jqxhr, status, error) {
 
                 console.warn('error sending config json: ' + status + ' : ' + error);
             }
         });
-        return success;
+        return true;
     }
 
     static getPageConfig() {
@@ -97,17 +95,9 @@ export default class PageUtils {
     static renderWidgets() {
         let widgetsJson = PageUtils.getPageWidgets();
         let widgets = [];
-        let widgetX = 0
         for(var i in widgetsJson) {
             let widget = widgetsJson[i];
-            let noResize = "yes"
-            let GenericWidget = PageUtils.getWidgetTag(widget);
-            if(widget.resize){
-                noResize = "no"
-            }
-            let widgetTags = React.createElement(widgetClasses[GenericWidget], {key: widget.id, title: widget.title, id: widget.id, width: widget.width, height: widget.height, variables: widget.variables, kwargs: widget.kwargs, noResize: noResize, x: widgetX}, null);
-            widgets.push(widgetTags);            //widgets.push(<GenericWidget key={i.id} title={i.title} id={i.id} width={i.width} height={i.height} variables={i.variables} kwargs={i.kwargs} />);
-            widgetX += widget.width + 1;
+            widgets.push(<WidgetContainer key={widget.id} widgetConfig={widget} widgetClass={widgetClasses[widget.type]} getWidgetConfig={() => PageUtils.getPageWidget(widget.id)} setWidgetConfig={(id, conf) => PageUtils.setPageWidget(id, conf)} />);
         }
         return widgets;
     }

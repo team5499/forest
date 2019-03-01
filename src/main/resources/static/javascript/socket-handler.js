@@ -12,7 +12,15 @@ export default class SocketHandler {
         socket.onopen = SocketHandler.onopen
         socket.onclose = SocketHandler.onclose
         socket.onmessage = SocketHandler.onmessage
+    }
 
+    static isConnected() {
+        return isConnected;
+    }
+
+    static onopen(event) {
+        isConnected = true;
+        console.warn("Robot connected! Event: " + event)
         broadcastInterval = window.setInterval(function() {
             // if changes, broadcast them
             if (Object.keys(variableUpdates).length > 0) {
@@ -24,15 +32,6 @@ export default class SocketHandler {
             }
 
         }, 1000.0 / BROADCAST_INTERVAL);
-    }
-
-    static isConnected() {
-        return isConnected;
-    }
-
-    static onopen(event) {
-        isConnected = true;
-        console.warn("Robot connected! Event: " + event)
     }
 
     static onclose(event) {
@@ -60,7 +59,7 @@ export default class SocketHandler {
         for(var u in updates) {
             variables[u] = updates[u];
             for(var c in callbacks[u]) {
-                callbacks[u][c](updates[u]);
+                callbacks[u][c](u, updates[u]);
             }
         }
     }
@@ -77,7 +76,7 @@ export default class SocketHandler {
         callbacks[key].splice(id, 1);
     }
 
-    static getVariable(key) {
+    static _getVariable(key) {
         if((!(key in variables)) && (!(key in variableUpdates))) {
             console.warn("variable " + key + " not found!");
             return undefined;
@@ -88,7 +87,59 @@ export default class SocketHandler {
         }
     }
 
-    static setVariable(key, value) {
+    static _setVariable(key, value) {
         variableUpdates[key] = value;
+    }
+
+    static setInt(key, value) {
+        let newValue = parseInt(value);
+        SocketHandler._setVariable(key, newValue);
+    }
+
+    static setDouble(key, value) {
+        let newValue = parseFloat(value);
+        SocketHandler._setVariable(key, newValue);
+    }
+
+    static setString(key, value) {
+        let newValue = String(value);
+        SocketHandler._setVariable(key, newValue);
+    }
+
+    static setBoolean(key, value) {
+        let newValue = Boolean(value);
+        SocketHandler._setVariable(key, newValue);
+    }
+
+    static getInt(key) {
+        let value = SocketHandler._getVariable(key);
+        if(value === undefined) {
+            return undefined;
+        }
+        return parseInt(value);
+    }
+
+    static getDouble(key) {
+        let value = SocketHandler._getVariable(key);
+        if(value === undefined) {
+            return undefined;
+        }
+        return parseFloat(value);
+    }
+
+    static getString(key) {
+        let value = SocketHandler._getVariable(key);
+        if(value === undefined) {
+            return undefined;
+        }
+        return String(value);
+    }
+
+    static getBoolean(key) {
+        let value = SocketHandler._getVariable(key);
+        if(value === undefined) {
+            return undefined;
+        }
+        return Boolean(value);
     }
 }
