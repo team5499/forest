@@ -25,13 +25,15 @@ typealias VariableCallback = (String, Any?) -> Unit
  *
  * Handles starting the server
  */
-@SuppressWarnings("ReturnCount", "TooManyFunctions")
+@SuppressWarnings("ReturnCount", "TooManyFunctions", "LargeClass")
 object Dashboard {
     private var config: Config = Config()
     public val concurrentCallbacks: ConcurrentHashMap<String, MutableList<VariableCallback>> = ConcurrentHashMap()
     public var inlineCallbacks: List<String> = listOf()
     public var inlineCallbackUpdates: MutableList<String> = mutableListOf()
+    public var inlineCallbackLambdas: ConcurrentHashMap<String, MutableList<VariableCallback>> = ConcurrentHashMap()
     public var inlineLock = ReentrantLock()
+    public var variableLock = ReentrantLock()
     public var variables: JSONObject = JSONObject()
         get() {
             synchronized(field) {
@@ -124,7 +126,6 @@ object Dashboard {
             request: Request, response: Response ->
             val pagename: String = request.queryParams("pagename")
             val pagetitle: String = request.queryParams("pagetitle")
-            println("Attempting to create page with name: $pagename")
             if (config.hasPageWithName(pagename)) {
                 response.redirect("/utils/newpage?pageexists=true")
             } else {
@@ -156,7 +157,12 @@ object Dashboard {
      * @param value The new value for the variable
      */
     fun setVariable(key: String, value: Any) {
-        variableUpdates.put(key, value)
+        variableLock.lock()
+        try {
+            variableUpdates.put(key, value)
+        } finally {
+            variableLock.unlock()
+        }
     }
 
     /**
@@ -166,12 +172,17 @@ object Dashboard {
      * @return The value of the specified variable
      */
     fun <T> getVariable(key: String): T {
-        if ((!variables.has(key)) && (!variableUpdates.has(key))) {
-            throw DashboardException("The variable with name " + key + " was not found.")
-        } else if (variableUpdates.has(key)) {
-            return variableUpdates.get(key) as T
-        } else {
-            return variables.get(key) as T
+        variableLock.lock()
+        try {
+            if ((!variables.has(key)) && (!variableUpdates.has(key))) {
+                throw DashboardException("The variable with name " + key + " was not found.")
+            } else if (variableUpdates.has(key)) {
+                return variableUpdates.get(key) as T
+            } else {
+                return variables.get(key) as T
+            }
+        } finally {
+            variableLock.unlock()
         }
     }
 
@@ -247,7 +258,7 @@ object Dashboard {
      * @param callback The lambda to call when the specified variable is updated
      * @return The ID of the listener, which can be used later to remove the listener (See [removeVarListener])
      */
-    fun addVarListener(key: String, callback: (String, Any?) -> Unit): Int {
+    fun addVarListener(key: String, callback: VariableCallback): Int {
         if (concurrentCallbacks.containsKey(key)) {
             if (!concurrentCallbacks.get(key)!!.contains(callback)) {
                 val tmp = concurrentCallbacks.get(key)
@@ -271,7 +282,7 @@ object Dashboard {
      *
      * @return Whether the lambda was called or not
      */
-    fun runIfUpdate(key: String, callback: (String, Any?) -> Unit): Boolean {
+    fun runIfUpdate(key: String, callback: VariableCallback): Boolean {
         var shouldUpdate = false
         if (inlineCallbacks.contains(key)) {
             shouldUpdate = true
@@ -282,6 +293,38 @@ object Dashboard {
         }
 
         return shouldUpdate
+    }
+
+    /**
+     * Add a lambda to run if the specified variable has been updated. Gets called when the update function is called
+     *
+     * @param key The variable to listen for
+     * @param callback The lambda to call if the variable is updated
+     */
+    fun addInlineListener(key: String, callback: VariableCallback): Int {
+        var tmpList = mutableListOf<VariableCallback>()
+        if (inlineCallbackLambdas.containsKey(key)) {
+            tmpList = inlineCallbackLambdas.get(key)!!
+        }
+        tmpList.add(callback)
+        inlineCallbackLambdas.put(key, tmpList)
+        return tmpList.size - 1
+    }
+
+    /**
+     * Remove an inline listener with the specified key and ID
+     *
+     * @param key The variable that the lambda is attached to
+     * @param id The callback id returned by [addInlineListener]
+     */
+    fun removeInlineListener(key: String, id: Int): Boolean {
+        if (inlineCallbackLambdas.containsKey(key)) {
+            val tmpList = inlineCallbackLambdas.get(key)!!
+            tmpList.removeAt(id)
+            inlineCallbackLambdas.put(key, tmpList)
+            return true
+        }
+        return false
     }
 
     /**
@@ -296,6 +339,15 @@ object Dashboard {
         } finally {
             inlineLock.unlock()
         }
+        inlineCallbacks.forEach({
+            if (inlineCallbackLambdas.containsKey(it)) {
+                val tmpList = inlineCallbackLambdas.get(it)!!
+                val key = it
+                tmpList.forEach({
+                    it(key, Dashboard.getVariable(key))
+                })
+            }
+        })
     }
 
     /**
@@ -318,15 +370,25 @@ object Dashboard {
     }
 
     fun mergeVariableUpdates() {
-        for (u in variableUpdates.keys()) {
-            variables.put(u, variableUpdates.get(u))
+        variableLock.lock()
+        try {
+            for (u in variableUpdates.keys()) {
+                variables.put(u, variableUpdates.get(u))
+            }
+            variableUpdates = JSONObject()
+        } finally {
+            variableLock.unlock()
         }
-        variableUpdates = JSONObject()
     }
 
     fun mergeVariableUpdates(json: JSONObject) {
-        for (u in json.keys()) {
-            variables.put(u, json.get(u))
+        variableLock.lock()
+        try {
+            for (u in json.keys()) {
+                variables.put(u, json.get(u))
+            }
+        } finally {
+            variableLock.unlock()
         }
     }
 

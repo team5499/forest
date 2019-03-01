@@ -37,8 +37,15 @@ class SocketHandler {
             sendJSON(session, Dashboard.variables, "variables")
         }
         public fun broadcastUpdates() {
-            if (Dashboard.variableUpdates.keySet().size > 0) {
-                broadcastJSON(Dashboard.variableUpdates, "updates")
+            var updates = JSONObject()
+            Dashboard.variableLock.lock()
+            try {
+                updates = Dashboard.variableUpdates
+            } finally {
+                Dashboard.variableLock.unlock()
+            }
+            if (updates.keySet().size > 0) {
+                broadcastJSON(updates, "updates")
                 Dashboard.mergeVariableUpdates()
             }
         }
