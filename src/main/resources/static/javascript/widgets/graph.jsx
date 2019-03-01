@@ -18,7 +18,7 @@ export default class Graph extends React.Component {
         this.varCallbackID = SocketHandler.addVariableListener(this.state.depVar, (value) => this.updateState(value));
         this.chartRef = React.createRef();
         this.chartConfig = this.props.kwargs;
-        this.timer;
+        this.time = 0;
         this.chart;
         this.range;
     }
@@ -32,6 +32,7 @@ export default class Graph extends React.Component {
         let chartConfig = this.chartConfig;
         let label1 = $("#" + this.props.id + "_label1");
         let label2 = $("#" + this.props.id + "_label2");
+        let isPaused = true;
         let times = [];
         this.range = $( "#" + this.props.id + "_range" ).slider({
             range: true,
@@ -70,10 +71,24 @@ export default class Graph extends React.Component {
             this.chartConfig.data.labels = [];
             this.chart.update();
         });
+        $('#' + this.props.id + '_play').click(() => {
+            console.log('pause')
+            isPaused = !isPaused;
+            $('#' + this.props.id + '_play').toggleClass('fa-play')
+            $('#' + this.props.id + '_play').toggleClass('fa-pause')
+        });
+        let timer = setInterval(() => {
+            if(!isPaused){
+                this.time = parseFloat((this.time + 0.0025).toFixed(3));
+            }
+        }, 0.025)
     }
 
     updateState(value) {
-        this.chartConfig.data.datasets.push(value);
+        this.chartConfig.data.datasets.data.push({
+            x: this.time,
+            y: value
+        });
         this.chart.update()
     }
 
@@ -118,6 +133,7 @@ export default class Graph extends React.Component {
             <WidgetSettings key={this.props.id + '_settings'} title={this.props.title} id={this.props.id} onSave={() => this.onSettingsSave()}>
                 <input className='form-control mb-2' type='text' id={this.props.id + '_settings_variable'} placeholder="variable" value={this.state.updateName} onChange={(e) => this.onSettingsEdit(e)} />
                 <button className='btn btn-light form-control mb-2' id={this.props.id + '_reset'}>Reset X-Axes</button>
+                <button id={this.props.id + '_play'} className='btn btn-light form-control mb-2 fas fa-play'></button>
                 <input className='form-control mb-2'></input>
             </WidgetSettings>
         ]);
