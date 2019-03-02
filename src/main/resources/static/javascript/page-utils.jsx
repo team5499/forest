@@ -8,6 +8,10 @@ export default class PageUtils {
         widgetClasses[classname] = widgetclass;
     }
 
+    static getWidgetClasses() {
+        return widgetClasses;
+    }
+
     static loadPageConfig() {
         var newconfig = {};
         var success = false;
