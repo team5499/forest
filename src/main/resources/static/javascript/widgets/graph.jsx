@@ -26,11 +26,10 @@ Graph.Body = class extends Widget.Body {
     //runs when componet is renderd into DOM
     componentDidMount(){
         let ctx = this.chartRef.current.getContext("2d");
+        let parent = this;
         this.chart = new Chart(ctx, this.chartConfig);
         let chart = this.chart
         let chartConfig = this.chartConfig;
-        let label1 = $("#" + this.widgetConfig.id + "_label1");
-        let label2 = $("#" + this.widgetConfig.id + "_label2");
         let isPaused = true;
         this.range = $( "#" + this.widgetConfig.id + "_range" ).slider({
             range: true,
@@ -39,15 +38,16 @@ Graph.Body = class extends Widget.Body {
             max: 150,
             values: [ 0, 150 ],
             slide: function( event, ui ) {
-                chartConfig.options.scales.xAxes[0].ticks.max = ui.values[1];
-                chartConfig.options.scales.xAxes[0].ticks.min = ui.values[0];
-                label1.text(ui.values[0]);
-                label1.css("margin-left", (ui.values[0])/(150)*100+"%");
-                label1.css("left", "-50px");
-                label2.text(ui.values[1]);
-                label2.css("margin-left", (ui.values[1])/(150)*100+"%");
-                label2.css("left", "-50px");
-                chart.update();
+                parent.chartConfig.options.scales.xAxes[0].ticks.max = ui.values[1];
+                parent.chartConfig.options.scales.xAxes[0].ticks.min = ui.values[0];
+                parent.chart.update();
+                $("#" + parent.widgetConfig.id + "_label1").css("margin-left", (ui.values[0])/(parent.state.max)*100+"%");
+                $("#" + parent.widgetConfig.id + "_label2").css("margin-left", (ui.values[1])/(parent.state.max)*100+"%");
+                $("#" + parent.widgetConfig.id + "_label1").css("left", "-50px");
+                $("#" + parent.widgetConfig.id + "_label2").css("left", "-50px");
+                $("#" + parent.widgetConfig.id + "_label1").text(ui.values[0]);
+                $("#" + parent.widgetConfig.id + "_label2").text(ui.values[1]);
+
             }
           });
         for(let i=0;i<=150;i++){
@@ -85,10 +85,6 @@ Graph.Body = class extends Widget.Body {
         this.chart.update()
     }
 
-    onSettingsSave() {
-
-    }
-
     onFieldEdit(e) {
         this.setState({targetValue: e.target.value});
     }
@@ -99,16 +95,21 @@ Graph.Body = class extends Widget.Body {
     }
 
     setMax(max){
-        let oldMax = this.chartConfig.data.labels[this.chartConfig.data.labels.length-1]
+        this.state.max = max;
+        let oldMax = this.chartConfig.data.labels[this.chartConfig.data.labels.length-1];
+        $("#" + parent.widgetConfig.id + "_label2").text(max);
         for(let i=oldMax+1;i<=max;i++){
-            console.log(i)
             this.chartConfig.data.labels.push(i);
         }
         this.range.slider("option", "max", max);
         if (this.range.slider("values", 1) == oldMax){
             this.range.slider("values", 1, max);
-            this.chartConfig.options.scales.xAxes[0].ticks.max = max
+            this.chartConfig.options.scales.xAxes[0].ticks.max = max;
         }
+    }
+
+    getMax() {
+        return this.state.max;
     }
 
     render() {
@@ -135,18 +136,27 @@ Graph.Settings = class extends Widget.Settings{
         }
     }
 
+    onSettingsEdit(state) {
+        let newState = {};
+        newState[e.target.name + 'TargetName'] = e.target.value;
+        this.setState(newState);
+    }
+
+    onSettingsSave() {
+
+    }
+
     render() {
         return (
             <div>
                 <input className='form-control mb-2' type='text' id={this.widgetConfig.id + '_settings_variable'} placeholder="variable" value={this.state.updateName} onChange={(e) => this.onSettingsEdit(e)} />
-                <input className='form-control mb-2' type='number' id={this.widgetConfig.id + '_max'} placeholder='max' onChange={(e) => this.setMax(e.target.value)} />
+                <input className='form-control mb-2' type='number' id={this.widgetConfig.id + '_max'} placeholder='max' />
                 <button className='btn btn-light form-control mb-2' id={this.widgetConfig.id + '_reset'}>Clear data</button>
                 <button id={this.widgetConfig.id + '_play'} className='btn btn-light form-control mb-2 fas fa-play'/>
             </div>
-        )
+        );
     }
 }
 
 // make sure to do this for every widget
-console.log(Graph);
 PageUtils.addWidgetClass('Graph', Graph);
