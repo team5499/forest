@@ -7,6 +7,7 @@ export class WidgetContainer extends React.Component {
             settingsSave: () => console.error("No settings save callback set!"),
             settingsData: () => console.error("No settings data callback set!")
         }
+        console.log(this.props)
     }
 
     /**

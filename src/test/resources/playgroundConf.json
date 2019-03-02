@@ -6,7 +6,7 @@
       "title": "Development",
       "widgets": [
         {
-          "height": "6",
+          "height": "auto",
           "id": "testGraphing",
           "kwargs": {
             "data": {
@@ -77,7 +77,7 @@
             ],
             "inDep": "time"
           },
-          "width": "16"
+          "width": "20rem"
         },
         {
           "height": "auto",
