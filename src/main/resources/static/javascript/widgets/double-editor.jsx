@@ -18,7 +18,7 @@ DoubleEditor.Body = class extends Widget.Body {
     }
 
     settingsSave(newConfig) {
-        this.removeVarListener(this.state.targetName);
+        this.removeVarListener(this.state.targetName, this.callbackId);
         // do something with success, and also update event listener for variable changes
         let newValue = (this.getDouble(newConfig.variables.target) === undefined) ? '' : this.getDouble(newConfig.variables.target);
         this.setState({
