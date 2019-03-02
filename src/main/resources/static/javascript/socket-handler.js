@@ -5,10 +5,13 @@ let variableUpdates = {};
 let callbacks = {};
 let isConnected = false;
 let broadcastInterval = 0;
+let wsAddress = "";
 
 export default class SocketHandler {
+
     static connect(address) {
-        socket = new WebSocket(address);
+        wsAddress = address;
+        socket = new WebSocket(wsAddress);
         socket.onopen = SocketHandler.onopen
         socket.onclose = SocketHandler.onclose
         socket.onmessage = SocketHandler.onmessage
@@ -40,6 +43,17 @@ export default class SocketHandler {
         // stop the websocket sender loop
         window.clearInterval(broadcastInterval);
         // maybe reconnect?
+        new Promise((resolve) => {
+            window.setInterval(() => {
+                socket = new WebSocket(wsAddress);
+                socket.onopen = () => {
+                    resolve();
+                }
+            }, 3000);
+
+        }).then(() => {
+            window.location.reload(true);
+        });
     }
 
     static onmessage(event) {
