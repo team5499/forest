@@ -36,6 +36,17 @@
         },
         {
           "height": "auto",
+          "id": "dropdownSelector",
+          "kwargs": {},
+          "title": "Auto Variable",
+          "type": "StringChooser",
+          "variables": {
+            "target": "AUTO_MODE"
+          },
+          "width": "12rem"
+        },
+        {
+          "height": "auto",
           "id": "deekVarEditor",
           "kwargs": {},
           "title": "Deek Variable",

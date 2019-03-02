@@ -23,6 +23,10 @@ Widget.Body = class extends React.Component {
         return this.settingsSave(newConfig);
     }
 
+    getVariable(key) {
+        return this.props.getVariable(key);
+    }
+
     getInt(key) {
         return this.props.getInt(key);
     }
@@ -37,6 +41,10 @@ Widget.Body = class extends React.Component {
 
     getBoolean(key) {
         return this.props.getBoolean(key);
+    }
+
+    setVariable(key, value) {
+        return this.props.setVariable(key, value);
     }
 
     setInt(key, value) {
@@ -85,6 +93,10 @@ Widget.Settings = class extends React.Component {
         return this.widgetConfig
     }
 
+    getVariable(key) {
+        return this.props.getVariable(key);
+    }
+
     getInt(key) {
         return this.props.getInt(key);
     }
@@ -99,6 +111,10 @@ Widget.Settings = class extends React.Component {
 
     getBoolean(key) {
         return this.props.getBoolean(key);
+    }
+
+    setVariable(key, value) {
+        return this.props.setVariable(key, value);
     }
 
     setInt(key, value) {
