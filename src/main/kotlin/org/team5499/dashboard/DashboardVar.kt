@@ -9,16 +9,30 @@ import kotlin.reflect.KMutableProperty
 class DashboardVar<T>(var initValue: T) {
 
     companion object {
+        var count = 0L
+
         @SuppressWarnings("EmptyCatchBlock", "TooGenericExceptionCaught")
         fun initClassProps(clazz: KClass<*>) {
-            clazz.memberProperties.forEach({
+            var totalTime = 0L
+            val loopStartTime = System.nanoTime()
+            val props = clazz.memberProperties
+            val afterLoad = System.nanoTime()
+            props.forEach({
+                val startTime = System.nanoTime()
                 if (it.visibility == KVisibility.PUBLIC && it is KMutableProperty<*>) {
                     try {
                         it.getter.call(clazz.objectInstance)
                     } catch (e: Exception) {
+                        println("exception")
                     }
                 }
+                val endTime = System.nanoTime()
+                count += (endTime - startTime)
+                totalTime += (endTime - startTime)
+                // println("${endTime - startTime}: $it")
             })
+            val loopEndTime = System.nanoTime()
+            println("total: $totalTime - loop: ${loopEndTime - afterLoad} - load: ${afterLoad - loopStartTime}")
             clazz.nestedClasses.forEach({
                 initClassProps(it)
             })
@@ -36,7 +50,7 @@ class DashboardVar<T>(var initValue: T) {
         if (!isInit) {
             Dashboard.setVariable(getDashName(thisRef, property), initValue as Any)
             isInit = true
-            println(getDashName(thisRef, property))
+            // println(getDashName(thisRef, property))
             return initValue
         }
         return Dashboard.getVariable(getDashName(thisRef, property))
