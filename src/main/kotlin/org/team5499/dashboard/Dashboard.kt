@@ -136,7 +136,7 @@ object Dashboard {
             null
         })
 
-        Spark.awaitInitialization()
+        // Spark.awaitInitialization()
         SocketHandler.startBroadcastThread() // start broadcasting data
     }
 
