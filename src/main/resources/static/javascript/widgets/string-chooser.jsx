@@ -1,12 +1,12 @@
 import PageUtils from 'page-utils';
 import Widget from 'widget';
 
-class StringEditor {}
+class StringChooser {}
 
-StringEditor.Body = class extends Widget.Body {
+StringChooser.Body = class extends Widget.Body {
     init() {
         console.log(this.constructor.name)
-        let newValue = (this.getString(this.widgetConfig.variables.target) === undefined) ? '' : this.getString(this.widgetConfig.variables.target);
+        let newValue = (this.getVariable(this.widgetConfig.variables.target) === undefined) ? {options: [''], selected: ''} : this.getVariable(this.widgetConfig.variables.target);
         this.state = {
             targetName: this.widgetConfig.variables.target,
             targetValue: newValue
@@ -29,25 +29,38 @@ StringEditor.Body = class extends Widget.Body {
         this.callbackId = this.registerVarListener(newConfig.variables.target, (key, value) => this.updateState(key, value));
     }
 
-    onVarSave() {
-        this.setString(this.state.targetName, this.state.targetValue);
+    getOptions() {
+        let options = [];
+        for(let i in this.state.targetValue.options) {
+            options.push(<a className="dropdown-item" onClick={() => this.updateSelectedValue(this.state.targetValue.options[i])} key={this.state.targetValue.options[i]} href="#">{this.state.targetValue.options[i]}</a>);
+        }
+        return options;
     }
 
-    onFieldEdit(e) {
-        this.updateState(this.state.targetName, e.target.value);
+    updateSelectedValue(select) {
+        let newValue = this.state.targetValue;
+        newValue.selected = select;
+        this.setState({targetValue: newValue});
+        this.setVariable(this.state.targetName, newValue);
     }
 
     render() {
+        let buttonId = this.widgetConfig.id + "dropdownButton";
         return (
-            <div>
-                <input className='form-control mb-2' type='text' placeholder='value' value={this.state.targetValue} onChange={(e) => this.onFieldEdit(e)} />
-                <button className='btn btn-primary' onClick={() => this.onVarSave()}>Submit</button>
+            <div className="dropdown show">
+                <a className="btn btn-primary dropdown-toggle" href="#" role="button" id={buttonId} data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {this.state.targetValue.selected}
+                </a>
+
+                <div className="dropdown-menu" aria-labelledby={buttonId}>
+                    {this.getOptions()}
+                </div>
             </div>
         );
     }
 }
 
-StringEditor.Settings = class extends Widget.Settings {
+StringChooser.Settings = class extends Widget.Settings {
     init() {
         this.state = {
             targetName: this.widgetConfig.variables.target
@@ -71,7 +84,7 @@ StringEditor.Settings = class extends Widget.Settings {
     }
 }
 
-export default StringEditor;
+export default StringChooser;
 
 // make sure to do this for every widget
-PageUtils.addWidgetClass('StringEditor', StringEditor);
+PageUtils.addWidgetClass('StringChooser', StringChooser);
