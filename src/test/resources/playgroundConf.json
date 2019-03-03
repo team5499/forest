@@ -7,14 +7,77 @@
       "widgets": [
         {
           "height": "auto",
-          "id": "testVarEditor",
-          "kwargs": {},
-          "title": "Test Variable",
-          "type": "StringEditor",
-          "variables": {
-            "target": "TEST"
+          "id": "testGraphing",
+          "kwargs": {
+            "data": {
+              "datasets": [
+                {
+                  "data": [],
+                  "fill": false,
+                  "pointBackgroundColor": "black",
+                  "showLine": true
+                }
+              ],
+              "labels": []
+            },
+            "options": {
+              "elements": {
+                "line": {
+                  "tension": 0
+                }
+              },
+              "legend": {
+                "display": false
+              },
+              "responsive": true,
+              "scales": {
+                "xAxes": [
+                  {
+                    "autoSkip": false,
+                    "gridLines": {
+                      "display": false
+                    },
+                    "scaleLabel": {
+                      "display": false
+                    },
+                    "ticks": {
+                      "autoSkip": false,
+                      "max": 150,
+                      "maxTicksLimit": 15,
+                      "min": 0,
+                      "minRotation": 50
+                    }
+                  }
+                ],
+                "yAxes": [
+                  {
+                    "display": true,
+                    "scaleLabel": {
+                      "display": false
+                    }
+                  }
+                ]
+              },
+              "title": {
+                "display": false
+              },
+              "tooltips": {
+                "intersect": false,
+                "mode": "index"
+              }
+            },
+            "type": "scatter"
           },
-          "width": "12rem"
+          "resize": true,
+          "title": "Test Graph",
+          "type": "Graph",
+          "variables": {
+            "deps": [
+              "mutable"
+            ],
+            "inDep": "time"
+          },
+          "width": "20rem"
         },
         {
           "height": "300px",
@@ -49,6 +112,7 @@
           "height": "auto",
           "id": "deekVarEditor",
           "kwargs": {},
+          "resize": false,
           "title": "Deek Variable",
           "type": "StringEditor",
           "variables": {

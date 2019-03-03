@@ -3,6 +3,9 @@
 {% block title %}{{ pageTitle }}{% endblock %}
 {% block head %}
     <link rel="stylesheet" href="/css/gridstack.min.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/gridheights.css">
 {% endblock %}
 {% block navbarCollapse %}
 <ul class="navbar-nav ml-auto">
@@ -19,6 +22,8 @@
 {% block container %}
     <div class="card-group" id="reactapp">
     </div>
+    <canvas id="canvasTest"></canvas>
+    <div id="settings"></div>
 {% endblock %}
 {% block body %}{% endblock %}
 {% block beforeScripts %}{% endblock %}
@@ -31,9 +36,14 @@
         <script src="/javascript/libs/react.production.min.js"></script>
         <script src="/javascript/libs/react-dom.production.min.js"></script>
     {% endif %}
+    <script src="/javascript/libs/jquery-3.3.1.min.js"></script>
+    <script src="/javascript/libs/jquery-ui.min.js"></script>
     <script src="/javascript/libs/lodash.min.js"></script>
     <script src="/javascript/libs/gridstack.min.js"></script>
     <script src="/javascript/libs/gridstack.jQueryUI.min.js"></script>
+    <script src="/javascript/libs/Chart.bundle.min.js"></script>
+
+    <!--<script src="/javascript/libs/gridstack.jQueryUI.min.js"></script>-->
 {% endblock %}
 {% block afterJS %}
 <script src="/javascript/socket-handler.js" data-plugins="transform-es2015-modules-umd" type="text/babel"></script>
@@ -43,6 +53,7 @@
 <script src="/javascript/widget.jsx" data-plugins="transform-es2015-modules-umd" type="text/babel"></script>
 
 <script src="/javascript/widgets/string-editor.jsx" data-plugins="transform-es2015-modules-umd" type="text/babel"></script>
+<script src="/javascript/widgets/graph.jsx" data-plugins="transform-es2015-modules-umd" type="text/babel"></script>
 <script src="/javascript/widgets/int-editor.jsx" data-plugins="transform-es2015-modules-umd" type="text/babel"></script>
 <script src="/javascript/widgets/double-editor.jsx" data-plugins="transform-es2015-modules-umd" type="text/babel"></script>
 <script src="/javascript/widgets/pidf-widget.jsx" data-plugins="transform-es2015-modules-umd" type="text/babel"></script>

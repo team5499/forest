@@ -45,6 +45,7 @@ object Dashboard {
                 field = value
             }
         }
+
     public var variableUpdates: JSONObject = JSONObject()
         get() {
             synchronized(field) {

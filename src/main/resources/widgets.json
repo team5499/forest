@@ -1,14 +1,99 @@
 {
-  "widgets": [
-    {
-      "height": null,
-      "javascriptClass": "RawVarEditor",
-      "kwargs": {},
-      "type": "rawVarEditor",
-      "variables": {
-        "target": "TEST"
-      },
-      "width": "12rem"
+  "devMode": true,
+  "pages": {
+    "dev": {
+      "navbarOrder": 0,
+      "title": "Development",
+      "widgets": []
+    },
+    "drive": {
+      "navbarOrder": 1,
+      "title": "Drive",
+      "widgets": [
+        {
+          "height": "6",
+          "id": "testGraphing",
+          "kwargs": {
+            "data": {
+              "datasets": [
+                {
+                  "autoSkip": true,
+                  "data": [],
+                  "label": "X",
+                  "maxticks": 15
+                }
+              ],
+              "labels": []
+            },
+            "options": {
+              "elements": {
+                "line": {
+                  "tension": 0
+                }
+              },
+              "legend": {
+                "display": false
+              },
+              "responsive": true,
+              "scales": {
+                "xAxes": [
+                  {
+                    "gridLines": {
+                      "display": false
+                    },
+                    "scaleLabel": {
+                      "display": false
+                    }
+                  }
+                ],
+                "yAxes": [
+                  {
+                    "display": true,
+                    "scaleLabel": {
+                      "display": false
+                    }
+                  }
+                ]
+              },
+              "title": {
+                "display": false
+              },
+              "tooltips": {
+                "intersect": false,
+                "mode": "index"
+              }
+            },
+            "type": "scatter"
+          },
+          "resize": true,
+          "title": "Test Graph",
+          "type": "Graph",
+          "variables": {
+            "deps": [
+              "mutable"
+            ],
+            "inDep": "time"
+          },
+          "width": "16"
+        },
+        {
+          "height": "3",
+          "id": "deekVarEditor2",
+          "kwargs": {},
+          "resize": false,
+          "title": "Deek Variable",
+          "type": "RawVarEditor",
+          "variables": {
+            "target": "DEEK"
+          },
+          "width": "6"
+        }
+      ]
+    },
+    "test": {
+      "navbarOrder": 2,
+      "title": "Test",
+      "widgets": []
     }
-  ]
+  }
 }

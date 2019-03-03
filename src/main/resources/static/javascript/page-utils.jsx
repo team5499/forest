@@ -1,4 +1,6 @@
 import {WidgetContainer, WidgetBody, WidgetSettings} from "widget-components";
+import Graph from "graph";
+import RawVarEditor from "raw-var-editor";
 
 let widgetClasses = {};
 let config = {};
@@ -93,6 +95,7 @@ export default class PageUtils {
     static renderWidgets() {
         let widgetsJson = PageUtils.getPageWidgets();
         let widgets = [];
+        console.log(widgetClasses)
         for(var i in widgetsJson) {
             let widget = widgetsJson[i];
             widgets.push(<WidgetContainer key={widget.id} widgetConfig={widget} widgetClass={widgetClasses[widget.type]} getWidgetConfig={() => PageUtils.getPageWidget(widget.id)} setWidgetConfig={(id, conf) => PageUtils.setPageWidget(id, conf)} />);
