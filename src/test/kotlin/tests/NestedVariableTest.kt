@@ -17,6 +17,7 @@ class NestedVariableTest {
         @JvmStatic
         fun initDashboard() {
             Dashboard.start(this, "playgroundConf.json")
+            Dashboard.waitForInitialization()
             Constants.initConstants()
         }
 
@@ -77,6 +78,9 @@ object Constants {
 
     public fun initConstants() {
         println("init props")
+        First.initProps()
+        Second.initProps()
+        Nest.initProps()
     }
 
     public var PROP by DashboardVar(1.0)

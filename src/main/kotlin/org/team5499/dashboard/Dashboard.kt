@@ -140,6 +140,10 @@ object Dashboard {
         SocketHandler.startBroadcastThread() // start broadcasting data
     }
 
+    fun waitForInitialization() {
+        Spark.awaitInitialization()
+    }
+
     /**
      * Stop the dashboard and wait for it to shutdown
      */

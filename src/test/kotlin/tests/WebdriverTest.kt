@@ -29,6 +29,7 @@ class WebdriverTest {
         @JvmStatic
         fun init() {
             Dashboard.start(this, "webdriverConfig.json")
+            Dashboard.waitForInitialization()
             driver = WebdriverSetup.getDriver()
             actions = Actions(driver)
         }
