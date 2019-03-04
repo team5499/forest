@@ -31,10 +31,10 @@ class StringChooser(val dashboardName: String, val default: String, vararg initi
         return newJSON
     }
 
-    fun addVarListener(callback: VariableCallback): Int {
+    fun addVarListener(callback: VariableCallback<String>): Int {
         return Dashboard.addVarListener(dashboardName) {
-            key: String, value: Any? ->
-            callback(key, (value as? JSONObject)!!.get("selected") as? Any)
+            key: String, value: JSONObject? ->
+            callback(key, value?.get("selected") as? String)
         }
     }
 
@@ -42,17 +42,17 @@ class StringChooser(val dashboardName: String, val default: String, vararg initi
         return Dashboard.removeVarListener(dashboardName, id)
     }
 
-    fun runIfUpdate(callback: VariableCallback): Boolean {
+    fun runIfUpdate(callback: VariableCallback<String>): Boolean {
         return Dashboard.runIfUpdate(dashboardName) {
-            key: String, value: Any? ->
-            callback(key, (value as? JSONObject)!!.get("selected") as? Any)
+            key: String, value: JSONObject? ->
+            callback(key, value?.get("selected") as? String)
         }
     }
 
-    fun addInlineListener(callback: VariableCallback): Int {
+    fun addInlineListener(callback: VariableCallback<String>): Int {
         return Dashboard.addInlineListener(dashboardName) {
-            key: String, value: Any? ->
-            callback(key, (value as? JSONObject)!!.get("selected") as? Any)
+            key: String, value: JSONObject? ->
+            callback(key, value?.get("selected") as? String)
         }
     }
 

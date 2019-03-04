@@ -25,7 +25,7 @@ class SocketHandler {
         private var sessions: Queue<Session> = ConcurrentLinkedQueue<Session>()
         private var lastVariables: JSONObject = JSONObject()
         private val broadcastThread: Thread = Thread(Broadcaster())
-        public fun broadcastJSON(json: JSONObject, prefix: String) {
+        public fun broadcastJSON(json: JSONObject) {
             for (s in sessions) {
                 sendJSON(s, json, "updates")
             }
@@ -37,7 +37,7 @@ class SocketHandler {
             sendJSON(session, Dashboard.variables, "variables")
         }
         public fun broadcastUpdates() {
-            var updates = JSONObject()
+            lateinit var updates: JSONObject
             Dashboard.variableLock.lock()
             try {
                 updates = Dashboard.variableUpdates
@@ -45,7 +45,7 @@ class SocketHandler {
                 Dashboard.variableLock.unlock()
             }
             if (updates.keySet().size > 0) {
-                broadcastJSON(updates, "updates")
+                broadcastJSON(updates)
                 Dashboard.mergeVariableUpdates()
             }
         }
@@ -54,7 +54,7 @@ class SocketHandler {
         }
 
         public fun stopBroadcastThread() {
-            broadcastThread.stop()
+            broadcastThread.interrupt()
         }
 
         public fun awaitStop() {
@@ -89,15 +89,22 @@ class SocketHandler {
     }
 
     @OnWebSocketMessage
+    @Suppress("ComplexMethod", "NestedBlockDepth")
     fun onMessage(session: Session, message: String) {
         val updates = JSONObject(message)
         Dashboard.mergeVariableUpdates(updates)
-        for (k in updates.keySet()) {
-            if (Dashboard.concurrentCallbacks.containsKey(k)) {
-                for (c in Dashboard.concurrentCallbacks.get(k)!!) {
-                    c(k, updates.get(k))
+
+        Dashboard.concurrentCallbackLock.lock()
+        try {
+            for (k in updates.keySet()) {
+                if (Dashboard.concurrentCallbacks.containsKey(k)) {
+                    for (c in Dashboard.concurrentCallbacks.get(k)!!) {
+                        c()
+                    }
                 }
             }
+        } finally {
+            Dashboard.concurrentCallbackLock.unlock()
         }
 
         Dashboard.inlineLock.lock()
@@ -121,10 +128,15 @@ class SocketHandler {
     @Suppress("EmptyDefaultConstructor")
     class Broadcaster() : Runnable {
         override fun run() {
-            while (true) {
-                SocketHandler.broadcastUpdates()
-                @Suppress("MagicNumber")
-                Thread.sleep((1000.0 / SocketHandler.BROADCAST_FREQUENCY).toLong())
+            try {
+                while (true) {
+                    SocketHandler.broadcastUpdates()
+                    @Suppress("MagicNumber")
+                    Thread.sleep((1000.0 / SocketHandler.BROADCAST_FREQUENCY).toLong())
+                }
+            } catch (ie: InterruptedException) {
+                println("Exiting broadcast thread")
+                return
             }
         }
     }
