@@ -31,15 +31,25 @@ class StringChooser(val dashboardName: String, val default: String, vararg initi
         return newJSON
     }
 
+    @Deprecated("Renamed to `addConcurrentListener`")
     fun addVarListener(callback: VariableCallback<String>): Long {
-        return Dashboard.addVarListener(dashboardName) {
+        return addConcurrentListener(callback)
+    }
+
+    fun addConcurrentListener(callback: VariableCallback<String>): Long {
+        return Dashboard.addConcurrentListener(dashboardName) {
             key: String, value: JSONObject? ->
             callback(key, value?.get("selected") as? String)
         }
     }
 
+    @Deprecated("Renamed to `removeConcurrentListener`")
     fun removeVarListener(id: Long): Boolean {
-        return Dashboard.removeVarListener(dashboardName, id)
+        return removeConcurrentListener(id)
+    }
+
+    fun removeConcurrentListener(id: Long): Boolean {
+        return Dashboard.removeConcurrentListener(dashboardName, id)
     }
 
     fun runIfUpdate(callback: VariableCallback<String>): Boolean {

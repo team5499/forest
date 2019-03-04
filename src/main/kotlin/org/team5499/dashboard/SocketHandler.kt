@@ -82,6 +82,7 @@ class SocketHandler {
     }
 
     @OnWebSocketClose
+    @Suppress("UNUSED_PARAMETER")
     fun onClose(session: Session?, statusCode: Int, reason: String?) {
         if (session != null) {
             sessions.remove(session)
@@ -122,6 +123,7 @@ class SocketHandler {
     }
 
     @OnWebSocketError
+    @Suppress("UNUSED_PARAMETER")
     fun onError(t: Throwable) {
     }
 

@@ -464,8 +464,8 @@ object Dashboard {
             if (concurrentCallbacks.containsKey(key)) {
                 val tmp = concurrentCallbacks.get(key)
                 if (tmp!!.containsKey(callbackId)) {
-                    tmp!!.remove(callbackId)
-                    concurrentCallbacks.put(key, tmp!!)
+                    tmp.remove(callbackId)
+                    concurrentCallbacks.put(key, tmp)
                     return true
                 }
             }
