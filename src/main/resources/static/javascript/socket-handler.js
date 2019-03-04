@@ -65,18 +65,19 @@ export default class SocketHandler {
     }
 
     static addVariableListener(key, callback) {
-        if(!Array.isArray(callbacks[key])) {
-            callbacks[key] = [];
+        if(callbacks[key] === undefined) {
+            callbacks[key] = {};
         }
-        callbacks[key].push(callback);
-        return callbacks[key].length - 1;
+        let uid = key + Date.now().toString();
+        callbacks[key][uid] = callback;
+        return uid;
     }
 
     static removeVariableListener(key, id) {
-        callbacks[key].splice(id, 1);
+        return delete callbacks[key][id];
     }
 
-    static _getVariable(key) {
+    static getVariable(key) {
         if((!(key in variables)) && (!(key in variableUpdates))) {
             console.warn("variable " + key + " not found!");
             return undefined;
@@ -87,32 +88,32 @@ export default class SocketHandler {
         }
     }
 
-    static _setVariable(key, value) {
+    static setVariable(key, value) {
         variableUpdates[key] = value;
     }
 
     static setInt(key, value) {
         let newValue = parseInt(value);
-        SocketHandler._setVariable(key, newValue);
+        SocketHandler.setVariable(key, newValue);
     }
 
     static setDouble(key, value) {
         let newValue = parseFloat(value);
-        SocketHandler._setVariable(key, newValue);
+        SocketHandler.setVariable(key, newValue);
     }
 
     static setString(key, value) {
         let newValue = String(value);
-        SocketHandler._setVariable(key, newValue);
+        SocketHandler.setVariable(key, newValue);
     }
 
     static setBoolean(key, value) {
         let newValue = Boolean(value);
-        SocketHandler._setVariable(key, newValue);
+        SocketHandler.setVariable(key, newValue);
     }
 
     static getInt(key) {
-        let value = SocketHandler._getVariable(key);
+        let value = SocketHandler.getVariable(key);
         if(value === undefined) {
             return undefined;
         }
@@ -120,7 +121,7 @@ export default class SocketHandler {
     }
 
     static getDouble(key) {
-        let value = SocketHandler._getVariable(key);
+        let value = SocketHandler.getVariable(key);
         if(value === undefined) {
             return undefined;
         }
@@ -128,7 +129,7 @@ export default class SocketHandler {
     }
 
     static getString(key) {
-        let value = SocketHandler._getVariable(key);
+        let value = SocketHandler.getVariable(key);
         if(value === undefined) {
             return undefined;
         }
@@ -136,7 +137,7 @@ export default class SocketHandler {
     }
 
     static getBoolean(key) {
-        let value = SocketHandler._getVariable(key);
+        let value = SocketHandler.getVariable(key);
         if(value === undefined) {
             return undefined;
         }

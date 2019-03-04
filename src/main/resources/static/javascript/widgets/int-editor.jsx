@@ -18,7 +18,7 @@ IntEditor.Body = class extends Widget.Body {
     }
 
     settingsSave(newConfig) {
-        this.removeVarListener(this.state.targetName);
+        this.removeVarListener(this.state.targetName, this.callbackId);
         let newValue = (this.getInt(newConfig.variables.target) === undefined) ? "" : this.getInt(newConfig.variables.target);
         this.setState({
             targetName: newConfig.variables.target,
