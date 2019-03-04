@@ -98,7 +98,7 @@ class SocketHandler {
         try {
             for (k in updates.keySet()) {
                 if (Dashboard.concurrentCallbacks.containsKey(k)) {
-                    for (c in Dashboard.concurrentCallbacks.get(k)!!) {
+                    for (c in Dashboard.concurrentCallbacks.get(k)!!.values) {
                         c()
                     }
                 }

@@ -31,14 +31,14 @@ class StringChooser(val dashboardName: String, val default: String, vararg initi
         return newJSON
     }
 
-    fun addVarListener(callback: VariableCallback<String>): Int {
+    fun addVarListener(callback: VariableCallback<String>): Long {
         return Dashboard.addVarListener(dashboardName) {
             key: String, value: JSONObject? ->
             callback(key, value?.get("selected") as? String)
         }
     }
 
-    fun removeVarListener(id: Int): Boolean {
+    fun removeVarListener(id: Long): Boolean {
         return Dashboard.removeVarListener(dashboardName, id)
     }
 
@@ -49,14 +49,14 @@ class StringChooser(val dashboardName: String, val default: String, vararg initi
         }
     }
 
-    fun addInlineListener(callback: VariableCallback<String>): Int {
+    fun addInlineListener(callback: VariableCallback<String>): Long {
         return Dashboard.addInlineListener(dashboardName) {
             key: String, value: JSONObject? ->
             callback(key, value?.get("selected") as? String)
         }
     }
 
-    fun removeInlineListener(id: Int): Boolean {
+    fun removeInlineListener(id: Long): Boolean {
         return Dashboard.removeInlineListener(dashboardName, id)
     }
 }

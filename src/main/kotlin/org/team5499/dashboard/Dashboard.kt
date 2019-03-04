@@ -13,9 +13,8 @@ import com.hubspot.jinjava.JinjavaConfig
 import org.json.JSONObject
 
 import java.util.concurrent.ConcurrentHashMap
-
 import java.util.concurrent.locks.ReentrantLock
-
+import java.util.UUID
 import java.io.File
 
 typealias VariableCallback<reified T> = (String, T?) -> Unit
@@ -28,10 +27,11 @@ typealias VariableCallback<reified T> = (String, T?) -> Unit
 @SuppressWarnings("ReturnCount", "TooManyFunctions", "LargeClass")
 object Dashboard {
     private var config: Config = Config()
-    public val concurrentCallbacks: ConcurrentHashMap<String, MutableList<() -> Unit>> = ConcurrentHashMap()
+    public val concurrentCallbacks: ConcurrentHashMap<String, ConcurrentHashMap<Long, () -> Unit>> = ConcurrentHashMap()
     public var inlineCallbacks: List<String> = listOf()
     public var inlineCallbackUpdates: MutableList<String> = mutableListOf()
-    public var inlineCallbackLambdas: ConcurrentHashMap<String, MutableList<() -> Unit>> = ConcurrentHashMap()
+    @Suppress("MaxLineLength")
+    public var inlineCallbackLambdas: ConcurrentHashMap<String, ConcurrentHashMap<Long, () -> Unit>> = ConcurrentHashMap()
     public var inlineLock = ReentrantLock()
     public var variableLock = ReentrantLock()
     public var concurrentCallbackLock = ReentrantLock()
@@ -252,6 +252,7 @@ object Dashboard {
     }
 
     /**
+     * NOTE: Renamed to [addConcurrentListener]
      * Add a lambda function to be called when the specified variable's value changes.
      * The lambda is called from a separate thread, so it should be thread-safe.
      * If the robot program updates the variable, the lambda is not called.
@@ -262,7 +263,23 @@ object Dashboard {
      * @return The ID of the listener, which can be used later to remove the listener (See [removeVarListener])
      */
     @Suppress("ComplexMethod")
-    inline fun <reified T> addVarListener(key: String, crossinline callback: VariableCallback<T>): Int {
+    @Deprecated("Renamed")
+    inline fun <reified T> addVarListener(key: String, crossinline callback: VariableCallback<T>): Long {
+        return addConcurrentListener(key, callback)
+    }
+
+    /**
+     * Add a lambda function to be called when the specified variable's value changes.
+     * The lambda is called from a separate thread, so it should be thread-safe.
+     * If the robot program updates the variable, the lambda is not called.
+     * The lambda is only called if the frontend changes the value
+     *
+     * @param key The name of the variable to listen to
+     * @param callback The lambda to call when the specified variable is updated
+     * @return The ID of the listener, which can be used later to remove the listener (See [removeVarListener])
+     */
+    @Suppress("ComplexMethod")
+    inline fun <reified T> addConcurrentListener(key: String, crossinline callback: VariableCallback<T>): Long {
         var type = ""
 
         if (T::class == Int::class) {
@@ -290,17 +307,20 @@ object Dashboard {
         }
 
         concurrentCallbackLock.lock()
+        val uuid = UUID.randomUUID().leastSignificantBits
         try {
             if (concurrentCallbacks.containsKey(key)) {
                 val tmp = concurrentCallbacks.get(key)
-                tmp!!.add(wrappedCallback)
-                return concurrentCallbacks.put(key, tmp)!!.size - 1
+                tmp!!.put(uuid, wrappedCallback)
+                concurrentCallbacks.put(key, tmp)!!
             } else {
-                concurrentCallbacks.put(key, mutableListOf(wrappedCallback))
-                return 0
+                val tmp = ConcurrentHashMap<Long, () -> Unit>()
+                tmp.put(uuid, wrappedCallback)
+                concurrentCallbacks.put(key, tmp)
             }
         } finally {
             concurrentCallbackLock.unlock()
+            return uuid
         }
     }
 
@@ -340,8 +360,8 @@ object Dashboard {
      * @param callback The lambda to call if the variable is updated
      */
     @Suppress("ComplexMethod")
-    inline fun <reified T> addInlineListener(key: String, crossinline callback: VariableCallback<T>): Int {
-        var tmpList = mutableListOf<() -> Unit>()
+    inline fun <reified T> addInlineListener(key: String, crossinline callback: VariableCallback<T>): Long {
+        var tmpList = ConcurrentHashMap<Long, () -> Unit>()
         if (inlineCallbackLambdas.containsKey(key)) {
             tmpList = inlineCallbackLambdas.get(key)!!
         }
@@ -371,9 +391,10 @@ object Dashboard {
             }
         }
 
-        tmpList.add(wrappedCallback)
+        val uuid = UUID.randomUUID().leastSignificantBits
+        tmpList.put(uuid, wrappedCallback)
         inlineCallbackLambdas.put(key, tmpList)
-        return tmpList.size - 1
+        return uuid
     }
 
     /**
@@ -382,10 +403,10 @@ object Dashboard {
      * @param key The variable that the lambda is attached to
      * @param id The callback id returned by [addInlineListener]
      */
-    fun removeInlineListener(key: String, id: Int): Boolean {
+    fun removeInlineListener(key: String, id: Long): Boolean {
         if (inlineCallbackLambdas.containsKey(key)) {
             val tmpList = inlineCallbackLambdas.get(key)!!
-            tmpList.removeAt(id)
+            tmpList.remove(id)
             inlineCallbackLambdas.put(key, tmpList)
             return true
         }
@@ -407,12 +428,25 @@ object Dashboard {
         inlineCallbacks.forEach({
             if (inlineCallbackLambdas.containsKey(it)) {
                 val tmpList = inlineCallbackLambdas.get(it)!!
-                val key = it
-                tmpList.forEach({
+                tmpList.values.forEach({
                     it()
                 })
             }
         })
+    }
+
+    /**
+     * NOTE: Renamed to [removeConcurrentListener]
+     * Remove a lambda from the list of lambdas that listen for variable changes.
+     *
+     * @param key The key of the variable that the lambda is listening to
+     * @param callbackId The Int returned by the [addVarListener] function
+     *
+     * @return Whether the lambda was successfully removed
+     */
+    @Deprecated("Renamed")
+    fun removeVarListener(key: String, callbackId: Long): Boolean {
+        return removeConcurrentListener(key, callbackId)
     }
 
     /**
@@ -423,16 +457,20 @@ object Dashboard {
      *
      * @return Whether the lambda was successfully removed
      */
-    fun removeVarListener(key: String, callbackId: Int): Boolean {
+    @Suppress("TooGenericExceptionCaught")
+    fun removeConcurrentListener(key: String, callbackId: Long): Boolean {
         concurrentCallbackLock.lock()
         try {
-            if (concurrentCallbacks.contains(key)) {
+            if (concurrentCallbacks.containsKey(key)) {
                 val tmp = concurrentCallbacks.get(key)
-                if (tmp!!.size > callbackId) {
-                    tmp.removeAt(callbackId)
+                if (tmp!!.containsKey(callbackId)) {
+                    tmp!!.remove(callbackId)
+                    concurrentCallbacks.put(key, tmp!!)
                     return true
                 }
             }
+        } catch (e: Exception) {
+            return false
         } finally {
             concurrentCallbackLock.unlock()
         }
