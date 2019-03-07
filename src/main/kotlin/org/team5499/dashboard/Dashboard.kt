@@ -17,7 +17,7 @@ import java.util.concurrent.locks.ReentrantLock
 import java.util.UUID
 import java.io.File
 
-typealias VariableCallback<reified T> = (String, T?) -> Unit
+typealias VariableCallback<T> = (String, T?) -> Unit
 
 /**
  * The main Dashboard object
