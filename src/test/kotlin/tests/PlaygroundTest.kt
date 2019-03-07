@@ -27,47 +27,51 @@ class PlaygroundTest {
         val autoSelector = StringChooser("AUTO_MODE", "First Option", "First Option",
                                                                         "Second Option",
                                                                         "Third Option")
-        autoSelector.addVarListener({
-            key: String, value: Any? ->
+        autoSelector.addConcurrentListener({
+            key: String, value: String? ->
             println("$key : $value")
         })
         autoSelector.addInlineListener({
-            key: String, value: Any? ->
+            _: String, value: String? ->
             println("onetime inline : $value")
         })
         Dashboard.setVariable("INTEG", 3)
         Dashboard.setVariable("DOUBLE", 5.6)
-        Dashboard.addVarListener("TEST", {
-            key: String, value: Any? ->
+        Dashboard.addConcurrentListener("TEST", {
+            key: String, value: String? ->
             println("$key : $value")
         })
-        Dashboard.addVarListener("DEEK", {
-            key: String, value: Any? ->
+        Dashboard.addConcurrentListener("DEEK", {
+            key: String, value: String? ->
             println("$key : $value")
         })
-        Dashboard.addVarListener("INTEG", {
-            key: String, value: Any? ->
+        Dashboard.addConcurrentListener("INTEG", {
+            key: String, value: Int? ->
             println("$key : $value")
         })
-        Dashboard.addVarListener("DOUBLE", {
-            key: String, value: Any? ->
-            println("$key : ${Dashboard.getDouble("DOUBLE")}")
+        Dashboard.addConcurrentListener("DOUBLE", {
+            key: String, value: Double? ->
+            println("$key : ${Dashboard.getDouble("DOUBLE")} : $value")
         })
 
         Dashboard.setVariable("KP", 0.0)
         Dashboard.setVariable("KI", 0.0)
         Dashboard.setVariable("KD", 0.0)
         Dashboard.setVariable("KF", 0.0)
-        Dashboard.addVarListener("KI", {
-            key: String, value: Any? ->
+        Dashboard.addConcurrentListener("KP", {
+            key: String, value: Double? ->
             println("$key : $value")
         })
-        Dashboard.addVarListener("KD", {
-            key: String, value: Any? ->
+        Dashboard.addConcurrentListener("KI", {
+            key: String, value: Double? ->
             println("$key : $value")
         })
-        Dashboard.addVarListener("KF", {
-            key: String, value: Any? ->
+        Dashboard.addConcurrentListener("KD", {
+            key: String, value: Double? ->
+            println("$key : $value")
+        })
+        Dashboard.addConcurrentListener("KF", {
+            key: String, value: Double? ->
             println("$key : $value")
         })
 
@@ -75,33 +79,29 @@ class PlaygroundTest {
         Dashboard.setVariable("KI2", 0.1)
         Dashboard.setVariable("KD2", 0.1)
         Dashboard.setVariable("KF2", 0.1)
-        Dashboard.addVarListener("KP2", {
-            key: String, value: Any? ->
+        Dashboard.addConcurrentListener("KP2", {
+            key: String, value: Double? ->
             println("$key : $value")
         })
-        Dashboard.addVarListener("KI2", {
-            key: String, value: Any? ->
+        Dashboard.addConcurrentListener("KI2", {
+            key: String, value: Double? ->
             println("$key : $value")
         })
-        Dashboard.addVarListener("KD2", {
-            key: String, value: Any? ->
+        Dashboard.addConcurrentListener("KD2", {
+            key: String, value: Double? ->
             println("$key : $value")
         })
-        Dashboard.addVarListener("KF2", {
-            key: String, value: Any? ->
+        Dashboard.addConcurrentListener("KF2", {
+            key: String, value: Double? ->
             println("$key : $value")
         })
 
         println("server started")
         while (true) { // find a better way to wait?
             @Suppress("MagicNumber")
-            Dashboard.addVarListener("KP", {
-                key: String, value: Any? ->
-                println("$key : $value")
-            })
             Dashboard.update()
             autoSelector.runIfUpdate() {
-                key: String, value: Any? ->
+                _: String, value: String? ->
                 println("inline repeated: $value")
             }
             // println(Dashboard.getVariable<String>("DEEK"))

@@ -13,12 +13,11 @@ import com.hubspot.jinjava.JinjavaConfig
 import org.json.JSONObject
 
 import java.util.concurrent.ConcurrentHashMap
-
 import java.util.concurrent.locks.ReentrantLock
-
+import java.util.UUID
 import java.io.File
 
-typealias VariableCallback = (String, Any?) -> Unit
+typealias VariableCallback<T> = (String, T?) -> Unit
 
 /**
  * The main Dashboard object
@@ -28,12 +27,14 @@ typealias VariableCallback = (String, Any?) -> Unit
 @SuppressWarnings("ReturnCount", "TooManyFunctions", "LargeClass")
 object Dashboard {
     private var config: Config = Config()
-    public val concurrentCallbacks: ConcurrentHashMap<String, MutableList<VariableCallback>> = ConcurrentHashMap()
+    public val concurrentCallbacks: ConcurrentHashMap<String, ConcurrentHashMap<Long, () -> Unit>> = ConcurrentHashMap()
     public var inlineCallbacks: List<String> = listOf()
     public var inlineCallbackUpdates: MutableList<String> = mutableListOf()
-    public var inlineCallbackLambdas: ConcurrentHashMap<String, MutableList<VariableCallback>> = ConcurrentHashMap()
+    @Suppress("MaxLineLength")
+    public var inlineCallbackLambdas: ConcurrentHashMap<String, ConcurrentHashMap<Long, () -> Unit>> = ConcurrentHashMap()
     public var inlineLock = ReentrantLock()
     public var variableLock = ReentrantLock()
+    public var concurrentCallbackLock = ReentrantLock()
     public var variables: JSONObject = JSONObject()
         get() {
             synchronized(field) {
@@ -84,7 +85,7 @@ object Dashboard {
         }
 
         Spark.get("/", {
-            request: Request, response: Response ->
+            _: Request, _: Response ->
             val attributes: HashMap<String, Any> = config.getBaseAttributes()
             renderWithJinjava(attributes, "home.html")
         })
@@ -100,20 +101,20 @@ object Dashboard {
         })
 
         Spark.get("/config", {
-            request: Request, response: Response ->
+            _: Request, response: Response ->
             response.type("text/json")
             @Suppress("MagicNumber")
             config.configObject.toString(4)
         })
 
         Spark.post("/config", {
-            request: Request, response: Response ->
+            request: Request, _: Response ->
             config.setConfigJSON(request.body())
         })
 
         // Utils
         Spark.get("/utils/newpage", {
-            request: Request, response: Response ->
+            request: Request, _: Response ->
             val attributes: HashMap<String, Any> = config.getBaseAttributes()
             if (request.queryParams("pageexists") == "true") {
                 attributes.put("pageExistsError", true)
@@ -177,8 +178,10 @@ object Dashboard {
             if ((!variables.has(key)) && (!variableUpdates.has(key))) {
                 throw DashboardException("The variable with name " + key + " was not found.")
             } else if (variableUpdates.has(key)) {
+                @Suppress("UNCHECKED_CAST")
                 return variableUpdates.get(key) as T
             } else {
+                @Suppress("UNCHECKED_CAST")
                 return variables.get(key) as T
             }
         } finally {
@@ -195,9 +198,9 @@ object Dashboard {
     fun getInt(key: String): Int {
         val rawValue = getVariable<Any>(key)
         if (rawValue is Double) {
-            return (rawValue as Double).toInt()
+            return rawValue.toInt()
         } else if (rawValue is String) {
-            return (rawValue as String).toInt()
+            return rawValue.toInt()
         } else {
             return rawValue as Int
         }
@@ -212,9 +215,9 @@ object Dashboard {
     fun getDouble(key: String): Double {
         val rawValue = getVariable<Any>(key)
         if (rawValue is Int) {
-            return (rawValue as Int).toDouble()
+            return rawValue.toDouble()
         } else if (rawValue is String) {
-            return (rawValue as String).toDouble()
+            return rawValue.toDouble()
         } else {
             return rawValue as Double
         }
@@ -229,9 +232,9 @@ object Dashboard {
     fun getString(key: String): String {
         val rawValue = getVariable<Any>(key)
         if (rawValue is Int) {
-            return (rawValue as Int).toString()
+            return rawValue.toString()
         } else if (rawValue is String) {
-            return (rawValue as Double).toString()
+            return rawValue.toString()
         } else {
             return rawValue as String
         }
@@ -249,6 +252,7 @@ object Dashboard {
     }
 
     /**
+     * NOTE: Renamed to [addConcurrentListener]
      * Add a lambda function to be called when the specified variable's value changes.
      * The lambda is called from a separate thread, so it should be thread-safe.
      * If the robot program updates the variable, the lambda is not called.
@@ -258,18 +262,65 @@ object Dashboard {
      * @param callback The lambda to call when the specified variable is updated
      * @return The ID of the listener, which can be used later to remove the listener (See [removeVarListener])
      */
-    fun addVarListener(key: String, callback: VariableCallback): Int {
-        if (concurrentCallbacks.containsKey(key)) {
-            if (!concurrentCallbacks.get(key)!!.contains(callback)) {
-                val tmp = concurrentCallbacks.get(key)
-                tmp!!.add(callback)
-                return concurrentCallbacks.put(key, tmp)!!.size - 1
+    @Suppress("ComplexMethod")
+    @Deprecated("Renamed")
+    inline fun <reified T> addVarListener(key: String, crossinline callback: VariableCallback<T>): Long {
+        return addConcurrentListener(key, callback)
+    }
+
+    /**
+     * Add a lambda function to be called when the specified variable's value changes.
+     * The lambda is called from a separate thread, so it should be thread-safe.
+     * If the robot program updates the variable, the lambda is not called.
+     * The lambda is only called if the frontend changes the value
+     *
+     * @param key The name of the variable to listen to
+     * @param callback The lambda to call when the specified variable is updated
+     * @return The ID of the listener, which can be used later to remove the listener (See [removeVarListener])
+     */
+    @Suppress("ComplexMethod")
+    inline fun <reified T> addConcurrentListener(key: String, crossinline callback: VariableCallback<T>): Long {
+        var type = ""
+
+        if (T::class == Int::class) {
+            type = "Int"
+        } else if (T::class == Double::class) {
+            type = "Double"
+        } else if (T::class == Boolean::class) {
+            type = "Boolean"
+        } else if (T::class == String::class) {
+            type = "String"
+        }
+
+        val wrappedCallback = {
+            if (type == "Int") {
+                callback(key, getInt(key) as T)
+            } else if (type == "Double") {
+                callback(key, getDouble(key) as T)
+            } else if (type == "Boolean") {
+                callback(key, getBoolean(key) as T)
+            } else if (type == "String") {
+                callback(key, getString(key) as T)
             } else {
-                return concurrentCallbacks.get(key)!!.indexOf(callback)
+                callback(key, getVariable<T>(key))
             }
-        } else {
-            concurrentCallbacks.put(key, mutableListOf(callback))
-            return 0
+        }
+
+        concurrentCallbackLock.lock()
+        val uuid = UUID.randomUUID().leastSignificantBits
+        try {
+            if (concurrentCallbacks.containsKey(key)) {
+                val tmp = concurrentCallbacks.get(key)
+                tmp!!.put(uuid, wrappedCallback)
+                concurrentCallbacks.put(key, tmp)!!
+            } else {
+                val tmp = ConcurrentHashMap<Long, () -> Unit>()
+                tmp.put(uuid, wrappedCallback)
+                concurrentCallbacks.put(key, tmp)
+            }
+        } finally {
+            concurrentCallbackLock.unlock()
+            return uuid
         }
     }
 
@@ -282,17 +333,24 @@ object Dashboard {
      *
      * @return Whether the lambda was called or not
      */
-    fun runIfUpdate(key: String, callback: VariableCallback): Boolean {
-        var shouldUpdate = false
+    @Suppress("ComplexMethod")
+    inline fun <reified T> runIfUpdate(key: String, crossinline callback: VariableCallback<T>): Boolean {
         if (inlineCallbacks.contains(key)) {
-            shouldUpdate = true
+            if (T::class == Int::class) {
+                callback(key, getInt(key) as T)
+            } else if (T::class == Double::class) {
+                callback(key, getDouble(key) as T)
+            } else if (T::class == Boolean::class) {
+                callback(key, getBoolean(key) as T)
+            } else if (T::class == String::class) {
+                callback(key, getString(key) as T)
+            } else {
+                callback(key, getVariable<T>(key))
+            }
+            return true
+        } else {
+            return false
         }
-
-        if (shouldUpdate) {
-            callback(key, getVariable(key))
-        }
-
-        return shouldUpdate
     }
 
     /**
@@ -301,14 +359,42 @@ object Dashboard {
      * @param key The variable to listen for
      * @param callback The lambda to call if the variable is updated
      */
-    fun addInlineListener(key: String, callback: VariableCallback): Int {
-        var tmpList = mutableListOf<VariableCallback>()
+    @Suppress("ComplexMethod")
+    inline fun <reified T> addInlineListener(key: String, crossinline callback: VariableCallback<T>): Long {
+        var tmpList = ConcurrentHashMap<Long, () -> Unit>()
         if (inlineCallbackLambdas.containsKey(key)) {
             tmpList = inlineCallbackLambdas.get(key)!!
         }
-        tmpList.add(callback)
+
+        var type = ""
+        if (T::class == Int::class) {
+            type = "Int"
+        } else if (T::class == Double::class) {
+            type = "Double"
+        } else if (T::class == Boolean::class) {
+            type = "Boolean"
+        } else if (T::class == String::class) {
+            type = "String"
+        }
+
+        val wrappedCallback = {
+            if (type == "Int") {
+                callback(key, getInt(key) as T)
+            } else if (type == "Double") {
+                callback(key, getDouble(key) as T)
+            } else if (type == "Boolean") {
+                callback(key, getBoolean(key) as T)
+            } else if (type == "String") {
+                callback(key, getString(key) as T)
+            } else {
+                callback(key, getVariable<T>(key))
+            }
+        }
+
+        val uuid = UUID.randomUUID().leastSignificantBits
+        tmpList.put(uuid, wrappedCallback)
         inlineCallbackLambdas.put(key, tmpList)
-        return tmpList.size - 1
+        return uuid
     }
 
     /**
@@ -317,10 +403,10 @@ object Dashboard {
      * @param key The variable that the lambda is attached to
      * @param id The callback id returned by [addInlineListener]
      */
-    fun removeInlineListener(key: String, id: Int): Boolean {
+    fun removeInlineListener(key: String, id: Long): Boolean {
         if (inlineCallbackLambdas.containsKey(key)) {
             val tmpList = inlineCallbackLambdas.get(key)!!
-            tmpList.removeAt(id)
+            tmpList.remove(id)
             inlineCallbackLambdas.put(key, tmpList)
             return true
         }
@@ -342,12 +428,25 @@ object Dashboard {
         inlineCallbacks.forEach({
             if (inlineCallbackLambdas.containsKey(it)) {
                 val tmpList = inlineCallbackLambdas.get(it)!!
-                val key = it
-                tmpList.forEach({
-                    it(key, Dashboard.getVariable(key))
+                tmpList.values.forEach({
+                    it()
                 })
             }
         })
+    }
+
+    /**
+     * NOTE: Renamed to [removeConcurrentListener]
+     * Remove a lambda from the list of lambdas that listen for variable changes.
+     *
+     * @param key The key of the variable that the lambda is listening to
+     * @param callbackId The Int returned by the [addVarListener] function
+     *
+     * @return Whether the lambda was successfully removed
+     */
+    @Deprecated("Renamed")
+    fun removeVarListener(key: String, callbackId: Long): Boolean {
+        return removeConcurrentListener(key, callbackId)
     }
 
     /**
@@ -358,13 +457,22 @@ object Dashboard {
      *
      * @return Whether the lambda was successfully removed
      */
-    fun removeVarListener(key: String, callbackId: Int): Boolean {
-        if (concurrentCallbacks.contains(key)) {
-            val tmp = concurrentCallbacks.get(key)
-            if (tmp!!.size > callbackId) {
-                tmp.removeAt(callbackId)
-                return true
+    @Suppress("TooGenericExceptionCaught")
+    fun removeConcurrentListener(key: String, callbackId: Long): Boolean {
+        concurrentCallbackLock.lock()
+        try {
+            if (concurrentCallbacks.containsKey(key)) {
+                val tmp = concurrentCallbacks.get(key)
+                if (tmp!!.containsKey(callbackId)) {
+                    tmp.remove(callbackId)
+                    concurrentCallbacks.put(key, tmp)
+                    return true
+                }
             }
+        } catch (e: Exception) {
+            return false
+        } finally {
+            concurrentCallbackLock.unlock()
         }
         return false
     }
