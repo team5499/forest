@@ -46,7 +46,7 @@ task javadocJar(type: Jar, dependsOn: dokkaJavadoc) {
 }
 
 dokka {
-    outputFormat = 'html'
+    outputFormat = 'javadoc'
     outputDirectory = "$buildDir/htmldoc"
 }
 

@@ -74,7 +74,6 @@ class WebdriverTest {
         val widgets = driver.findElements(By.className("card-body"))
         widgets.forEach({
             val input = it.findElement(By.className("form-control"))
-            val submit = it.findElement(By.className("btn"))
             val inputText = input.getAttribute("value")
             println("$inputText")
         })
@@ -131,7 +130,7 @@ class WebdriverTest {
         while (true) {
             Dashboard.update()
             Dashboard.runIfUpdate("TEST", {
-                key: String, value: Any? ->
+                _: String, value: Any? ->
                 assert(value == "testafter${repInfo.currentRepetition}")
                 callCount++
             })
@@ -139,7 +138,7 @@ class WebdriverTest {
                 break
             }
         }
-        pollThread.stop()
+        pollThread.interrupt()
         println(callCount)
         assert(callCount == 1)
     }
