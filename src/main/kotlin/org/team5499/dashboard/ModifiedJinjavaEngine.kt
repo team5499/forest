@@ -46,6 +46,7 @@ class ModifiedJinjavaEngine : TemplateEngine {
             //     template = Resources.toString(Resources.getResource(modelAndView.getViewName()), Charsets.UTF_8)
             // } catch (IOException ignored) {
             // }
+            @Suppress("UNCHECKED_CAST")
             return jinjava.render(template, model as Map<String, Any>)
         } else {
             throw IllegalArgumentException("modelAndView.getModel() must return a java.util.Map")
