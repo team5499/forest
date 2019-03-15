@@ -83,6 +83,8 @@ object Dashboard {
         } else {
             Spark.staticFiles.location("/static")
         }
+        @Suppress("MagicNumber")
+        Spark.staticFiles.expireTime(60000000000)
 
         Spark.get("/", {
             _: Request, _: Response ->
