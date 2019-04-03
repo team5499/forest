@@ -6,7 +6,7 @@ class Button {}
 Button.Body = class extends Widget.Body {
     init() {
         this.state = {
-            Task: 'test'
+            task: this.widgetConfig.kwargs.task
         };
     }
 
@@ -14,15 +14,12 @@ Button.Body = class extends Widget.Body {
     //     this.setState({targetValue: value});
     // }
 
-    // settingsSave(newConfig) {
-    //     this.removeVarListener(this.state.targetName, this.callbackId);
-    //     let newValue = (this.getInt(newConfig.variables.target) === undefined) ? "" : this.getInt(newConfig.variables.target);
-    //     this.setState({
-    //         targetName: newConfig.variables.target,
-    //         targetValue: newValue
-    //     });
-    //     this.callbackId = this.registerVarListener(newConfig.variables.target, (key, value) => this.updateState(key, value));
-    // }
+    settingsSave(newConfig) {
+        this.setState({
+            task: newConfig.task
+        });
+        this.callbackId = this.registerVarListener(newConfig.variables.target, (key, value) => this.updateState(key, value));
+    }
 
     // onVarSave() {
     //     this.setInt(this.state.targetName, this.state.targetValue);
@@ -43,17 +40,17 @@ Button.Body = class extends Widget.Body {
 }
 
 Button.Settings = class extends Widget.Settings {
-    // init() {
-    //     this.state = {
-    //         targetName: this.widgetConfig.variables.target
-    //     };
-    // }
+    init() {
+        this.state = {
+            task: this.widgetConfig.kwargs.task
+        };
+    }
 
-    // settingsData(config) {
-    //     let newConfig = config;
-    //     newConfig.variables.target = this.state.targetName;
-    //     return newConfig;
-    // }
+    settingsData(config) {
+        let newConfig = config;
+        newConfig.task = this.state.kwargs.task;
+        return newConfig;
+    }
 
     // onSettingsEdit(e) {
     //     this.setState({targetName: e.target.value});
@@ -71,6 +68,8 @@ Button.Settings = class extends Widget.Settings {
         );
     }
 }
+
+console.log(Button);
 
 // make sure to do this for every widget
 PageUtils.addWidgetClass('Button', Button);

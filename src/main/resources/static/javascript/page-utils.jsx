@@ -91,6 +91,7 @@ export default class PageUtils {
     }
 
     static renderWidgets() {
+        console.log(widgetClasses)
         let widgetsJson = PageUtils.getPageWidgets();
         let widgets = [];
         for(var i in widgetsJson) {
