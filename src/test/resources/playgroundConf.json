@@ -9,8 +9,11 @@
           "height": "auto",
           "id": "testButton",
           "kwargs": {},
-          "title": "Button",
-          "type": "Button",
+          "title": "Disable POT",
+          "type": "ButtonWidget",
+          "variables": {
+            "target": "DISABLE_POT"
+          },
           "width": "12rem"
         },
         {

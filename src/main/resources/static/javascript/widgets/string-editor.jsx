@@ -75,3 +75,4 @@ export default StringEditor;
 
 // make sure to do this for every widget
 PageUtils.addWidgetClass('StringEditor', StringEditor);
+console.log('test');
